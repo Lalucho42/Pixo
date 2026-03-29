@@ -26,11 +26,12 @@ public class Player : MonoBehaviour
     public PlayerAnimations Animations { get; private set; }
     public PlayerCamera PlayerCamera { get; private set; }
 
-    // --- NUEVA VARIABLE CONTROLADA POR LA ANIMACIÓN ---
+    // --- NUEVA VARIABLE CONTROLADA POR LA ANIMACIï¿½N ---
     public bool ApplyRollImpulse { get; private set; }
 
     private void Awake()
     {
+        if (!CompareTag("Player")) gameObject.tag = "Player";
         Controller = GetComponent<CharacterController>();
         Animator = GetComponentInChildren<Animator>();
 
@@ -58,17 +59,17 @@ public class Player : MonoBehaviour
         // 1. Primero movemos y rotamos al personaje
         Movement.Tick(Time.deltaTime);
 
-        // 2. Después animamos
+        // 2. Despuï¿½s animamos
         Animations.Tick(Time.deltaTime);
 
-        // 3. Y por ÚLTIMO en este mismo frame, rotamos el Target de la cámara
+        // 3. Y por ï¿½LTIMO en este mismo frame, rotamos el Target de la cï¿½mara
         if (PlayerCamera != null)
         {
             PlayerCamera.Tick(Time.deltaTime);
         }
     }
 
-    // ¡BORRAMOS la función LateUpdate por completo, ya no la necesitamos!
+    // ï¿½BORRAMOS la funciï¿½n LateUpdate por completo, ya no la necesitamos!
 
     private void LateUpdate()
     {
@@ -78,7 +79,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    // --- NUEVA FUNCIÓN QUE LLAMA EL SCRIPT PUENTE ---
+    // --- NUEVA FUNCIï¿½N QUE LLAMA EL SCRIPT PUENTE ---
     public void SetRollImpulse(bool active)
     {
         ApplyRollImpulse = active;

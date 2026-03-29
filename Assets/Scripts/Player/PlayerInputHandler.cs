@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
@@ -9,9 +9,9 @@ public class PlayerInputHandler
     public Vector2 MoveInput { get; private set; }
     public bool IsRunning { get; private set; }
     public event Action OnRollEvent;
+    public event Action OnInteractEvent;
+    public event Action OnFlashlightEvent;
 
-    // --- EL CAMBIO MÁGICO ---
-    // En lugar de usar eventos, leemos el mouse directamente en tiempo real
     public Vector2 LookInput
     {
         get
@@ -27,12 +27,12 @@ public class PlayerInputHandler
         playerControls.Gameplay.Move.performed += OnMovePerformed;
         playerControls.Gameplay.Move.canceled += OnMoveCanceled;
 
-        // ¡BORRAMOS las líneas de Look.performed y Look.canceled!
-
         playerControls.Gameplay.Run.performed += OnRunPerformed;
         playerControls.Gameplay.Run.canceled += OnRunCanceled;
 
         playerControls.Gameplay.Roll.performed += OnRollPerformed;
+        playerControls.Gameplay.Interact.performed += OnInteractPerformed;
+        playerControls.Gameplay.Flashlight.performed += OnFlashlightPerformed;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -61,6 +61,16 @@ public class PlayerInputHandler
         {
             OnRollEvent.Invoke();
         }
+    }
+
+    private void OnInteractPerformed(InputAction.CallbackContext context)
+    {
+        if (OnInteractEvent != null) OnInteractEvent.Invoke();
+    }
+
+    private void OnFlashlightPerformed(InputAction.CallbackContext context)
+    {
+        if (OnFlashlightEvent != null) OnFlashlightEvent.Invoke();
     }
 
     public void Enable()
