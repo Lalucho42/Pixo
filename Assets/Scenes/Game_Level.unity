@@ -837,29 +837,6 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 0, y: -1, z: 0}
---- !u!1 &761382356 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6456264930928990061, guid: 52e8b8c2fb996af4aa443d3d32e5b654, type: 3}
-  m_PrefabInstance: {fileID: 933360743}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &761382358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 761382356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21062e3986c1a8649a193a899a7e7e20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  simpleEffect: {fileID: 8278133892299822346, guid: 2813e0da1671cbe4fb41c8cdcf22b4fd, type: 3}
-  footstepClick: {fileID: 8300000, guid: e1a8aae5c83b0204898f7688b5210f24, type: 3}
-  footstepVolume: 0.2
-  isAutomatic: 1
-  stepDistance: 1.5
-  stepPositionOffset: {x: 0, y: -0.8, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -961,6 +938,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HealthKit
       objectReference: {fileID: 0}
+    - target: {fileID: 6202643111999923678, guid: 22a3e9e93347f0d4a9b584e77622bab7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 196137e7992f3f54e98bc0e905f9a01b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1207,6 +1188,10 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.010319068
       objectReference: {fileID: 0}
+    - target: {fileID: 6321403628311820429, guid: 52e8b8c2fb996af4aa443d3d32e5b654, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6773703360285541690, guid: 52e8b8c2fb996af4aa443d3d32e5b654, type: 3}
       propertyPath: fleeDistance
       value: 8
@@ -1230,13 +1215,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6456264930928990061, guid: 52e8b8c2fb996af4aa443d3d32e5b654, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 761382358}
-    - targetCorrespondingSourceObject: {fileID: 7167412475003567075, guid: 52e8b8c2fb996af4aa443d3d32e5b654, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1699876412}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52e8b8c2fb996af4aa443d3d32e5b654, type: 3}
 --- !u!1 &953589677 stripped
 GameObject:
@@ -1366,6 +1345,10 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3498713387990093727, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 8ffba6aa6d460ea499a4540ee8d513b3, type: 2}
     - target: {fileID: 4160407341755469599, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
       propertyPath: m_Name
       value: RangedGuard
@@ -1598,6 +1581,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HealthKit (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6202643111999923678, guid: 22a3e9e93347f0d4a9b584e77622bab7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 196137e7992f3f54e98bc0e905f9a01b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1893,6 +1880,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HealthKit (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6202643111999923678, guid: 22a3e9e93347f0d4a9b584e77622bab7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 196137e7992f3f54e98bc0e905f9a01b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2412,7 +2403,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1444123668
 Transform:
   m_ObjectHideFlags: 0
@@ -2493,29 +2484,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7587016267627217326, guid: 20c3e20b3caa53249943059a6d07496e, type: 3}
   m_PrefabInstance: {fileID: 1468412699}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1699876410 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7167412475003567075, guid: 52e8b8c2fb996af4aa443d3d32e5b654, type: 3}
-  m_PrefabInstance: {fileID: 933360743}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1699876412
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1699876410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21062e3986c1a8649a193a899a7e7e20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  simpleEffect: {fileID: 8278133892299822346, guid: 2813e0da1671cbe4fb41c8cdcf22b4fd, type: 3}
-  footstepClick: {fileID: 8300000, guid: e1a8aae5c83b0204898f7688b5210f24, type: 3}
-  footstepVolume: 0.2
-  isAutomatic: 1
-  stepDistance: 1.5
-  stepPositionOffset: {x: 0, y: -0.8, z: 0}
 --- !u!1001 &1703060465
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2564,6 +2532,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3310214903562742475, guid: 85ac7084a63b1c94ab0a59f9ea4263d4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 473aafa38e03fa14d9fa6061399b01aa, type: 2}
     - target: {fileID: 3710434633268721232, guid: 85ac7084a63b1c94ab0a59f9ea4263d4, type: 3}
       propertyPath: m_Height
       value: 0.43

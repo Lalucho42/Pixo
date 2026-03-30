@@ -48,7 +48,7 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Shadow_Bands: 3
+    - _Shadow_Bands: 2
     - _Shadow_Smoothness: 0.1
     - _Shadow_Threshold: 0
     m_Colors:
