@@ -2412,7 +2412,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1444123668
 Transform:
   m_ObjectHideFlags: 0
@@ -2948,7 +2948,7 @@ PrefabInstance:
     - target: {fileID: 226557248876845006, guid: da963f8c694077c4e8616930b8d18b32, type: 3}
       propertyPath: damageImpulseSource
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 668073663}
     - target: {fileID: 1955689335262336842, guid: da963f8c694077c4e8616930b8d18b32, type: 3}
       propertyPath: m_Range
       value: 15
@@ -3005,6 +3005,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5703052260719669473, guid: da963f8c694077c4e8616930b8d18b32, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 785beb27d5f2fe448a5a872755b1129b, type: 2}
+    - target: {fileID: 5703052260719669473, guid: da963f8c694077c4e8616930b8d18b32, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: d3b59f7b39de3cc47ab6d2e48dd9e5d6, type: 2}
+    - target: {fileID: 5703052260719669473, guid: da963f8c694077c4e8616930b8d18b32, type: 3}
+      propertyPath: 'm_Materials.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4318da6d8112bc243a8a70535490c99d, type: 2}
     - target: {fileID: 6649030291957367593, guid: da963f8c694077c4e8616930b8d18b32, type: 3}
       propertyPath: m_SoftShadowQuality
       value: 3
