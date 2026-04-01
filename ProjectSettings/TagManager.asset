@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - RangeGuard
+  - RangedGuard
   layers:
   - Default
   - TransparentFX

@@ -29,6 +29,7 @@ public class HealthSystem : MonoBehaviour
     {
         currentHealth = maxHealth;
     }
+
     public void TakeDamage(int damageAmount)
     {
         if (isDead) return;
@@ -36,7 +37,9 @@ public class HealthSystem : MonoBehaviour
 
         if (damageImpulseSource != null)
         {
-            damageImpulseSource.GenerateImpulse(1.0f);
+            float intensity = Mathf.Clamp(damageAmount * 0.025f, 0.1f, 0.45f);
+            Vector3 dir = new Vector3(Random.Range(-1f, 1f), -0.2f, Random.Range(-1f, 1f)).normalized;
+            damageImpulseSource.GenerateImpulseWithVelocity(dir * intensity);
         }
 
         if (currentHealth <= 0)
@@ -59,28 +62,21 @@ public class HealthSystem : MonoBehaviour
         if (deathSound != null && AudioManager.instance != null) AudioManager.instance.PlaySFX(deathSound);
 
         onDeath.Invoke();
-        
+
         if (CompareTag("Player"))
         {
-
-            var controller = GetComponent<CharacterController>();
-            if (controller != null) controller.enabled = false;
-
-            var rb = GetComponent<Rigidbody>();
-            if (rb != null) rb.isKinematic = true;
-
-            MonoBehaviour[] scripts = GetComponents<MonoBehaviour>();
-            foreach (var script in scripts)
-            {
-                if (script != this && (script.GetType().Name.Contains("Input") || script.GetType().Name.Contains("Movement") || script.GetType().Name.Contains("Attack")))
-                {
-                    script.enabled = false;
-                }
-            }
+            if (GameManager.instance != null)
+                GameManager.instance.ShowDeathMenu();
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    public void ResetDeath()
+    {
+        isDead = false;
+        currentHealth = maxHealth;
     }
 }

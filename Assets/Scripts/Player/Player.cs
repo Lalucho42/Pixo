@@ -3,16 +3,11 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
 {
-    [Header("Configuracion de Movimiento")]
     public float walkSpeed = 3f;
     public float runSpeed = 6f;
     public float rotationSpeed = 12f;
-
-    [Header("Configuracion de Habilidades")]
     public float rollCooldown = 2f;
-    public float rollImpulseSpeed = 8f; // Velocidad del impulso al rodar
-
-    [Header("Configuracion de Camara")]
+    public float rollImpulseSpeed = 8f;
     public Transform cameraFollowTarget;
     public float cameraSensitivity = 1.5f;
     public float cameraClampMin = -30f;
@@ -20,13 +15,11 @@ public class Player : MonoBehaviour
 
     public CharacterController Controller { get; private set; }
     public Animator Animator { get; private set; }
-
     public PlayerInputHandler InputHandler { get; private set; }
     public PlayerMovement Movement { get; private set; }
     public PlayerAnimations Animations { get; private set; }
     public PlayerCamera PlayerCamera { get; private set; }
-
-    // --- NUEVA VARIABLE CONTROLADA POR LA ANIMACI�N ---
+    public static bool IsDead = false;
     public bool ApplyRollImpulse { get; private set; }
 
     private void Awake()
@@ -42,6 +35,16 @@ public class Player : MonoBehaviour
         Movement = new PlayerMovement(this);
         Animations = new PlayerAnimations(this);
         PlayerCamera = new PlayerCamera(this, cameraFollowTarget, cameraClampMin, cameraClampMax);
+
+        IsDead = false;
+        CheckpointManager.Register(transform.position, transform.rotation);
+
+        if (GameManager.instance == null)
+        {
+            GameObject gmObj = new GameObject("GameManager");
+            gmObj.AddComponent<GameManager>();
+            DontDestroyOnLoad(gmObj);
+        }
     }
 
     private void OnEnable()
@@ -56,30 +59,22 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        // 1. Primero movemos y rotamos al personaje
-        Movement.Tick(Time.deltaTime);
+        if (IsDead || GameManager.IsPaused || GameManager.IsDead) return;
 
-        // 2. Despu�s animamos
+        Movement.Tick(Time.deltaTime);
         Animations.Tick(Time.deltaTime);
 
-        // 3. Y por �LTIMO en este mismo frame, rotamos el Target de la c�mara
         if (PlayerCamera != null)
-        {
             PlayerCamera.Tick(Time.deltaTime);
-        }
     }
-
-    // �BORRAMOS la funci�n LateUpdate por completo, ya no la necesitamos!
 
     private void LateUpdate()
     {
+        if (IsDead || GameManager.IsPaused || GameManager.IsDead) return;
         if (PlayerCamera != null)
-        {
             PlayerCamera.Tick(Time.deltaTime);
-        }
     }
 
-    // --- NUEVA FUNCI�N QUE LLAMA EL SCRIPT PUENTE ---
     public void SetRollImpulse(bool active)
     {
         ApplyRollImpulse = active;

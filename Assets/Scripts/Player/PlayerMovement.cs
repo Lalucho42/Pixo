@@ -13,15 +13,12 @@ public class PlayerMovement
     {
         Vector3 finalMovement = Vector3.zero;
 
-        // --- CAMBIO ACÁ: Leemos la orden exacta de la animación ---
         if (player.ApplyRollImpulse == true)
         {
-            // Usamos la nueva velocidad de impulso del inspector
             finalMovement = player.transform.forward * player.rollImpulseSpeed;
         }
         else
         {
-            // Movimiento normal por teclado/joystick (El mismo que ya teníamos)
             Vector2 input = player.InputHandler.MoveInput;
 
             Vector3 camaraForward = Camera.main.transform.forward;

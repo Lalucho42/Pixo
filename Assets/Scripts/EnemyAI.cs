@@ -22,7 +22,7 @@ public class EnemyAI : MonoBehaviour
         if (agent != null)
         {
             agent.enabled = false;
-            agent.stoppingDistance = attackRange - 0.2f; // Un poco antes del rango de ataque
+            agent.stoppingDistance = attackRange - 0.2f;
             agent.autoBraking = true;
             agent.acceleration = 12f;
         }
@@ -38,7 +38,6 @@ public class EnemyAI : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         if (agent == null) yield break;
         
-        // Intentar colocar al agente en el NavMesh mas cercano
         if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 5f, NavMesh.AllAreas))
         {
             transform.position = hit.position;
@@ -68,7 +67,6 @@ public class EnemyAI : MonoBehaviour
 
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
-        // Si esta en rango de ataque
         if (distanceToPlayer <= attackRange)
         {
             agent.isStopped = true;
@@ -81,7 +79,6 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            // Perseguirlo
             agent.isStopped = false;
             agent.SetDestination(playerTransform.position);
         }

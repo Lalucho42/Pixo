@@ -60,4 +60,12 @@ public class AudioManager : MonoBehaviour
             ambienceSource.Play();
         }
     }
+
+    public void Play3DSFX(AudioClip clip, Vector3 position, float volume = 1f)
+    {
+        if (clip != null)
+        {
+            AudioSource.PlayClipAtPoint(clip, position, volume);
+        }
+    }
 }

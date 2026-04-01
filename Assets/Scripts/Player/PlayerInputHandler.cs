@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
@@ -11,6 +11,9 @@ public class PlayerInputHandler
     public event Action OnRollEvent;
     public event Action OnInteractEvent;
     public event Action OnFlashlightEvent;
+    public event Action OnJumpEvent;
+    
+    public bool IsJumpHeld => playerControls.Gameplay.Jump.ReadValue<float>() > 0.5f;
 
     public Vector2 LookInput
     {
@@ -33,6 +36,7 @@ public class PlayerInputHandler
         playerControls.Gameplay.Roll.performed += OnRollPerformed;
         playerControls.Gameplay.Interact.performed += OnInteractPerformed;
         playerControls.Gameplay.Flashlight.performed += OnFlashlightPerformed;
+        playerControls.Gameplay.Jump.performed += OnJumpPerformed;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -71,6 +75,11 @@ public class PlayerInputHandler
     private void OnFlashlightPerformed(InputAction.CallbackContext context)
     {
         if (OnFlashlightEvent != null) OnFlashlightEvent.Invoke();
+    }
+
+    private void OnJumpPerformed(InputAction.CallbackContext context)
+    {
+        if (OnJumpEvent != null) OnJumpEvent.Invoke();
     }
 
     public void Enable()

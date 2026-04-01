@@ -11,28 +11,45 @@ public class CatCompanionAI : MonoBehaviour
     public float fleeRadius = 8f;
     public float fleeDistance = 5f;
     
+    [Header("Animation Tuning")]
+    public float speedSmoothTime = 0.1f;
+    public float walkAnimationBaseSpeed = 3f;
+    
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     private Vector3 lastPlayerPosition;
     private CharacterController playerController;
+    private float smoothedSpeed;
+    private float speedVelocity;
 
     private void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
         
-        if (navMeshAgent != null)
-        {
-            navMeshAgent.enabled = false;
-            navMeshAgent.stoppingDistance = followDistance;
-            navMeshAgent.updateRotation = true;
-            navMeshAgent.acceleration = 8f;
-            navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
-            navMeshAgent.radius = 0.3f;
-        }
-        
+        SetupNavMeshAgent();
+        FindPlayer();
+        SetupCollider();
+        StartCoroutine(InitializeAgent());
+    }
+
+    private void SetupNavMeshAgent()
+    {
+        if (navMeshAgent == null) return;
+        navMeshAgent.enabled = false;
+        navMeshAgent.stoppingDistance = followDistance;
+        navMeshAgent.updateRotation = true;
+        navMeshAgent.angularSpeed = 600f;
+        navMeshAgent.acceleration = 25f;
+        navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        navMeshAgent.radius = 0.25f;
+    }
+
+    private void FindPlayer()
+    {
         Player player = FindFirstObjectByType<Player>();
         if (player == null)
         {
@@ -52,7 +69,10 @@ public class CatCompanionAI : MonoBehaviour
             lastPlayerPosition = playerTarget.position;
             playerController = player.Controller;
         }
+    }
 
+    private void SetupCollider()
+    {
         CapsuleCollider col = GetComponent<CapsuleCollider>();
         if (col == null)
         {
@@ -63,8 +83,6 @@ public class CatCompanionAI : MonoBehaviour
         }
         col.isTrigger = false;
         gameObject.layer = 0;
-
-        StartCoroutine(InitializeAgent());
     }
 
     private System.Collections.IEnumerator InitializeAgent()
@@ -84,71 +102,90 @@ public class CatCompanionAI : MonoBehaviour
     {
         if (playerTarget == null || navMeshAgent == null) return;
         
-        float currentSpeed = navMeshAgent.velocity.magnitude;
+        float targetSpeed = GetAdjustedSpeed();
         
-        bool isPlayerMoving = false;
-        if (playerController != null)
-        {
-            isPlayerMoving = new Vector3(playerController.velocity.x, 0, playerController.velocity.z).magnitude > 0.1f;
-        }
-
-        if (!isPlayerMoving && Vector3.Distance(transform.position, playerTarget.position) <= followDistance + 0.2f)
-        {
-            currentSpeed = 0f;
-        }
-
-        if (animator != null)
-        {
-            animator.SetFloat("Speed", currentSpeed);
-        }
-
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, fleeRadius);
-        bool isFleeing = false;
-        Transform nearestEnemy = null;
+        smoothedSpeed = Mathf.SmoothDamp(smoothedSpeed, targetSpeed, ref speedVelocity, speedSmoothTime);
+        UpdateAnimator(smoothedSpeed);
         
-        foreach (var hitCollider in hitColliders)
+        Transform nearestEnemy = FindNearestEnemy();
+        if (nearestEnemy != null)
         {
-            if (hitCollider.CompareTag("Enemy"))
-            {
-                isFleeing = true;
-                nearestEnemy = hitCollider.transform;
-                break;
-            }
-        }
-
-        if (isFleeing && nearestEnemy != null)
-        {
-            if (navMeshAgent.isActiveAndEnabled && navMeshAgent.isOnNavMesh)
-            {
-                navMeshAgent.stoppingDistance = 0f;
-                Vector3 fleeDirection = (transform.position - nearestEnemy.position).normalized;
-                Vector3 fleeTarget = transform.position + (fleeDirection * fleeDistance);
-                navMeshAgent.SetDestination(fleeTarget);
-            }
+            FleeFromEnemy(nearestEnemy);
         }
         else
         {
-            if (navMeshAgent.isActiveAndEnabled && navMeshAgent.isOnNavMesh)
-            {
-                navMeshAgent.stoppingDistance = followDistance;
-                
-                if (Vector3.Distance(playerTarget.position, lastPlayerPosition) > movementBuffer)
-                {
-                    lastPlayerPosition = playerTarget.position;
-                    navMeshAgent.SetDestination(playerTarget.position);
-                }
-            }
+            FollowPlayer(smoothedSpeed);
+        }
+    }
 
-            float remainingDistance = (navMeshAgent.isActiveAndEnabled && navMeshAgent.isOnNavMesh) ? navMeshAgent.remainingDistance : 0f;
-            if (navMeshAgent.isActiveAndEnabled && navMeshAgent.isOnNavMesh && !navMeshAgent.pathPending && remainingDistance <= navMeshAgent.stoppingDistance)
+    private float GetAdjustedSpeed()
+    {
+        float speed = navMeshAgent.velocity.magnitude;
+        bool isPlayerMoving = playerController != null && 
+            new Vector3(playerController.velocity.x, 0, playerController.velocity.z).magnitude > 0.1f;
+        
+        if (!isPlayerMoving && Vector3.Distance(transform.position, playerTarget.position) <= followDistance + 0.2f)
+        {
+            speed = 0f;
+        }
+        return speed;
+    }
+
+    private void UpdateAnimator(float speed)
+    {
+        if (animator == null) return;
+
+        animator.SetFloat("Speed", speed);
+
+        if (speed > 0.05f)
+        {
+            animator.speed = speed / walkAnimationBaseSpeed;
+        }
+        else
+        {
+            animator.speed = 1f;
+        }
+    }
+
+    private Transform FindNearestEnemy()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, fleeRadius);
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Enemy")) return hitCollider.transform;
+        }
+        return null;
+    }
+
+    private void FleeFromEnemy(Transform enemy)
+    {
+        if (!navMeshAgent.isActiveAndEnabled || !navMeshAgent.isOnNavMesh) return;
+        navMeshAgent.stoppingDistance = 0f;
+        Vector3 fleeDirection = (transform.position - enemy.position).normalized;
+        Vector3 fleeTarget = transform.position + (fleeDirection * fleeDistance);
+        navMeshAgent.SetDestination(fleeTarget);
+    }
+
+    private void FollowPlayer(float currentSpeed)
+    {
+        if (!navMeshAgent.isActiveAndEnabled || !navMeshAgent.isOnNavMesh) return;
+        
+        navMeshAgent.stoppingDistance = followDistance;
+        if (Vector3.Distance(playerTarget.position, lastPlayerPosition) > movementBuffer)
+        {
+            lastPlayerPosition = playerTarget.position;
+            navMeshAgent.SetDestination(playerTarget.position);
+        }
+
+        float remainingDistance = navMeshAgent.remainingDistance;
+        if (!navMeshAgent.pathPending && remainingDistance <= navMeshAgent.stoppingDistance + 0.1f && currentSpeed < 0.1f)
+        {
+            Vector3 lookPos = playerTarget.position - transform.position;
+            lookPos.y = 0;
+            if (lookPos != Vector3.zero)
             {
-                Vector3 lookPos = playerTarget.position - transform.position;
-                lookPos.y = 0;
-                if (lookPos != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(lookPos);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-                }
+                Quaternion targetRotation = Quaternion.LookRotation(lookPos);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
             }
         }
     }

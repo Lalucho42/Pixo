@@ -10,6 +10,11 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+.kilo/
+.kilocode/
+.kilocodemodes
+/[Aa]ssets/UnityMCP/
+
 *.log
 
 # MemoryCaptures can get excessive in size.

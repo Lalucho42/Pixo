@@ -5,18 +5,13 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private string GameScene;
 
-
-    public void StartGame() {
-
+    public void StartGame()
+    {
         SceneManager.LoadScene(GameScene);
-    
     }
-
 
     public void QuitGame()
     {
         Application.Quit();
     }
-
-
 }

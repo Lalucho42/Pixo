@@ -62,6 +62,7 @@ public class DoorController : MonoBehaviour
 
     private void TryToggleDoor()
     {
+        if (GameManager.IsPaused || GameManager.IsDead) return;
         if (player == null) return;
         
         float distance = Vector3.Distance(transform.position, player.transform.position);

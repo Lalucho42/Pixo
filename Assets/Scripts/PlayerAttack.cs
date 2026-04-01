@@ -15,8 +15,9 @@ public class PlayerAttack : MonoBehaviour
     public AudioClip attackSound;
     public GameObject gatheringTool;
     public float resourceDamage = 25f;
-    private float comboShakeIntensity = 0.2f;
+    private float comboShakeIntensity = 0.08f;
     private float lastAttackTime = 0f;
+    private PlayerWeaponManager weaponManager;
 
     private void OnValidate()
     {
@@ -32,10 +33,14 @@ public class PlayerAttack : MonoBehaviour
             attackPoint = transform.Find("AttackPoint");
         if (impulseSource == null)
             impulseSource = GetComponentInChildren<CinemachineImpulseSource>();
+        weaponManager = GetComponent<PlayerWeaponManager>();
     }
 
     private void Update()
     {
+        if (GameManager.IsPaused || GameManager.IsDead) return;
+        if (weaponManager == null || !weaponManager.HasWeapon) return;
+
         if (Time.time >= nextAttackTime)
         {
             if ((Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) || 
@@ -51,30 +56,32 @@ public class PlayerAttack : MonoBehaviour
     {
         if (Time.time - lastAttackTime < 1.5f)
         {
-            comboShakeIntensity += 0.3f;
-            comboShakeIntensity = Mathf.Clamp(comboShakeIntensity, 0.2f, 1.5f);
+            comboShakeIntensity += 0.1f;
+            comboShakeIntensity = Mathf.Clamp(comboShakeIntensity, 0.08f, 0.5f);
         }
         else
         {
-            comboShakeIntensity = 0.2f;
+            comboShakeIntensity = 0.08f;
         }
         lastAttackTime = Time.time;
 
         if (attackSound != null && AudioManager.instance != null) AudioManager.instance.PlaySFX(attackSound);
 
-        if (impulseSource != null) impulseSource.GenerateImpulse(comboShakeIntensity);
         if (attackPoint == null) return;
 
         Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange);
+        bool hitSomething = false;
+
         foreach (Collider hit in hitEnemies)
         {
-            // Check for enemies (Melee or Ranged)
             if (hit.CompareTag("Enemy") || hit.CompareTag("RangedGuard"))
             {
                 HealthSystem health = hit.GetComponentInParent<HealthSystem>();
                 if (health != null)
                 {
                     health.TakeDamage(attackDamage);
+                    hitSomething = true;
+
                     Vector3 pushDirection = (hit.transform.position - transform.position).normalized;
                     pushDirection.y = 0;
                     pushDirection.Normalize();
@@ -88,12 +95,24 @@ public class PlayerAttack : MonoBehaviour
                 }
             }
             
-            // Check for resource nodes (Trees, Rocks, etc.)
             ResourceNode node = hit.GetComponentInParent<ResourceNode>();
             if (node != null)
             {
-                // Damage resources even if gatheringTool is not explicitly assigned (fallback to attack)
                 node.TakeDamage(resourceDamage);
+                hitSomething = true;
+            }
+        }
+
+        if (impulseSource != null)
+        {
+            if (hitSomething)
+            {
+                Vector3 impulseDir = transform.forward * (comboShakeIntensity * 0.4f);
+                impulseSource.GenerateImpulseWithVelocity(impulseDir);
+            }
+            else
+            {
+                impulseSource.GenerateImpulse(0.03f);
             }
         }
     }

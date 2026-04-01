@@ -3,6 +3,7 @@ using UnityEngine;
 public class FlashlightController : MonoBehaviour
 {
     public Light[] lights;
+    public GameObject[] extraObjects;
     private bool isLightOn = false;
     private Player player;
 
@@ -19,7 +20,6 @@ public class FlashlightController : MonoBehaviour
             lights = GetComponentsInChildren<Light>(true);
         }
         
-        // Inicializar estado
         UpdateLights();
     }
 
@@ -33,6 +33,8 @@ public class FlashlightController : MonoBehaviour
 
     private void ToggleFlashlight()
     {
+        if (GameManager.IsPaused || GameManager.IsDead) return;
+
         isLightOn = !isLightOn;
         UpdateLights();
         
@@ -42,10 +44,20 @@ public class FlashlightController : MonoBehaviour
 
     private void UpdateLights()
     {
-        if (lights == null) return;
-        foreach (var l in lights)
+        if (lights != null)
         {
-            if (l != null) l.enabled = isLightOn;
+            foreach (var l in lights)
+            {
+                if (l != null) l.enabled = isLightOn;
+            }
+        }
+
+        if (extraObjects != null)
+        {
+            foreach (var obj in extraObjects)
+            {
+                if (obj != null) obj.SetActive(isLightOn);
+            }
         }
     }
 }

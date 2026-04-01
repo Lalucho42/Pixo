@@ -1,55 +1,66 @@
 using UnityEngine;
-using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent))]
 public class RangedEnemyAI : MonoBehaviour
 {
-    public Transform[] waypoints;
+    [Header("Movement")]
+    public float moveSpeed = 4.5f;
+    public float hoverHeight = 3.5f;
+    public float hoverSmoothing = 6f;
+    public float groundCheckDistance = 20f;
+
+    [Header("Drone Feel")]
+    public float noiseAmplitude = 0.18f;
+    public float noiseFrequency = 0.6f;
+    public float tiltAmount = 12f;
+    public float tiltSmoothing = 5f;
+
+    [Header("Combat")]
+    public float attackRange = 14f;
+    public float stopDistance = 7f;
+    public float circleRadius = 7f;
+    public float circleSpeed = 35f;
+    public float fireCooldown = 2.2f;
+
+    [Header("References")]
     public GameObject projectilePrefab;
     public Transform firePoint;
-    public float attackRange = 12f;
-    public float stopDistance = 8f; // Trata de mantener este espacio
-    public float fireCooldown = 2f;
-    private int currentWaypointIndex = 0;
-    private float fireTimer = 0f;
-    private NavMeshAgent navMeshAgent;
+
+    private Rigidbody rb;
     private Transform playerTarget;
+    private float fireTimer = 0f;
     private float stunTimer = 0f;
+    private float noiseOffsetX;
+    private float noiseOffsetZ;
+    private float circleAngle = 0f;
+    private Quaternion targetRotation;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
+
+        rb.useGravity = false;
+        rb.linearDamping = 4f;
+        rb.angularDamping = 8f;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+        noiseOffsetX = Random.Range(0f, 100f);
+        noiseOffsetZ = Random.Range(0f, 100f);
+        circleAngle = Random.Range(0f, 360f);
+        targetRotation = transform.rotation;
+    }
 
     private void Start()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        if (navMeshAgent != null)
-        {
-            navMeshAgent.enabled = false;
-            navMeshAgent.stoppingDistance = stopDistance;
-            navMeshAgent.autoBraking = true;
-            navMeshAgent.acceleration = 10f;
-        }
-
         Player p = FindFirstObjectByType<Player>();
         if (p != null) playerTarget = p.transform;
-        
-        StartCoroutine(InitializeAgent());
+
+        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null) agent.enabled = false;
     }
 
-    private System.Collections.IEnumerator InitializeAgent()
+    private void FixedUpdate()
     {
-        yield return new WaitForSeconds(0.5f);
-        if (navMeshAgent == null) yield break;
-        
-        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 5f, NavMesh.AllAreas))
-        {
-            transform.position = hit.position;
-            navMeshAgent.enabled = true;
-            if (waypoints != null && waypoints.Length > 0) navMeshAgent.SetDestination(waypoints[currentWaypointIndex].position);
-        }
-    }
-
-    private void Update()
-    {
-        if (navMeshAgent == null || !navMeshAgent.enabled) return;
-        
         if (playerTarget == null)
         {
             Player p = FindFirstObjectByType<Player>();
@@ -57,91 +68,156 @@ public class RangedEnemyAI : MonoBehaviour
             if (playerTarget == null) return;
         }
 
-        float distanceToPlayer = Vector3.Distance(transform.position, playerTarget.position);
-        fireTimer -= Time.deltaTime;
+        fireTimer -= Time.fixedDeltaTime;
 
         if (stunTimer > 0)
         {
-            stunTimer -= Time.deltaTime;
-            navMeshAgent.isStopped = true;
+            stunTimer -= Time.fixedDeltaTime;
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, Time.fixedDeltaTime * 8f);
             return;
         }
 
-        // Si esta en rango de disparo pero no demasiado cerca
-        if (distanceToPlayer <= attackRange)
+        float targetY = ComputeTargetY();
+        Vector3 droneNoise = ComputeDroneNoise();
+        float distToPlayer = Vector3.Distance(transform.position, playerTarget.position);
+
+        Vector3 desiredVelocity;
+
+        if (distToPlayer <= attackRange)
         {
-            Combat(distanceToPlayer);
+            desiredVelocity = ComputeCombatVelocity(distToPlayer, targetY);
+
+            if (fireTimer <= 0f)
+            {
+                Shoot();
+            }
         }
         else
         {
-            PursuePlayer();
+            desiredVelocity = ComputePursuitVelocity(targetY);
         }
+
+        desiredVelocity += droneNoise;
+        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, desiredVelocity, Time.fixedDeltaTime * 5f);
+
+        ApplyDroneTilt();
+        FacePlayer();
     }
 
-    private void PursuePlayer()
+    private float ComputeTargetY()
     {
-        if (navMeshAgent == null || !navMeshAgent.enabled) return;
-        
-        navMeshAgent.isStopped = false;
-        navMeshAgent.SetDestination(playerTarget.position);
+        float groundY = transform.position.y - hoverHeight;
+
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, ~LayerMask.GetMask("Enemy", "RangedGuard", "Player")))
+        {
+            groundY = hit.point.y;
+        }
+
+        return Mathf.Lerp(transform.position.y, groundY + hoverHeight, Time.fixedDeltaTime * hoverSmoothing);
     }
 
-    private void Combat(float distance)
+    private Vector3 ComputeDroneNoise()
     {
-        // Se detiene si ya esta en una buena posicion
-        navMeshAgent.isStopped = (distance >= stopDistance - 0.5f);
-        if (!navMeshAgent.isStopped)
-        {
-            navMeshAgent.SetDestination(playerTarget.position);
-        }
-
-        RotateTowardsPlayer();
-        
-        if (fireTimer <= 0)
-        {
-            Shoot();
-        }
+        float t = Time.time * noiseFrequency;
+        float nx = (Mathf.PerlinNoise(t + noiseOffsetX, 0f) - 0.5f) * 2f * noiseAmplitude;
+        float ny = (Mathf.PerlinNoise(0f, t + noiseOffsetX) - 0.5f) * 2f * noiseAmplitude * 0.5f;
+        float nz = (Mathf.PerlinNoise(t + noiseOffsetZ, 1f) - 0.5f) * 2f * noiseAmplitude;
+        return new Vector3(nx, ny, nz);
     }
 
-    private void RotateTowardsPlayer()
+    private Vector3 ComputePursuitVelocity(float targetY)
     {
-        Vector3 direction = (playerTarget.position - transform.position).normalized;
-        direction.y = 0;
-        if (direction != Vector3.zero)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
-        }
+        Vector3 flat = playerTarget.position - transform.position;
+        flat.y = 0;
+        Vector3 xzVelocity = flat.normalized * moveSpeed;
+        float yVelocity = (targetY - transform.position.y) * hoverSmoothing;
+        return new Vector3(xzVelocity.x, yVelocity, xzVelocity.z);
+    }
+
+    private Vector3 ComputeCombatVelocity(float distToPlayer, float targetY)
+    {
+        circleAngle += circleSpeed * Time.fixedDeltaTime;
+        float rad = circleAngle * Mathf.Deg2Rad;
+
+        Vector3 circleOffset = new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * circleRadius;
+        Vector3 orbitalTarget = playerTarget.position + circleOffset;
+
+        Vector3 flat = orbitalTarget - transform.position;
+        flat.y = 0;
+
+        float speedMult = distToPlayer < stopDistance ? 0.4f : 1f;
+        Vector3 xzVelocity = flat.normalized * moveSpeed * speedMult;
+        float yVelocity = (targetY - transform.position.y) * hoverSmoothing;
+
+        return new Vector3(xzVelocity.x, yVelocity, xzVelocity.z);
+    }
+
+    private void FacePlayer()
+    {
+        if (playerTarget == null) return;
+        Vector3 dir = playerTarget.position - transform.position;
+        dir.y = 0;
+        if (dir.sqrMagnitude < 0.01f) return;
+        Quaternion look = Quaternion.LookRotation(dir);
+        targetRotation = Quaternion.Slerp(targetRotation, look, Time.fixedDeltaTime * 6f);
+    }
+
+    private void ApplyDroneTilt()
+    {
+        Vector3 vel = rb.linearVelocity;
+        float rightTilt = -Vector3.Dot(vel, transform.right) * (tiltAmount / moveSpeed);
+        float forwardTilt = Vector3.Dot(vel, transform.forward) * (tiltAmount / moveSpeed);
+
+        rightTilt = Mathf.Clamp(rightTilt, -tiltAmount, tiltAmount);
+        forwardTilt = Mathf.Clamp(forwardTilt, -tiltAmount, tiltAmount);
+
+        Quaternion tiltRot = targetRotation * Quaternion.Euler(forwardTilt, 0f, rightTilt);
+        transform.rotation = Quaternion.Slerp(transform.rotation, tiltRot, Time.fixedDeltaTime * tiltSmoothing);
     }
 
     private void Shoot()
     {
-        if (projectilePrefab != null && firePoint != null)
-        {
-            GameObject bullet = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-            
-            Collider[] shooterColliders = GetComponentsInChildren<Collider>();
-            Collider bulletCollider = bullet.GetComponent<Collider>();
-            if (bulletCollider != null)
-            {
-                foreach (var c in shooterColliders) Physics.IgnoreCollision(bulletCollider, c);
-            }
+        if (projectilePrefab == null || firePoint == null) return;
 
-            Rigidbody rb = bullet.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.linearVelocity = firePoint.forward * 20f;
-            }
-            fireTimer = fireCooldown;
+        GameObject bullet = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+
+        Collider[] shooterColliders = GetComponentsInChildren<Collider>();
+        Collider bulletCollider = bullet.GetComponent<Collider>();
+        if (bulletCollider != null)
+        {
+            foreach (var c in shooterColliders) Physics.IgnoreCollision(bulletCollider, c);
         }
+
+        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+        if (bulletRb != null)
+        {
+            Vector3 aimDir = (playerTarget.position + Vector3.up * 1f - firePoint.position).normalized;
+            bulletRb.linearVelocity = aimDir * 22f;
+        }
+
+        fireTimer = fireCooldown;
     }
 
     public void ApplyKnockback(Vector3 pushVector, float stunDuration)
     {
-        if (navMeshAgent != null && navMeshAgent.isActiveAndEnabled && navMeshAgent.isOnNavMesh)
+        if (rb != null)
         {
-            navMeshAgent.Move(pushVector);
+            rb.AddForce(pushVector * 2f, ForceMode.Impulse);
         }
         stunTimer = stunDuration;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, stopDistance);
+
+        if (playerTarget != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(playerTarget.position, circleRadius);
+        }
     }
 }

@@ -22,7 +22,8 @@ public class Projectile : MonoBehaviour
             rb.isKinematic = false;
             if (target != null)
             {
-                Vector3 dir = (new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position).normalized;
+                Vector3 aimPoint = target.position + Vector3.up * 1.0f;
+                Vector3 dir = (aimPoint - transform.position).normalized;
                 rb.linearVelocity = dir * speed;
                 transform.forward = dir;
             }
@@ -37,7 +38,8 @@ public class Projectile : MonoBehaviour
     {
         if (rb == null && target != null)
         {
-            Vector3 dir = (new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position).normalized;
+            Vector3 aimPoint = target.position + Vector3.up * 1.0f;
+            Vector3 dir = (aimPoint - transform.position).normalized;
             transform.position += dir * speed * Time.deltaTime;
             transform.forward = dir;
         }
