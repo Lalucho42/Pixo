@@ -3,51 +3,29 @@ using UnityEngine;
 public class PlayerMovement
 {
     private Player player;
+    private float walk, run, roll;
 
-    public PlayerMovement(Player playerBrain)
+    public PlayerMovement(Player brain, float w, float r, float ro)
     {
-        player = playerBrain;
+        player = brain; walk = w; run = r; roll = ro;
     }
 
-    public void Tick(float deltaTime)
+    public void Tick(float dt)
     {
-        Vector3 finalMovement = Vector3.zero;
+        if (player.IsMovementLocked) return; // Si estamos atacando, no nos movemos
 
-        if (player.ApplyRollImpulse == true)
+        Vector2 input = player.InputHandler.MoveInput;
+        Vector3 forward = player.PlayerCamera.CameraForward;
+        Vector3 right = player.PlayerCamera.CameraRight;
+        forward.y = 0; right.y = 0; forward.Normalize(); right.Normalize();
+
+        Vector3 dir = (forward * input.y + right * input.x).normalized;
+        float speed = player.ApplyRollImpulse ? roll : (player.InputHandler.IsRunning ? run : walk);
+
+        if (dir.magnitude > 0.1f)
         {
-            finalMovement = player.transform.forward * player.rollImpulseSpeed;
+            player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(dir), dt * player.rotationSpeed);
+            player.Controller.Move(dir * speed * dt);
         }
-        else
-        {
-            Vector2 input = player.InputHandler.MoveInput;
-
-            Vector3 camaraForward = Camera.main.transform.forward;
-            Vector3 camaraRight = Camera.main.transform.right;
-
-            camaraForward.y = 0f;
-            camaraRight.y = 0f;
-            camaraForward.Normalize();
-            camaraRight.Normalize();
-
-            Vector3 moveDirection = (camaraForward * input.y) + (camaraRight * input.x);
-
-            if (moveDirection.magnitude >= 0.1f)
-            {
-                float currentSpeed = player.walkSpeed;
-
-                if (player.InputHandler.IsRunning == true)
-                {
-                    currentSpeed = player.runSpeed;
-                }
-
-                finalMovement = moveDirection * currentSpeed;
-
-                Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, player.rotationSpeed * deltaTime);
-            }
-        }
-
-        player.Controller.Move(finalMovement * deltaTime);
-        player.Controller.Move(Vector3.down * 9.81f * deltaTime);
     }
 }

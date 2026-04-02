@@ -3,35 +3,24 @@ using UnityEngine;
 public class PlayerCamera
 {
     private Player player;
-    private float clampAngleMin;
-    private float clampAngleMax;
-    private float rotacionX = 0f;
-    private float rotacionY = 0f;
-    private Transform cameraFollowTarget;
+    private Transform target;
+    private float sens, min, max;
+    private float yaw, pitch;
 
-    public PlayerCamera(Player playerBrain, Transform followTarget, float minAngle, float maxAngle)
+    public Vector3 CameraForward { get { return Camera.main.transform.forward; } }
+    public Vector3 CameraRight { get { return Camera.main.transform.right; } }
+
+    public PlayerCamera(Player brain, Transform t, float s, float mi, float ma)
     {
-        player = playerBrain;
-        cameraFollowTarget = followTarget;
-        clampAngleMin = minAngle;
-        clampAngleMax = maxAngle;
-
-        Vector3 rotacionActual = cameraFollowTarget.localRotation.eulerAngles;
-        rotacionX = rotacionActual.x > 180 ? rotacionActual.x - 360 : rotacionActual.x;
-        rotacionY = rotacionActual.y;
+        player = brain; target = t; sens = s; min = mi; max = ma;
     }
 
-    public void Tick(float deltaTime)
+    public void Tick(float dt)
     {
-        if (GameManager.IsPaused || GameManager.IsDead) return;
-
-        Vector2 mouseInput = player.InputHandler.LookInput;
-        float sensibilidad = player.cameraSensitivity;
-
-        rotacionY = rotacionY + (mouseInput.x * sensibilidad);
-        rotacionX = rotacionX - (mouseInput.y * sensibilidad);
-        rotacionX = Mathf.Clamp(rotacionX, clampAngleMin, clampAngleMax);
-
-        cameraFollowTarget.rotation = Quaternion.Euler(rotacionX, rotacionY, 0f);
+        Vector2 look = player.InputHandler.LookInput;
+        yaw += look.x * sens;
+        pitch -= look.y * sens;
+        pitch = Mathf.Clamp(pitch, min, max);
+        target.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 }
