@@ -1397,6 +1397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 492b603dd10ab164986295367954ea99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourceName: 
+  type: 0
   health: 100
 --- !u!4 &903111799 stripped
 Transform:
@@ -1550,7 +1552,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponHandObjectName: PipeWeapon_Hand
-  interactionRadius: 1.82
   pickupSound: {fileID: 0}
 --- !u!1001 &1072233252
 PrefabInstance:
@@ -2077,6 +2078,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 492b603dd10ab164986295367954ea99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourceName: 
+  type: 0
   health: 100
 --- !u!4 &1132175999 stripped
 Transform:
@@ -3801,7 +3804,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4813274333602588357, guid: 64a3098232325214a801e135f66f98a9, type: 3}
+    - {fileID: 5431848454491481374, guid: 64a3098232325214a801e135f66f98a9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
