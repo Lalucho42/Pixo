@@ -6,15 +6,16 @@ public class PlayerAnimations
     private int speedHash, rollIdleHash, rollMoveHash, jumpHash, groundedHash, vVelHash;
     private int attPaloHash, attPicoHash, attHachaHash;
 
+    // Control de tiempo para evitar spam
+    private float rollCooldown = 0.6f;
+    private float lastRollTime = -1f;
+
     public PlayerAnimations(Player playerBrain)
     {
         player = playerBrain;
         speedHash = Animator.StringToHash("Speed");
-
-        // --- NUEVOS HASHES PARA LOS DOS ROLLS ---
         rollIdleHash = Animator.StringToHash("RollIdle");
         rollMoveHash = Animator.StringToHash("RollMove");
-
         jumpHash = Animator.StringToHash("Jump");
         groundedHash = Animator.StringToHash("IsGrounded");
         vVelHash = Animator.StringToHash("VerticalVelocity");
@@ -23,16 +24,26 @@ public class PlayerAnimations
         attPicoHash = Animator.StringToHash("AttackPico");
         attHachaHash = Animator.StringToHash("AttackHacha");
 
-        // Suscripción al evento de rodar
+        // Suscripción corregida para evitar el doble llamado
         player.InputHandler.OnRollEvent += HandleRollSelection;
 
-        player.InputHandler.OnJumpEvent += () => { if (player.Controller.isGrounded) player.Animator.SetTrigger(jumpHash); };
+        // La animación de salto ahora espera la orden del módulo de salto (que tiene su propio cooldown)
+        player.Jump.OnJumpInitiated += () => player.Animator.SetTrigger(jumpHash);
+
         player.Combat.OnAttackRequested += HandleAttackAnims;
     }
 
     private void HandleRollSelection()
     {
-        // Si la velocidad actual en el Animator es muy baja, asumimos que está en Idle
+        // --- BLOQUEO ANTI-SPAM ---
+        // 1. Verificamos si el módulo físico ya dice que estamos rodando
+        // 2. Verificamos que haya pasado un tiempo mínimo de seguridad
+        if (player.ColliderHandler.IsRolling || Time.time < lastRollTime + rollCooldown)
+        {
+            return;
+        }
+
+        lastRollTime = Time.time;
         float currentSpeed = player.Animator.GetFloat(speedHash);
 
         if (currentSpeed < 0.2f)
@@ -47,7 +58,6 @@ public class PlayerAnimations
 
     public void Tick(float dt)
     {
-        // 0.0 = Idle | 0.5 = Caminar | 1.0 = Correr
         float targetSpeed = 0f;
         if (player.InputHandler.MoveInput.magnitude > 0.1f)
         {
@@ -63,6 +73,8 @@ public class PlayerAnimations
 
     private void HandleAttackAnims()
     {
+        if (player.WeaponManager == null || player.WeaponManager.CurrentTool == null) return;
+
         string tool = player.WeaponManager.CurrentTool.toolName;
         if (tool == "Palo") player.Animator.SetTrigger(attPaloHash);
         else if (tool == "Pico") player.Animator.SetTrigger(attPicoHash);
