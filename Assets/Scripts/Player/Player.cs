@@ -24,17 +24,14 @@ public class Player : MonoBehaviour
     public float stunDuration = 0.5f;
 
     [Header("--- Datos de Rodar (Collider) ---")]
-    public float rollColliderHeight = 1f;
-    public Vector3 rollColliderCenter = new Vector3(0f, 0.5f, 0f);
-    private float originalColliderHeight;
-    private Vector3 originalColliderCenter;
+    [Range(0.1f, 0.9f)] public float rollHeightMultiplier = 0.5f; // 0.5 = se achica a la mitad
 
     // Propiedades de Componentes
     public CharacterController Controller { get; private set; }
     public Animator Animator { get; private set; }
     public PlayerWeaponManager WeaponManager { get; private set; }
 
-    // Módulos
+    // Módulos (Nuestra arquitectura limpia)
     public PlayerInputHandler InputHandler { get; private set; }
     public PlayerMovement Movement { get; private set; }
     public PlayerJump Jump { get; private set; }
@@ -42,11 +39,11 @@ public class Player : MonoBehaviour
     public PlayerInteract Interact { get; private set; }
     public PlayerAnimations Animations { get; private set; }
     public PlayerCamera PlayerCamera { get; private set; }
+    public PlayerColliderHandler ColliderHandler { get; private set; } // <-- Nuevo módulo
 
     // Estados
     public static bool IsDead = false;
-    public bool ApplyRollImpulse { get; private set; }
-    public bool IsMovementLocked { get; set; } // Nueva llave para bloquear movimiento
+    public bool IsMovementLocked { get; set; }
 
     private void Awake()
     {
@@ -54,13 +51,12 @@ public class Player : MonoBehaviour
         Animator = GetComponentInChildren<Animator>();
         WeaponManager = GetComponent<PlayerWeaponManager>();
 
-        originalColliderHeight = Controller.height;
-        originalColliderCenter = Controller.center;
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        // Inicializamos todos los módulos
         InputHandler = new PlayerInputHandler();
+        ColliderHandler = new PlayerColliderHandler(Controller, rollHeightMultiplier); // <-- Instanciado
         Movement = new PlayerMovement(this, walkSpeed, runSpeed, rollImpulseSpeed);
         Jump = new PlayerJump(this);
         Combat = new PlayerCombat(this);
@@ -91,15 +87,5 @@ public class Player : MonoBehaviour
     private void HandleWeaponScroll(float scrollValue)
     {
         if (WeaponManager != null) WeaponManager.CycleWeapon(scrollValue);
-    }
-
-    public void SetRollImpulse(bool active)
-    {
-        ApplyRollImpulse = active;
-        if (Controller != null)
-        {
-            Controller.height = active ? rollColliderHeight : originalColliderHeight;
-            Controller.center = active ? rollColliderCenter : originalColliderCenter;
-        }
     }
 }

@@ -1,46 +1,33 @@
 using UnityEngine;
-using Unity.Cinemachine;
 using UnityEngine.Events;
 
 public class HealthSystem : MonoBehaviour
 {
+    [Header("Configuracion de Vida")]
     public int maxHealth = 100;
     public int currentHealth;
-    public CinemachineImpulseSource damageImpulseSource;
-    public UnityEvent onDeath;
-    public AudioClip deathSound;
-    private bool isDead = false;
 
-    private void OnValidate()
-    {
-        if (damageImpulseSource == null)
-            damageImpulseSource = transform.Find("DamageImpulseSource")?.GetComponent<CinemachineImpulseSource>();
-    }
+    [Header("Eventos")]
+    public UnityEvent onDeath;
+    public UnityEvent onTakeDamage;
+
+    [Header("Audio")]
+    public AudioClip deathSound;
+
+    // Cambiamos a 'public get' para que el GameManager pueda leerlo
+    public bool IsDead { get; private set; } = false;
 
     private void Awake()
-    {
-        if (damageImpulseSource == null)
-            damageImpulseSource = transform.Find("DamageImpulseSource")?.GetComponent<CinemachineImpulseSource>();
-        
-        currentHealth = maxHealth;
-    }
-
-    private void Start()
     {
         currentHealth = maxHealth;
     }
 
     public void TakeDamage(int damageAmount)
     {
-        if (isDead) return;
-        currentHealth -= damageAmount;
+        if (IsDead) return;
 
-        if (damageImpulseSource != null)
-        {
-            float intensity = Mathf.Clamp(damageAmount * 0.025f, 0.1f, 0.45f);
-            Vector3 dir = new Vector3(Random.Range(-1f, 1f), -0.2f, Random.Range(-1f, 1f)).normalized;
-            damageImpulseSource.GenerateImpulseWithVelocity(dir * intensity);
-        }
+        currentHealth -= damageAmount;
+        if (onTakeDamage != null) onTakeDamage.Invoke();
 
         if (currentHealth <= 0)
         {
@@ -50,33 +37,36 @@ public class HealthSystem : MonoBehaviour
 
     public void Heal(int healAmount)
     {
-        currentHealth += healAmount;
-        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        if (IsDead) return;
+        currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
+    }
+
+    // --- ESTA ES LA FUNCIÓN QUE NECESITA EL GAME MANAGER ---
+    public void ResetDeath()
+    {
+        IsDead = false;
+        currentHealth = maxHealth;
+        Debug.Log("Vida reseteada: Jugador revivido.");
     }
 
     private void Die()
     {
-        if (isDead) return;
-        isDead = true;
+        if (IsDead) return;
+        IsDead = true;
 
-        if (deathSound != null && AudioManager.instance != null) AudioManager.instance.PlaySFX(deathSound);
+        if (deathSound != null && AudioManager.instance != null)
+            AudioManager.instance.PlaySFX(deathSound);
 
-        onDeath.Invoke();
+        if (onDeath != null) onDeath.Invoke();
 
         if (CompareTag("Player"))
         {
-            if (GameManager.instance != null)
-                GameManager.instance.ShowDeathMenu();
+            // Llama al menú de muerte del GameManager
+            if (GameManager.instance != null) GameManager.instance.ShowDeathMenu();
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(gameObject, 0.1f);
         }
-    }
-
-    public void ResetDeath()
-    {
-        isDead = false;
-        currentHealth = maxHealth;
     }
 }

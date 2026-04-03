@@ -345,7 +345,7 @@ public class GameManager : MonoBehaviour
     public void DeathContinue()
     {
         CurrentState = GameState.Playing;
-        Player.IsDead = false;
+        Player.IsDead = false; // Resetea el estado estático del Player
 
         if (activeFade != null) StopCoroutine(activeFade);
         if (deathCanvasGroup != null) deathCanvasGroup.alpha = 0f;
@@ -359,16 +359,22 @@ public class GameManager : MonoBehaviour
         Player player = FindFirstObjectByType<Player>();
         if (player == null) return;
 
+        // Desactivamos el CharacterController un frame para mover al player sin interferencias
         CharacterController cc = player.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
 
+        // Teletransportar al Checkpoint
         player.transform.position = CheckpointManager.respawnPosition;
         player.transform.rotation = CheckpointManager.respawnRotation;
 
         if (cc != null) cc.enabled = true;
 
+        // --- LLAMADA CRÍTICA AL HEALTH SYSTEM ---
         HealthSystem hs = player.GetComponent<HealthSystem>();
-        if (hs != null) hs.ResetDeath();
+        if (hs != null)
+        {
+            hs.ResetDeath(); // <--- Aquí es donde se cura y revive
+        }
     }
 
     private void PlayButtonClick()
