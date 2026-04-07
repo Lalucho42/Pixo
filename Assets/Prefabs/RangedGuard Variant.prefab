@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 119441507209882379, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 40899afde0fd6964b9df419c0bc21969, type: 3}
     - target: {fileID: 851161637850660576, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.027313
@@ -48,6 +52,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1779344616759142778, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 8264929114510164256, guid: 82f297b85a4776c44b78a8d3cc76cb3a, type: 3}
     - target: {fileID: 2062288282618478092, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
       propertyPath: m_Height
       value: 0.32
@@ -56,14 +64,30 @@ PrefabInstance:
       propertyPath: m_BaseOffset
       value: 1.35
       objectReference: {fileID: 0}
+    - target: {fileID: 2429732326813299877, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
+      propertyPath: m_Range
+      value: 4.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2429732326813299877, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
+      propertyPath: m_Intensity
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 3473885586135342295, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
       propertyPath: m_CastShadows
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3498713387990093727, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3498713387990093727, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 8ffba6aa6d460ea499a4540ee8d513b3, type: 2}
+      objectReference: {fileID: 2100000, guid: ac437de3645517543a4281e9a5d71a1f, type: 2}
+    - target: {fileID: 3498713387990093727, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: -3707950781726996264, guid: 6c435adb5ef9a42439362db86e063663, type: 3}
     - target: {fileID: 4160407341755469599, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
       propertyPath: m_Name
       value: RangedGuard Variant
@@ -96,8 +120,17 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: -0.01
       objectReference: {fileID: 0}
+    - target: {fileID: 8148596089301311462, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.034
+      objectReference: {fileID: 0}
+    - target: {fileID: 8148596089301311462, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.632
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4874613594149655712, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8256bf82cfdd14943bc6f4d65fd53819, type: 3}

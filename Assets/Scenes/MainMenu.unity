@@ -176,23 +176,87 @@ PrefabInstance:
       objectReference: {fileID: 1039544059}
     - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
       propertyPath: overrideFogColor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
       propertyPath: overrideSunColor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
       propertyPath: overrideCloudColor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
       propertyPath: overrideAmbientColor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
       propertyPath: fogColorGradient.atime1
       value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: fogColorGradient.key0.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: fogColorGradient.key0.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: fogColorGradient.key0.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: sunColorGradient.ctime1
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: sunColorGradient.key0.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: sunColorGradient.key0.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: sunColorGradient.key0.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: cloudColorGradient.key0.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: cloudColorGradient.key0.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: cloudColorGradient.key0.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: ambientColorGradient.key0.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: ambientColorGradient.key0.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: ambientColorGradient.key0.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: scatteringColorGradient.key0.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: scatteringColorGradient.key0.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 578016793152811962, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
+      propertyPath: scatteringColorGradient.key0.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 578016793152811963, guid: f15e384a7be34df0bd7e1c100d05939f, type: 3}
       propertyPath: m_LocalPosition.x
