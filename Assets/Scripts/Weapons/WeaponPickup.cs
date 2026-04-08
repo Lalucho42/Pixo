@@ -1,11 +1,10 @@
 using UnityEngine;
 
-public class WeaponPickup : MonoBehaviour
+public class WeaponPickup : MonoBehaviour, IInteractable
 {
     public string weaponHandObjectName = "PipeWeapon_Hand";
     public AudioClip pickupSound;
 
-    // Esta función la va a llamar el PlayerInteract
     public void Interact(Player player)
     {
         if (player.WeaponManager != null)

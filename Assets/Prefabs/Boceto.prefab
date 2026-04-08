@@ -33721,6 +33721,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!4 &4874714182096659215 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4674942985933733644, guid: 507228a8681f584449ad9598996e8a7f, type: 3}
@@ -33821,6 +33823,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &7437895563036260035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33922,6 +33926,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!4 &5326978218201182735 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4674942985933733644, guid: 507228a8681f584449ad9598996e8a7f, type: 3}
@@ -34022,6 +34028,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &844349166001886516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34204,6 +34212,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &531801964421935448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34305,6 +34315,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!4 &5764146080134509320 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4674942985933733644, guid: 507228a8681f584449ad9598996e8a7f, type: 3}
@@ -34405,6 +34417,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &7066626911669967407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34817,6 +34831,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &3450830595975760228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34918,6 +34934,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!4 &7024231370063802729 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4674942985933733644, guid: 507228a8681f584449ad9598996e8a7f, type: 3}
@@ -35023,6 +35041,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &6732042175334834385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35119,6 +35139,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!4 &7401664139729536675 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4674942985933733644, guid: 507228a8681f584449ad9598996e8a7f, type: 3}
@@ -35204,6 +35226,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!4 &7842955213716440159 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4674942985933733644, guid: 507228a8681f584449ad9598996e8a7f, type: 3}
@@ -35309,6 +35333,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &5623722116229586713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35467,6 +35493,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!4 &8794178033892017613 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4674942985933733644, guid: 507228a8681f584449ad9598996e8a7f, type: 3}
@@ -35552,6 +35580,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!4 &9007257033203190636 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4674942985933733644, guid: 507228a8681f584449ad9598996e8a7f, type: 3}
@@ -35704,6 +35734,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!1001 &4825422709762216528
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35789,6 +35821,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!1001 &4953203991179986482
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35950,6 +35984,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &8271322255665929004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36066,6 +36102,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &5568172228659345112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36182,6 +36220,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &7099744694575811101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36288,6 +36328,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!1001 &6650398147278781819
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36383,6 +36425,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &4442168160307551293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36471,55 +36515,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5118206075660843361, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2581699447143929641}
-    - targetCorrespondingSourceObject: {fileID: 5118206075660843361, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1660003949018877600}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
 --- !u!4 &1628463369878358192 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8556856045674355406, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
   m_PrefabInstance: {fileID: 6942714382330040958}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2836982702438460191 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5118206075660843361, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
-  m_PrefabInstance: {fileID: 6942714382330040958}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2581699447143929641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2836982702438460191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 492b603dd10ab164986295367954ea99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceName: 
-  type: 0
-  health: 100
---- !u!114 &1660003949018877600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2836982702438460191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d37e1a1d92a3d584ab84b8fe45b93b28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceEffect: {fileID: 0}
-  creatureEffect: {fileID: 0}
-  simpleResource: {fileID: 0}
-  simpleCreature: {fileID: 0}
 --- !u!1001 &7276223096404693944
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36620,6 +36622,8 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3
 --- !u!114 &7572450703846819645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36990,55 +36994,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5118206075660843361, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7156880400286028681}
-    - targetCorrespondingSourceObject: {fileID: 5118206075660843361, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5646978088191121990}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
 --- !u!4 &23364769846740267 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8556856045674355406, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
   m_PrefabInstance: {fileID: 8544187343277105125}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &3572630282956252804 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5118206075660843361, guid: a3cdad3cc6ab7b9499c85f3fc9085c81, type: 3}
-  m_PrefabInstance: {fileID: 8544187343277105125}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7156880400286028681
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3572630282956252804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 492b603dd10ab164986295367954ea99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceName: 
-  type: 0
-  health: 100
---- !u!114 &5646978088191121990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3572630282956252804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d37e1a1d92a3d584ab84b8fe45b93b28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceEffect: {fileID: 0}
-  creatureEffect: {fileID: 0}
-  simpleResource: {fileID: 0}
-  simpleCreature: {fileID: 0}
 --- !u!1001 &9106293913011426867
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37198,3 +37160,5 @@ MonoBehaviour:
   resourceName: 
   type: 0
   health: 100
+  dropPrefab: {fileID: 0}
+  dropAmount: 3

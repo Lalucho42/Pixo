@@ -24,14 +24,12 @@ public class Player : MonoBehaviour
     public float stunDuration = 0.5f;
 
     [Header("--- Datos de Rodar (Collider) ---")]
-    [Range(0.1f, 0.9f)] public float rollHeightMultiplier = 0.5f; // 0.5 = se achica a la mitad
+    [Range(0.1f, 0.9f)] public float rollHeightMultiplier = 0.5f;
 
-    // Propiedades de Componentes
     public CharacterController Controller { get; private set; }
     public Animator Animator { get; private set; }
     public PlayerWeaponManager WeaponManager { get; private set; }
 
-    // Módulos (Nuestra arquitectura limpia)
     public PlayerInputHandler InputHandler { get; private set; }
     public PlayerMovement Movement { get; private set; }
     public PlayerJump Jump { get; private set; }
@@ -39,9 +37,10 @@ public class Player : MonoBehaviour
     public PlayerInteract Interact { get; private set; }
     public PlayerAnimations Animations { get; private set; }
     public PlayerCamera PlayerCamera { get; private set; }
-    public PlayerColliderHandler ColliderHandler { get; private set; } // <-- Nuevo módulo
+    public PlayerColliderHandler ColliderHandler { get; private set; }
+    public PlayerInventory Inventory { get; private set; }
+    public PlayerCrafting Crafting { get; private set; }
 
-    // Estados
     public static bool IsDead = false;
     public bool IsMovementLocked { get; set; }
 
@@ -54,9 +53,10 @@ public class Player : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Inicializamos todos los módulos
         InputHandler = new PlayerInputHandler();
-        ColliderHandler = new PlayerColliderHandler(Controller, rollHeightMultiplier); // <-- Instanciado
+        ColliderHandler = new PlayerColliderHandler(Controller, rollHeightMultiplier);
+        Inventory = new PlayerInventory(this);
+        Crafting = new PlayerCrafting(this);
         Movement = new PlayerMovement(this, walkSpeed, runSpeed, rollImpulseSpeed);
         Jump = new PlayerJump(this);
         Combat = new PlayerCombat(this);

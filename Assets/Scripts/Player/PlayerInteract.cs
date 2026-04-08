@@ -15,15 +15,19 @@ public class PlayerInteract
 
     private void TryInteract()
     {
-        // Buscamos objetos interactuables en un radio
+        // Buscamos colisiones en el rango
         Collider[] colliders = Physics.OverlapSphere(player.transform.position, interactRange);
+
         foreach (Collider col in colliders)
         {
-            WeaponPickup pickup = col.GetComponent<WeaponPickup>();
-            if (pickup != null)
+            // Magia pura: Preguntamos si el objeto tocado tiene CUALQUIER script que use la interfaz
+            IInteractable interactable = col.GetComponent<IInteractable>();
+
+            if (interactable != null)
             {
-                pickup.Interact(player);
-                break; // Solo agarramos uno por vez
+                // Si lo tiene, le decimos "hacé lo tuyo" (el puente se repara, el gato maúlla, el arma se agarra)
+                interactable.Interact(player);
+                break; // Solo interactuamos con uno por vez
             }
         }
     }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5509735803476403672}
   - component: {fileID: 3204747272792034468}
   - component: {fileID: 4411563080051257317}
+  - component: {fileID: 1164838328547260427}
   m_Layer: 0
   m_Name: Tree
   m_TagString: Untagged
@@ -127,3 +128,20 @@ MonoBehaviour:
   creatureEffect: {fileID: 0}
   simpleResource: {fileID: 0}
   simpleCreature: {fileID: 0}
+--- !u!114 &1164838328547260427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447683412428914720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 492b603dd10ab164986295367954ea99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourceName: 
+  type: 0
+  health: 100
+  dropPrefab: {fileID: 4149674811348765159, guid: c9fe6ffa8e69b6b439b8c051fc71c5c1, type: 3}
+  dropAmount: 3
