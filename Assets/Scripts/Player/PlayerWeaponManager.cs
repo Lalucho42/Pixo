@@ -1,4 +1,5 @@
-using System.Collections.Generic; // Necesario para usar Listas
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerWeaponManager : MonoBehaviour
@@ -9,14 +10,13 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public ToolItem CurrentTool { get; private set; }
 
-    public bool HasWeapon
-    {
-        get { return CurrentTool != null; }
-    }
+    public bool HasWeapon { get { return CurrentTool != null; } }
 
-    // --- NUEVO: Inventario dinámico ---
     private List<ToolItem> unlockedWeapons = new List<ToolItem>();
     private int currentWeaponIndex = -1;
+
+    public event Action<ToolItem> OnWeaponAdded;
+    public event Action<int> OnWeaponSwitched;
 
     private void Start()
     {
@@ -34,43 +34,32 @@ public class PlayerWeaponManager : MonoBehaviour
             ToolItem newTool = weaponTransform.GetComponent<ToolItem>();
             if (newTool != null)
             {
-                // Si no teníamos esta arma en la lista, la agregamos al inventario
-                if (unlockedWeapons.Contains(newTool) == false)
+                if (!unlockedWeapons.Contains(newTool))
                 {
                     unlockedWeapons.Add(newTool);
+                    if (OnWeaponAdded != null) OnWeaponAdded.Invoke(newTool);
                 }
 
-                // Equipamos esa arma buscando en qué posición de la lista quedó
                 EquipToolFromList(unlockedWeapons.IndexOf(newTool));
             }
         }
     }
 
-    // --- NUEVO: Cambiar de arma con la rueda ---
     public void CycleWeapon(float scrollDirection)
     {
-        // Si tenemos 0 o 1 arma, no hay nada que cambiar
         if (unlockedWeapons.Count <= 1) return;
 
         int newIndex = currentWeaponIndex;
 
-        if (scrollDirection > 0f) // Rueda hacia arriba
+        if (scrollDirection > 0f)
         {
-            newIndex = newIndex + 1;
-            // Si pasamos el límite, volvemos a la primera
-            if (newIndex >= unlockedWeapons.Count)
-            {
-                newIndex = 0;
-            }
+            newIndex++;
+            if (newIndex >= unlockedWeapons.Count) newIndex = 0;
         }
-        else if (scrollDirection < 0f) // Rueda hacia abajo
+        else if (scrollDirection < 0f)
         {
-            newIndex = newIndex - 1;
-            // Si bajamos de cero, vamos a la última
-            if (newIndex < 0)
-            {
-                newIndex = unlockedWeapons.Count - 1;
-            }
+            newIndex--;
+            if (newIndex < 0) newIndex = unlockedWeapons.Count - 1;
         }
 
         EquipToolFromList(newIndex);
@@ -80,21 +69,20 @@ public class PlayerWeaponManager : MonoBehaviour
     {
         if (index < 0 || index >= unlockedWeapons.Count) return;
 
-        // Apagamos la que teníamos en la mano
         if (CurrentTool != null)
         {
             CurrentTool.gameObject.SetActive(false);
             CurrentTool.OnUnequip();
         }
 
-        // Prendemos la nueva
         currentWeaponIndex = index;
         CurrentTool = unlockedWeapons[currentWeaponIndex];
         CurrentTool.gameObject.SetActive(true);
         CurrentTool.OnEquip();
+
+        if (OnWeaponSwitched != null) OnWeaponSwitched.Invoke(currentWeaponIndex);
     }
 
-    // Tus buscadores de huesos (no cambian)
     private Transform FindRecursive(Transform parent, string name)
     {
         if (parent.name == name) return parent;
