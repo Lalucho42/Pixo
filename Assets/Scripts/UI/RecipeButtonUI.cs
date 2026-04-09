@@ -1,35 +1,69 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class RecipeButtonUI : MonoBehaviour
 {
     public TextMeshProUGUI textoNombre;
-    public Transform contenedorSlots; // Acá se clonarán los íconos
+    public Transform contenedorSlots;
     public Button botonAccion;
-    public GameObject slotPrefab;     // Tu famoso Slot_Costo
+    public GameObject slotPrefab;
 
     public void Configurar(CraftingRecipe receta, CraftingUI manager)
     {
-        // 1. Ponemos el título (Ej: "Medikit")
         if (textoNombre != null) textoNombre.text = receta.nombreReceta;
-
-        // 2. Limpiamos basura vieja
         foreach (Transform child in contenedorSlots) Destroy(child.gameObject);
 
-        // 3. Clonamos un ícono por cada material que exija la receta
-        foreach (ResourceCost costo in receta.costos)
+        bool puedeComprar = true;
+        List<ResourceCost> costosAMostrar = receta.costos;
+
+        // Si es un botón de arma, revisamos si la tenemos y si está rota/mejorada
+        if (receta.accion == CraftingActionType.MejorarArma || receta.accion == CraftingActionType.RepararArma)
         {
-            GameObject nuevoSlot = Instantiate(slotPrefab, contenedorSlots);
-            ResourceSlotUI slotScript = nuevoSlot.GetComponent<ResourceSlotUI>();
-            if (slotScript != null)
+            ToolItem arma = manager.ObtenerJugador().Crafting.ObtenerArma(receta.nombreArmaObjetivo);
+
+            if (arma == null)
             {
-                slotScript.Configurar(costo.icono, costo.cantidad);
+                if (textoNombre != null) textoNombre.text = receta.nombreReceta + " (BLOQUEADA)";
+                puedeComprar = false;
+                costosAMostrar = new List<ResourceCost>(); // Ocultamos costos si no la tiene
+            }
+            else
+            {
+                if (receta.accion == CraftingActionType.MejorarArma && arma.estaMejorada)
+                {
+                    if (textoNombre != null) textoNombre.text = receta.nombreReceta + " (MÁXIMA)";
+                    puedeComprar = false;
+                    costosAMostrar = new List<ResourceCost>();
+                }
+                else if (receta.accion == CraftingActionType.RepararArma)
+                {
+                    if (arma.usosActuales >= arma.usosMaximos)
+                    {
+                        if (textoNombre != null) textoNombre.text = receta.nombreReceta + " (NUEVA)";
+                        puedeComprar = false;
+                        costosAMostrar = new List<ResourceCost>();
+                    }
+                    else
+                    {
+                        costosAMostrar = manager.ObtenerJugador().Crafting.CalcularCostoReparacion(receta.costos, arma);
+                    }
+                }
             }
         }
 
-        // 4. Conectamos el clic del botón a la receta correcta
+        // Generamos los iconos de madera/piedra solo si hay costos en la lista
+        foreach (ResourceCost costo in costosAMostrar)
+        {
+            if (costo.cantidad <= 0) continue;
+            GameObject nuevoSlot = Instantiate(slotPrefab, contenedorSlots);
+            nuevoSlot.transform.localScale = Vector3.one;
+            nuevoSlot.GetComponent<ResourceSlotUI>()?.Configurar(costo.icono, costo.cantidad);
+        }
+
+        botonAccion.interactable = puedeComprar;
         botonAccion.onClick.RemoveAllListeners();
-        botonAccion.onClick.AddListener(() => manager.IntentarCraftear(receta));
+        botonAccion.onClick.AddListener(() => manager.EjecutarAccion(receta));
     }
 }

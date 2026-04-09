@@ -12,7 +12,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public bool HasWeapon { get { return CurrentTool != null; } }
 
-    private List<ToolItem> unlockedWeapons = new List<ToolItem>();
+    public List<ToolItem> unlockedWeapons = new List<ToolItem>();
     private int currentWeaponIndex = -1;
 
     public event Action<ToolItem> OnWeaponAdded;

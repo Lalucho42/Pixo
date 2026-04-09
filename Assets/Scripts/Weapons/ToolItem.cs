@@ -6,7 +6,7 @@ public class ToolItem : MonoBehaviour
     [Header("Identificación")]
     public string toolName;
     public Sprite iconoUI;
-    [Range(0.1f, 3f)] public float escalaIcono = 1f;
+    [Range(0.5f, 3f)] public float escalaIcono = 1f;
 
     [Header("Estadísticas de Combate")]
     public int attackDamage = 25;
@@ -22,7 +22,12 @@ public class ToolItem : MonoBehaviour
     public int usosActuales;
 
     [Header("Evolución (Opcional)")]
-    public GameObject modeloMejorado;
+    // --- ESTOS SON LOS DOS HUECOS MÁGICOS ---
+    [Tooltip("El objeto que contiene el modelo 3D viejo (debe estar activado)")]
+    public GameObject objetoModeloBase;
+    [Tooltip("El objeto que contiene el modelo 3D mejorado (debe estar desactivado)")]
+    public GameObject objetoModeloMejorado;
+
     public Sprite iconoMejorado;
     public int bonusDamage = 15;
     public bool estaMejorada { get; private set; } = false;
@@ -43,7 +48,10 @@ public class ToolItem : MonoBehaviour
             damageCollider.enabled = false;
         }
 
-        if (modeloMejorado != null) modeloMejorado.SetActive(false);
+        // --- PREPARACIÓN AL ARRANCAR ---
+        // Nos aseguramos de que el modelo base esté prendido y el mejorado apagado.
+        if (objetoModeloBase != null) objetoModeloBase.SetActive(true);
+        if (objetoModeloMejorado != null) objetoModeloMejorado.SetActive(false);
 
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb == null) { rb = gameObject.AddComponent<Rigidbody>(); }
@@ -122,14 +130,18 @@ public class ToolItem : MonoBehaviour
         Debug.Log(toolName + " reparada. Usos: " + usosActuales);
     }
 
+    // --- AQUÍ ESTÁ LA LÓGICA SIMPLE DE LA MEJORA ---
     public void AplicarMejora()
     {
         if (estaMejorada) return;
 
         estaMejorada = true;
 
-        GetComponent<MeshRenderer>().enabled = false;
-        if (modeloMejorado != null) modeloMejorado.SetActive(true);
+        // 1. Apagamos el objeto contenedor del modelo viejo
+        if (objetoModeloBase != null) objetoModeloBase.SetActive(false);
+
+        // 2. Prendemos el objeto contenedor del modelo nuevo
+        if (objetoModeloMejorado != null) objetoModeloMejorado.SetActive(true);
 
         Debug.Log(toolName + " fue mejorada al máximo nivel.");
     }

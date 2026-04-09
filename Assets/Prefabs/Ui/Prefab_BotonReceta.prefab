@@ -187,11 +187,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 0
-    m_Right: 0
+    m_Right: 170
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 30
+  m_Spacing: 200
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -405,4 +405,4 @@ MonoBehaviour:
   textoNombre: {fileID: 5635150854500130196}
   contenedorSlots: {fileID: 6817581733089806477}
   botonAccion: {fileID: 995776167520806205}
-  slotPrefab: {fileID: 5710615663685800074, guid: 3bf7de9a477511442badbea4fd6b4cdb, type: 3}
+  slotPrefab: {fileID: 5129615149318441581, guid: 0328e3cd829bebc42afc5a95bb654ba6, type: 3}

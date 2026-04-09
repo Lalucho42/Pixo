@@ -1,54 +1,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CraftingActionType { Medikit, MejorarArma, RepararArma }
+public enum CraftingActionType { Medikit, AbrirMenuMejora, AbrirMenuReparacion, MejorarArma, RepararArma }
 
 [System.Serializable]
 public class CraftingRecipe
 {
     public string nombreReceta;
     public CraftingActionType accion;
+    [Tooltip("El nombre exacto del arma en tu script ToolItem (Ej: Espada)")]
+    public string nombreArmaObjetivo;
     public List<ResourceCost> costos;
 }
 
 public class CraftingUI : MonoBehaviour
 {
-    [Header("UI")]
+    [Header("UI: Panel Principal")]
     public GameObject panelPrincipal;
+    public Transform contenedorPrincipal;
+    public List<CraftingRecipe> recetasPrincipales;
 
-    [Header("Generador Dinámico")]
-    public GameObject prefabBotonReceta;
-    public Transform contenedorBotones;
+    [Header("UI: Panel Mejora")]
+    public GameObject panelMejora;
+    public Transform contenedorMejora;
+    public List<CraftingRecipe> recetasMejora;
 
-    [Header("Lista de Recetas (Inspector)")]
-    public List<CraftingRecipe> recetasDisponibles;
+    [Header("UI: Panel Reparacion")]
+    public GameObject panelReparacion;
+    public Transform contenedorReparacion;
+    public List<CraftingRecipe> recetasReparacion;
 
+    [Header("Referencias Globales")]
+    public GameObject prefabBotonReceta; // Tu prefab ancho de siempre
     private Player jugadorActual;
-    private bool botonesGenerados = false;
 
     private void Start() { CerrarMesa(); }
+
+    public Player ObtenerJugador() { return jugadorActual; }
 
     public void AbrirMesa(Player player)
     {
         jugadorActual = player;
-        if (panelPrincipal != null) panelPrincipal.SetActive(true);
-
         jugadorActual.IsMovementLocked = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0f;
 
-        // Generamos los botones solo la primera vez que abrimos la mesa
-        if (!botonesGenerados)
-        {
-            GenerarBotones();
-            botonesGenerados = true;
-        }
+        CambiarPanel(panelPrincipal, contenedorPrincipal, recetasPrincipales);
     }
 
     public void CerrarMesa()
     {
         if (panelPrincipal != null) panelPrincipal.SetActive(false);
+        if (panelMejora != null) panelMejora.SetActive(false);
+        if (panelReparacion != null) panelReparacion.SetActive(false);
 
         if (jugadorActual != null)
         {
@@ -60,38 +65,73 @@ public class CraftingUI : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    private void GenerarBotones()
+    public void VolverAlPrincipal()
     {
-        foreach (Transform child in contenedorBotones) Destroy(child.gameObject);
+        CambiarPanel(panelPrincipal, contenedorPrincipal, recetasPrincipales);
+    }
 
-        foreach (CraftingRecipe receta in recetasDisponibles)
+    private void CambiarPanel(GameObject panelActivo, Transform contenedor, List<CraftingRecipe> listaRecetas)
+    {
+        panelPrincipal.SetActive(false);
+        panelMejora.SetActive(false);
+        panelReparacion.SetActive(false);
+
+        panelActivo.SetActive(true);
+
+        foreach (Transform child in contenedor) Destroy(child.gameObject);
+
+        foreach (CraftingRecipe receta in listaRecetas)
         {
-            GameObject nuevoBoton = Instantiate(prefabBotonReceta, contenedorBotones);
-            RecipeButtonUI btnScript = nuevoBoton.GetComponent<RecipeButtonUI>();
-            if (btnScript != null) btnScript.Configurar(receta, this);
+            GameObject nuevoBoton = Instantiate(prefabBotonReceta, contenedor);
+            nuevoBoton.transform.localScale = Vector3.one;
+            nuevoBoton.GetComponent<RecipeButtonUI>()?.Configurar(receta, this);
         }
     }
 
-    // Esta función la llaman los botones generados
-    public void IntentarCraftear(CraftingRecipe receta)
+    public void EjecutarAccion(CraftingRecipe receta)
     {
-        if (jugadorActual == null) return;
-
-        // Si el jugador tiene con qué pagar, la transacción se aprueba
-        if (jugadorActual.Crafting.TryCraft(receta.costos))
+        // 1. Botones de Navegación
+        if (receta.accion == CraftingActionType.AbrirMenuMejora)
         {
-            switch (receta.accion)
+            CambiarPanel(panelMejora, contenedorMejora, recetasMejora);
+            return;
+        }
+        if (receta.accion == CraftingActionType.AbrirMenuReparacion)
+        {
+            CambiarPanel(panelReparacion, contenedorReparacion, recetasReparacion);
+            return;
+        }
+
+        // 2. Botones de Compra
+        List<ResourceCost> costoFinal = receta.costos;
+        ToolItem armaElegida = null;
+        int usosAReparar = 0;
+
+        if (receta.accion == CraftingActionType.MejorarArma || receta.accion == CraftingActionType.RepararArma)
+        {
+            armaElegida = jugadorActual.Crafting.ObtenerArma(receta.nombreArmaObjetivo);
+            if (armaElegida == null) return; // Por seguridad
+
+            if (receta.accion == CraftingActionType.MejorarArma && armaElegida.estaMejorada) return;
+
+            if (receta.accion == CraftingActionType.RepararArma)
             {
-                case CraftingActionType.Medikit:
-                    jugadorActual.Crafting.AplicarEfectoMedikit();
-                    break;
-                case CraftingActionType.MejorarArma:
-                    jugadorActual.Crafting.AplicarMejoraArma();
-                    break;
-                case CraftingActionType.RepararArma:
-                    jugadorActual.Crafting.AplicarReparacionArma();
-                    break;
+                if (armaElegida.usosActuales >= armaElegida.usosMaximos) return;
+                usosAReparar = armaElegida.usosMaximos - armaElegida.usosActuales;
+                costoFinal = jugadorActual.Crafting.CalcularCostoReparacion(receta.costos, armaElegida);
             }
+        }
+
+        if (jugadorActual.Crafting.TryCraft(costoFinal))
+        {
+            if (receta.accion == CraftingActionType.Medikit) jugadorActual.Crafting.AplicarEfectoMedikit();
+            else if (receta.accion == CraftingActionType.MejorarArma) jugadorActual.Crafting.AplicarMejoraArma(armaElegida);
+            else if (receta.accion == CraftingActionType.RepararArma) jugadorActual.Crafting.AplicarReparacionArma(armaElegida, usosAReparar);
+
+            // Actualizamos la pantalla actual para que el botón diga "(MÁXIMA)" o "(NUEVA)"
+            if (panelPrincipal.activeSelf) CambiarPanel(panelPrincipal, contenedorPrincipal, recetasPrincipales);
+            else if (panelMejora.activeSelf) CambiarPanel(panelMejora, contenedorMejora, recetasMejora);
+            else if (panelReparacion.activeSelf) CambiarPanel(panelReparacion, contenedorReparacion, recetasReparacion);
         }
     }
 }
