@@ -4,21 +4,48 @@ public class EnemyMovement
 {
     private EnemyAI enemy;
 
+    private bool isChasing = false;
+
     public EnemyMovement(EnemyAI brain) { enemy = brain; }
 
     public void Tick(float dt)
     {
+        if (enemy.PlayerTarget == null) return;
+
         float dist = Vector3.Distance(enemy.transform.position, enemy.PlayerTarget.position);
 
+        // Logica de deteccion
+        if (!isChasing && dist <= enemy.detectionRange)
+        {
+            isChasing = true;
+        }
+        else if (isChasing && dist > enemy.loseTargetRange)
+        {
+            isChasing = false;
+            enemy.Agent.isStopped = true;
+            return;
+        }
+
+        if (!isChasing)
+        {
+            // Idle si no está persiguiendo
+            if (enemy.Agent.isOnNavMesh) enemy.Agent.isStopped = true;
+            return;
+        }
+
+        // Si está persiguiendo
         if (dist <= enemy.attackRange)
         {
-            enemy.Agent.isStopped = true;
+            if (enemy.Agent.isOnNavMesh) enemy.Agent.isStopped = true;
             RotateTowardsPlayer(dt);
         }
         else
         {
-            enemy.Agent.isStopped = false;
-            enemy.Agent.SetDestination(enemy.PlayerTarget.position);
+            if (enemy.Agent.isOnNavMesh)
+            {
+                enemy.Agent.isStopped = false;
+                enemy.Agent.SetDestination(enemy.PlayerTarget.position);
+            }
         }
     }
 

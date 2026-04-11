@@ -19,9 +19,10 @@ public class MeleeCombatModule : IEnemyCombat
             HealthSystem pHealth = enemy.PlayerTarget.GetComponent<HealthSystem>();
             if (pHealth != null)
             {
+                enemy.TriggerAttackAnimation();
                 pHealth.TakeDamage(enemy.damage);
                 timer = enemy.attackCooldown;
-                Debug.Log("¡Enemigo Melee golpeó!");
+                Debug.Log("Â¡Enemigo Melee golpeÃ³!");
             }
         }
     }

@@ -6,11 +6,13 @@ public enum EnemyType { Melee, Drone }
 [RequireComponent(typeof(NavMeshAgent), typeof(HealthSystem))]
 public class EnemyAI : MonoBehaviour
 {
-    [Header("Configuración del Chip")]
+    [Header("Configuraciï¿½n del Chip")]
     public EnemyType type;
 
-    [Header("Estadísticas")]
-    public float attackRange = 2.5f;
+    [Header("Estadï¿½sticas")]
+    public float detectionRange = 15f;
+    public float loseTargetRange = 25f;
+    public float attackRange = 1.5f; // Acercado para evitar golpes a distancia
     public float attackCooldown = 1.5f;
     public int damage = 10;
 
@@ -18,12 +20,15 @@ public class EnemyAI : MonoBehaviour
     public GameObject projectilePrefab;
     public Transform shootPoint;
 
-    // Propiedades para los módulos
+    [Header("AnimaciÃ³n")]
+    public Animator animator;
+
+    // Propiedades para los mï¿½dulos
     public NavMeshAgent Agent { get; private set; }
     public HealthSystem Health { get; private set; }
     public Transform PlayerTarget { get; private set; }
 
-    // Módulos
+    // Mï¿½dulos
     private EnemyMovement movement;
     private IEnemyCombat combatModule;
     private float stunTimer = 0f;
@@ -33,10 +38,10 @@ public class EnemyAI : MonoBehaviour
         Agent = GetComponent<NavMeshAgent>();
         Health = GetComponent<HealthSystem>();
 
-        // Inyectamos los módulos
+        // Inyectamos los mï¿½dulos
         movement = new EnemyMovement(this);
 
-        // Selección de "Chip" de combate
+        // Selecciï¿½n de "Chip" de combate
         if (type == EnemyType.Melee)
             combatModule = new MeleeCombatModule(this);
         else
@@ -49,12 +54,42 @@ public class EnemyAI : MonoBehaviour
         Player p = FindFirstObjectByType<Player>();
         if (p != null) PlayerTarget = p.transform;
 
-        if (Agent != null) Agent.stoppingDistance = attackRange - 0.5f;
+        if (Agent != null) 
+        {
+            Agent.speed = 1.8f; // Velocidad que concuerda con la animaciÃ³n de caminar (evita deslizamiento)
+            Agent.stoppingDistance = attackRange - 0.2f;
+            
+            // Intenta asegurarse de que el agente esta pegado al NavMesh
+            if (!Agent.isOnNavMesh)
+            {
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(transform.position, out hit, 5f, NavMesh.AllAreas))
+                {
+                    Agent.Warp(hit.position);
+                }
+                else
+                {
+                    Debug.LogWarning($"El enemigo {gameObject.name} no estÃ¡ en un NavMesh y no puede moverse. Â¡AsegÃºrate de haber horneado el NavMesh en esta superficie plana!");
+                }
+            }
+        }
+        
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+        
+        // Desactivar Root Motion para evitar que las animaciones desplacen al personaje independientemente del NavMeshAgent
+        if (animator != null) animator.applyRootMotion = false;
     }
 
     private void Update()
     {
-        if (PlayerTarget == null || Health.IsDead) return;
+        if (PlayerTarget == null) return;
+        
+        if (Health.IsDead)
+        {
+            if (animator != null) animator.SetBool("Dead", true);
+            if (Agent != null && Agent.isOnNavMesh) Agent.isStopped = true;
+            return;
+        }
 
         float dt = Time.deltaTime;
 
@@ -62,11 +97,27 @@ public class EnemyAI : MonoBehaviour
         {
             stunTimer -= dt;
             Agent.isStopped = true;
+            UpdateAnimations();
             return;
         }
 
         movement.Tick(dt);
         combatModule.UpdateCombat(dt);
+        
+        UpdateAnimations();
+    }
+
+    private void UpdateAnimations()
+    {
+        if (animator != null && Agent != null)
+        {
+            animator.SetFloat("Speed", Agent.velocity.magnitude);
+        }
+    }
+
+    public void TriggerAttackAnimation()
+    {
+        if (animator != null) animator.SetTrigger("Punch");
     }
 
     public void ApplyKnockback(Vector3 push, float duration)
