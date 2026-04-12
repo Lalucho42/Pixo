@@ -24,10 +24,9 @@ public class PlayerAnimations
         attPicoHash = Animator.StringToHash("AttackPico");
         attHachaHash = Animator.StringToHash("AttackHacha");
 
-        // Suscripción corregida para evitar el doble llamado
         player.InputHandler.OnRollEvent += HandleRollSelection;
 
-        // La animación de salto ahora espera la orden del módulo de salto (que tiene su propio cooldown)
+        
         player.Jump.OnJumpInitiated += () => player.Animator.SetTrigger(jumpHash);
 
         player.Combat.OnAttackRequested += HandleAttackAnims;
@@ -35,31 +34,22 @@ public class PlayerAnimations
 
     private void HandleRollSelection()
     {
-        // --- BLOQUEO ANTI-SPAM ---
-        // 1. Verificamos si el módulo físico ya dice que estamos rodando
-        // 2. Verificamos que haya pasado un tiempo mínimo de seguridad
-        if (player.ColliderHandler.IsRolling || Time.time < lastRollTime + rollCooldown)
-        {
-            return;
-        }
+        if (player.IsMovementLocked) return;
+
+        if (player.ColliderHandler.IsRolling || Time.time < lastRollTime + rollCooldown) return;
 
         lastRollTime = Time.time;
         float currentSpeed = player.Animator.GetFloat(speedHash);
 
-        if (currentSpeed < 0.2f)
-        {
-            player.Animator.SetTrigger(rollIdleHash);
-        }
-        else
-        {
-            player.Animator.SetTrigger(rollMoveHash);
-        }
+        if (currentSpeed < 0.2f) player.Animator.SetTrigger(rollIdleHash);
+        else player.Animator.SetTrigger(rollMoveHash);
     }
 
     public void Tick(float dt)
     {
         float targetSpeed = 0f;
-        if (player.InputHandler.MoveInput.magnitude > 0.1f)
+
+        if (!player.IsMovementLocked && player.InputHandler.MoveInput.magnitude > 0.1f)
         {
             targetSpeed = player.InputHandler.IsRunning ? 1f : 0.5f;
         }

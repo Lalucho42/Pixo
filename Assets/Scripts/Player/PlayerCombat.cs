@@ -17,14 +17,12 @@ public class PlayerCombat
 
     private void HandleAttackIntent()
     {
+       
+        if (player.IsMovementLocked) return;
+
         if (player.WeaponManager == null || !player.WeaponManager.HasWeapon) return;
 
-        // Evitamos atacar si está rota
-        if (player.WeaponManager.CurrentTool.usosActuales <= 0)
-        {
-            Debug.Log("No puedes atacar, el arma está rota.");
-            return;
-        }
+        if (player.WeaponManager.CurrentTool.usosActuales <= 0) return;
 
         if (Time.time < nextAttackTime) return;
 

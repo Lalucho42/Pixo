@@ -19,12 +19,12 @@ public class PlayerJump
 
     private void HandleJumpInput()
     {
-        // Ahora verificamos DOS cosas: Que esté en el piso Y que haya pasado el cooldown
+        
+        if (player.IsMovementLocked) return;
+
         if (player.Controller.isGrounded && Time.time >= lastJumpTime + jumpCooldown)
         {
-            // Registramos la hora exacta en la que se pidió el salto
             lastJumpTime = Time.time;
-
             if (OnJumpInitiated != null) OnJumpInitiated.Invoke();
         }
     }

@@ -15,7 +15,7 @@ public class DynamicInventoryUI : MonoBehaviour
 
     private void Start()
     {
-        if (player == null) player = FindObjectOfType<Player>();
+        if (player == null) player = FindFirstObjectByType<Player>();
         player.Inventory.OnInventoryChanged += ActualizarInventario;
 
         foreach (Transform child in contenedor) Destroy(child.gameObject);

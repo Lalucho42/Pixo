@@ -17,9 +17,6 @@ public class PlayerCamera
 
     public void Tick(float dt)
     {
-        // --- ACA ESTA LA MAGIA: Si el jugador está bloqueado en un menú, ignoramos el input ---
-        if (player.IsMovementLocked) return;
-
         Vector2 look = player.InputHandler.LookInput;
         yaw += look.x * sens;
         pitch -= look.y * sens;
