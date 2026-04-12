@@ -11,19 +11,15 @@ public class MeleeCombatModule : IEnemyCombat
     {
         if (timer > 0) timer -= dt;
 
+        if (enemy.PlayerTarget == null) return;
+
         float dist = Vector3.Distance(enemy.transform.position, enemy.PlayerTarget.position);
 
+        // Si está en rango, disparamos el Trigger de animación
         if (dist <= enemy.attackRange && timer <= 0)
         {
-            // Atacamos directamente al HealthSystem del jugador
-            HealthSystem pHealth = enemy.PlayerTarget.GetComponent<HealthSystem>();
-            if (pHealth != null)
-            {
-                enemy.TriggerAttackAnimation();
-                pHealth.TakeDamage(enemy.damage);
-                timer = enemy.attackCooldown;
-                Debug.Log("¡Enemigo Melee golpeó!");
-            }
+            enemy.TriggerAttackAnimation();
+            timer = enemy.attackCooldown;
         }
     }
 }

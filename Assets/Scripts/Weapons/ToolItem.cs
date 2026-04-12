@@ -6,7 +6,7 @@ public class ToolItem : MonoBehaviour
     [Header("Identificación")]
     public string toolName;
     public Sprite iconoUI;
-    [Range(0.5f, 3f)] public float escalaIcono = 1f;
+    [Range(0.1f, 3f)] public float escalaIcono = 1f;
 
     [Header("Estadísticas de Combate")]
     public int attackDamage = 25;

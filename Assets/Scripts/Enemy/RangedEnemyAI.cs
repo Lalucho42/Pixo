@@ -1,32 +1,39 @@
 using UnityEngine;
 
+[RequireComponent(typeof(HealthSystem))]
 public class RangedEnemyAI : MonoBehaviour
 {
-    [Header("Movement")]
-    public float moveSpeed = 4.5f;
-    public float hoverHeight = 3.5f;
-    public float hoverSmoothing = 6f;
-    public float groundCheckDistance = 20f;
+    [Header("Movimiento")]
+    public float moveSpeed = 3.5f;
+    public float hoverHeight = 1.5f;
+    public float hoverSmoothing = 3f;
+    public float groundCheckDistance = 10f;
 
-    [Header("Drone Feel")]
-    public float noiseAmplitude = 0.18f;
-    public float noiseFrequency = 0.6f;
-    public float tiltAmount = 12f;
-    public float tiltSmoothing = 5f;
+    [Header("Estética Dron")]
+    public float noiseAmplitude = 0.15f;
+    public float noiseFrequency = 0.5f;
+    public float tiltAmount = 10f;
+    public float tiltSmoothing = 4f;
 
-    [Header("Combat")]
-    public float attackRange = 14f;
-    public float stopDistance = 7f;
-    public float circleRadius = 7f;
-    public float circleSpeed = 35f;
-    public float fireCooldown = 2.2f;
+    [Header("Combate")]
+    public float attackRange = 12f;
+    public float stopDistance = 6f;
+    public float circleRadius = 5f;
+    public float circleSpeed = 30f;
+    public float fireCooldown = 2.5f;
 
-    [Header("References")]
+    // --- NUEVAS VARIABLES DE DISPARO ---
+    public float projectileSpeed = 18f; // Velocidad de la bala
+    [Range(0f, 3f)] public float shotSpread = 1.5f; // Qué tan "manco" es el dron (0 = puntería perfecta)
+
+    [Header("Referencias")]
     public GameObject projectilePrefab;
     public Transform firePoint;
 
     private Rigidbody rb;
+    private HealthSystem health;
     private Transform playerTarget;
+
     private float fireTimer = 0f;
     private float stunTimer = 0f;
     private float noiseOffsetX;
@@ -37,7 +44,7 @@ public class RangedEnemyAI : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
+        health = GetComponent<HealthSystem>();
 
         rb.useGravity = false;
         rb.linearDamping = 4f;
@@ -47,57 +54,50 @@ public class RangedEnemyAI : MonoBehaviour
         noiseOffsetX = Random.Range(0f, 100f);
         noiseOffsetZ = Random.Range(0f, 100f);
         circleAngle = Random.Range(0f, 360f);
-        targetRotation = transform.rotation;
     }
 
     private void Start()
     {
         Player p = FindFirstObjectByType<Player>();
         if (p != null) playerTarget = p.transform;
-
-        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        if (agent != null) agent.enabled = false;
     }
 
     private void FixedUpdate()
     {
-        if (playerTarget == null)
+        // Si el dron muere, cae por gravedad
+        if (health != null && health.IsDead)
         {
-            Player p = FindFirstObjectByType<Player>();
-            if (p != null) playerTarget = p.transform;
-            if (playerTarget == null) return;
+            rb.useGravity = true;
+            rb.constraints = RigidbodyConstraints.None;
+            return;
         }
+
+        if (playerTarget == null) return;
 
         fireTimer -= Time.fixedDeltaTime;
 
         if (stunTimer > 0)
         {
             stunTimer -= Time.fixedDeltaTime;
-            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, Time.fixedDeltaTime * 8f);
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, Time.fixedDeltaTime * 4f);
             return;
         }
 
         float targetY = ComputeTargetY();
-        Vector3 droneNoise = ComputeDroneNoise();
-        float distToPlayer = Vector3.Distance(transform.position, playerTarget.position);
-
         Vector3 desiredVelocity;
+        float distToPlayer = Vector3.Distance(transform.position, playerTarget.position);
 
         if (distToPlayer <= attackRange)
         {
             desiredVelocity = ComputeCombatVelocity(distToPlayer, targetY);
-
-            if (fireTimer <= 0f)
-            {
-                Shoot();
-            }
+            if (fireTimer <= 0f) Shoot();
         }
         else
         {
             desiredVelocity = ComputePursuitVelocity(targetY);
         }
 
-        desiredVelocity += droneNoise;
+        desiredVelocity += ComputeDroneNoise();
         rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, desiredVelocity, Time.fixedDeltaTime * 5f);
 
         ApplyDroneTilt();
@@ -107,17 +107,17 @@ public class RangedEnemyAI : MonoBehaviour
     private float ComputeTargetY()
     {
         float groundY = transform.position.y - hoverHeight;
-
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, ~LayerMask.GetMask("Enemy", "RangedGuard", "Player")))
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, ~LayerMask.GetMask("Enemy", "Player")))
         {
             groundY = hit.point.y;
         }
-
+        // Lerp: Suaviza el cambio de altura para que no suba/baje de golpe
         return Mathf.Lerp(transform.position.y, groundY + hoverHeight, Time.fixedDeltaTime * hoverSmoothing);
     }
 
     private Vector3 ComputeDroneNoise()
     {
+        // PerlinNoise: Genera un movimiento "flotante" aleatorio pero suave
         float t = Time.time * noiseFrequency;
         float nx = (Mathf.PerlinNoise(t + noiseOffsetX, 0f) - 0.5f) * 2f * noiseAmplitude;
         float ny = (Mathf.PerlinNoise(0f, t + noiseOffsetX) - 0.5f) * 2f * noiseAmplitude * 0.5f;
@@ -136,41 +136,34 @@ public class RangedEnemyAI : MonoBehaviour
 
     private Vector3 ComputeCombatVelocity(float distToPlayer, float targetY)
     {
+        // Trigonometría (Cos/Sin): Calcula un punto en círculo para orbitar al jugador
         circleAngle += circleSpeed * Time.fixedDeltaTime;
         float rad = circleAngle * Mathf.Deg2Rad;
-
         Vector3 circleOffset = new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * circleRadius;
         Vector3 orbitalTarget = playerTarget.position + circleOffset;
 
         Vector3 flat = orbitalTarget - transform.position;
         flat.y = 0;
-
-        float speedMult = distToPlayer < stopDistance ? 0.4f : 1f;
+        float speedMult = distToPlayer < stopDistance ? 0.5f : 1f;
         Vector3 xzVelocity = flat.normalized * moveSpeed * speedMult;
         float yVelocity = (targetY - transform.position.y) * hoverSmoothing;
-
         return new Vector3(xzVelocity.x, yVelocity, xzVelocity.z);
     }
 
     private void FacePlayer()
     {
-        if (playerTarget == null) return;
         Vector3 dir = playerTarget.position - transform.position;
         dir.y = 0;
         if (dir.sqrMagnitude < 0.01f) return;
-        Quaternion look = Quaternion.LookRotation(dir);
-        targetRotation = Quaternion.Slerp(targetRotation, look, Time.fixedDeltaTime * 6f);
+        targetRotation = Quaternion.Slerp(targetRotation, Quaternion.LookRotation(dir), Time.fixedDeltaTime * 6f);
     }
 
     private void ApplyDroneTilt()
     {
+        // Dot Product: Calcula cuánto se debe inclinar el modelo según hacia dónde se mueve
         Vector3 vel = rb.linearVelocity;
         float rightTilt = -Vector3.Dot(vel, transform.right) * (tiltAmount / moveSpeed);
         float forwardTilt = Vector3.Dot(vel, transform.forward) * (tiltAmount / moveSpeed);
-
-        rightTilt = Mathf.Clamp(rightTilt, -tiltAmount, tiltAmount);
-        forwardTilt = Mathf.Clamp(forwardTilt, -tiltAmount, tiltAmount);
-
         Quaternion tiltRot = targetRotation * Quaternion.Euler(forwardTilt, 0f, rightTilt);
         transform.rotation = Quaternion.Slerp(transform.rotation, tiltRot, Time.fixedDeltaTime * tiltSmoothing);
     }
@@ -180,44 +173,60 @@ public class RangedEnemyAI : MonoBehaviour
         if (projectilePrefab == null || firePoint == null) return;
 
         GameObject bullet = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-
-        Collider[] shooterColliders = GetComponentsInChildren<Collider>();
-        Collider bulletCollider = bullet.GetComponent<Collider>();
-        if (bulletCollider != null)
-        {
-            foreach (var c in shooterColliders) Physics.IgnoreCollision(bulletCollider, c);
-        }
-
         Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+
         if (bulletRb != null)
         {
-            Vector3 aimDir = (playerTarget.position + Vector3.up * 1f - firePoint.position).normalized;
-            bulletRb.linearVelocity = aimDir * 22f;
-        }
+            // --- CÁLCULO DE PUNTERÍA IMPERFECTA ---
+            Vector3 targetPos = playerTarget.position + Vector3.up * 1f; // Apunta al pecho
 
+            // Agregamos un error aleatorio basado en 'shotSpread'
+            Vector3 randomOffset = Random.insideUnitSphere * shotSpread;
+            Vector3 aimDir = (targetPos + randomOffset - firePoint.position).normalized;
+
+            bulletRb.linearVelocity = aimDir * projectileSpeed;
+        }
         fireTimer = fireCooldown;
     }
 
-    public void ApplyKnockback(Vector3 pushVector, float stunDuration)
+    public void ApplyKnockback(Vector3 pushVector, float duration)
     {
         if (rb != null)
         {
-            rb.AddForce(pushVector * 2f, ForceMode.Impulse);
+            rb.AddForce(pushVector * 2.5f, ForceMode.Impulse);
+            rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
         }
-        stunTimer = stunDuration;
+        stunTimer = duration;
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
+        // Esfera Cyan: Rango máximo de detección para empezar a disparar
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, attackRange);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, stopDistance);
 
+        // Esfera Verde: El círculo que el dron intenta recorrer alrededor del jugador
         if (playerTarget != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(playerTarget.position, circleRadius);
+            DrawWireCircle(playerTarget.position, circleRadius);
+        }
+
+        // Rayo Rojo/Verde: Muestra el Raycast de altura hacia el suelo
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, Vector3.down * groundCheckDistance);
+    }
+
+    private void DrawWireCircle(Vector3 center, float radius)
+    {
+        float angle = 0f;
+        Vector3 lastPoint = center + new Vector3(Mathf.Cos(0) * radius, 0, Mathf.Sin(0) * radius);
+        for (int i = 1; i <= 32; i++)
+        {
+            angle = i / 32f * Mathf.PI * 2f;
+            Vector3 nextPoint = center + new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius);
+            Gizmos.DrawLine(lastPoint, nextPoint);
+            lastPoint = nextPoint;
         }
     }
 }

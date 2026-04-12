@@ -10,6 +10,7 @@ public class TutorialTrap : MonoBehaviour
         PausaDramatica,
         Peleando,
         EsperandoInteraccion,
+        GatoSaliendo, // Fase para asegurar que el gato llegue a la meta
         Terminado
     }
 
@@ -21,7 +22,7 @@ public class TutorialTrap : MonoBehaviour
     public Cat gato;
 
     [Header("El Escudo y Salida")]
-    public GameObject escudoVisual; // Al prenderse esto, aparece el visual Y la pared física
+    public GameObject escudoVisual;
     public Transform ultimoWaypointDelGato;
     public Transform puertaDeSalida;
 
@@ -33,7 +34,6 @@ public class TutorialTrap : MonoBehaviour
 
     private void Start()
     {
-        // El escudo empieza apagado (ni se ve, ni choca)
         if (escudoVisual != null) escudoVisual.SetActive(false);
     }
 
@@ -72,7 +72,6 @@ public class TutorialTrap : MonoBehaviour
                 gato.Agent.isStopped = true;
                 gato.Agent.velocity = Vector3.zero;
 
-                // ¡ZAZ! Aparece el escudo (ahora sólido) y atrapa al gato
                 if (escudoVisual != null) escudoVisual.SetActive(true);
 
                 SpawnearEnemigos();
@@ -93,12 +92,26 @@ public class TutorialTrap : MonoBehaviour
         }
         else if (faseActual == FaseTrampa.Peleando)
         {
+            // Limpia la lista de enemigos muertos
             enemigosVivos.RemoveAll(e => e == null || !e.activeInHierarchy || e.GetComponent<HealthSystem>().IsDead);
 
             if (enemigosVivos.Count == 0)
             {
                 faseActual = FaseTrampa.EsperandoInteraccion;
                 Debug.Log("Pelea terminada. Acercate a interactuar con el escudo.");
+            }
+        }
+        // --- NUEVA LÓGICA DE SALIDA SEGURA ---
+        else if (faseActual == FaseTrampa.GatoSaliendo)
+        {
+            float distanciaSalida = Vector3.Distance(gato.transform.position, puertaDeSalida.position);
+
+            // Si el gato llega a la puerta, recién ahí lo liberamos
+            if (distanciaSalida <= 1.5f)
+            {
+                gato.isTrapped = false;
+                faseActual = FaseTrampa.Terminado;
+                Debug.Log("Gato libre y en la salida.");
             }
         }
     }
@@ -117,17 +130,16 @@ public class TutorialTrap : MonoBehaviour
 
     public void EscudoInteractuado()
     {
-        // Si tocás la E durante la pelea, esto te frena y no pasa nada
         if (faseActual != FaseTrampa.EsperandoInteraccion) return;
 
-        // Apagamos el escudo entero (desaparece lo visual y la pared física)
         if (escudoVisual != null) escudoVisual.SetActive(false);
 
+        // Mantenemos 'isTrapped = true' para que el gato no intente volver con el jugador
         gato.Agent.isStopped = false;
+        gato.Agent.updateRotation = true;
         gato.Agent.SetDestination(puertaDeSalida.position);
-        gato.isTrapped = false;
 
-        faseActual = FaseTrampa.Terminado;
+        faseActual = FaseTrampa.GatoSaliendo;
         Debug.Log("¡Gato libre! Corriendo a la salida.");
     }
 }
