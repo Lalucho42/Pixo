@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class CatMovement
 {
@@ -17,9 +17,10 @@ public class CatMovement
 
     public void Tick()
     {
+        if (cat.Agent == null || !cat.Agent.isActiveAndEnabled || !cat.Agent.isOnNavMesh) return;
+
         if (cat.waypoints.Length == 0 || puntoActual >= cat.waypoints.Length)
         {
-            // Solo mandamos la orden de frenar si NO estaba frenado ya
             if (!cat.Agent.isStopped) DetenerYMirarJugador();
             return;
         }
@@ -27,12 +28,10 @@ public class CatMovement
         float distanciaJugador = Vector3.Distance(cat.transform.position, cat.player.position);
         float distanciaAlPunto = Vector3.Distance(cat.transform.position, cat.waypoints[puntoActual].position);
 
-        // 1. ¿EL GATO YA LLEGÓ AL WAYPOINT? (Acá es donde te espera)
         if (distanciaAlPunto <= cat.distanciaAlPunto)
         {
             if (!cat.Agent.isStopped) DetenerYMirarJugador();
 
-            // ¿El jugador ya llegó a donde estoy yo?
             if (distanciaJugador <= cat.distanciaParaAvanzar)
             {
                 puntoActual++;
@@ -42,11 +41,8 @@ public class CatMovement
                 }
             }
         }
-        // 2. EL GATO ESTÁ CAMINANDO 
         else
         {
-            // ¡EL ARREGLO ESTÁ ACÁ! 
-            // Solo le decimos que marche si estaba frenado. Así no rompemos el salto.
             if (cat.Agent.isStopped)
             {
                 ReanudarMarcha();
@@ -56,6 +52,8 @@ public class CatMovement
 
     private void DetenerYMirarJugador()
     {
+        if (cat.Agent == null || !cat.Agent.isActiveAndEnabled || !cat.Agent.isOnNavMesh) return;
+
         cat.Agent.isStopped = true;
         cat.Agent.velocity = Vector3.zero;
         cat.Agent.updateRotation = false;
@@ -70,8 +68,10 @@ public class CatMovement
 
     private void ReanudarMarcha()
     {
+        if (cat.Agent == null || !cat.Agent.isActiveAndEnabled || !cat.Agent.isOnNavMesh) return;
+
         cat.Agent.isStopped = false;
         cat.Agent.updateRotation = true;
-        cat.Agent.SetDestination(cat.waypoints[puntoActual].position); // Se llama UNA sola vez
+        cat.Agent.SetDestination(cat.waypoints[puntoActual].position);
     }
 }

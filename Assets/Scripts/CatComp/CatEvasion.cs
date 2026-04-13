@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class CatEvasion
 {
@@ -9,9 +9,10 @@ public class CatEvasion
         cat = catBrain;
     }
 
-    // Devuelve TRUE si encontró un enemigo y está huyendo
     public bool Tick()
     {
+        if (cat.Agent == null || !cat.Agent.isActiveAndEnabled || !cat.Agent.isOnNavMesh) return false;
+
         Transform enemigoCercano = BuscarEnemigo();
 
         if (enemigoCercano != null)
@@ -36,7 +37,7 @@ public class CatEvasion
     private void HuirDe(Transform enemigo)
     {
         cat.Agent.isStopped = false;
-        cat.Agent.updateRotation = true; // <- AGREGAR ESTA LÍNEA AQUÍ
+        cat.Agent.updateRotation = true;
 
         Vector3 direccionHuida = (cat.transform.position - enemigo.position).normalized;
         Vector3 destinoSeguro = cat.transform.position + (direccionHuida * cat.distanciaHuida);

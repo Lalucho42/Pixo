@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -22,7 +22,6 @@ public class Cat : MonoBehaviour
     public float duracionSalto = 0.6f;
     public bool estaSaltando = false;
 
-    // --- NUEVO: CANDADO DE LA TRAMPA ---
     public bool isTrapped = false;
 
     public NavMeshAgent Agent { get; private set; }
@@ -49,16 +48,12 @@ public class Cat : MonoBehaviour
     {
         if (player == null) return;
 
-        // --- EL ARREGLO ESTÁ ACÁ ---
         if (isTrapped)
         {
-            // Si el Director tomó el control, el gato NO se frena a sí mismo.
-            // Solo actualiza sus animaciones (para que mueva las patas si el Director lo hace correr).
             Animations.Tick();
-            return; // Cortamos acá para que no use su lógica normal de guía o huida
+            return;
         }
 
-        // Su lógica normal cuando es libre
         if (Jump.Tick()) { Animations.Tick(); return; }
         if (Evasion.Tick()) { Animations.Tick(); return; }
 
