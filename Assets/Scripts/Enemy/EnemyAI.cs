@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public enum EnemyType { Melee, Drone }
@@ -6,24 +6,22 @@ public enum EnemyType { Melee, Drone }
 [RequireComponent(typeof(NavMeshAgent), typeof(HealthSystem))]
 public class EnemyAI : MonoBehaviour
 {
-    [Header("Configuración del Chip")]
     public EnemyType type;
 
-    [Header("Estadísticas")]
     public float detectionRange = 15f;
     public float loseTargetRange = 25f;
     public float attackRange = 1.6f;
+    public float walkRange = 5f;
+    public float runSpeed = 3.5f;
+    public float walkSpeed = 1.5f;
     public float attackCooldown = 1.5f;
     public int damage = 10;
 
-    [Header("Referencias de Disparo (Futuro/Dron)")]
-    public GameObject projectilePrefab; // <-- Restaurado
-    public Transform shootPoint;       // <-- Restaurado
+    public GameObject projectilePrefab;
+    public Transform shootPoint;
 
-    [Header("Combate por Animación (Melee)")]
     public EnemyHandDamage handDamageScript;
 
-    [Header("Referencias Generales")]
     public Animator animator;
     public NavMeshAgent Agent { get; private set; }
     public HealthSystem Health { get; private set; }
@@ -33,13 +31,20 @@ public class EnemyAI : MonoBehaviour
     private IEnemyCombat combatModule;
     private float stunTimer = 0f;
 
+    private readonly int speedHash = Animator.StringToHash("Speed");
+    private readonly int walkHash = Animator.StringToHash("WalkForward");
+    private readonly int runHash = Animator.StringToHash("Run Forward");
+    private readonly int idleHash = Animator.StringToHash("Idle");
+    private readonly int combatIdleHash = Animator.StringToHash("Combat Idle");
+    private readonly int punchHash = Animator.StringToHash("Punch");
+    private readonly int attack1Hash = Animator.StringToHash("Attack1");
+
     private void Awake()
     {
         Agent = GetComponent<NavMeshAgent>();
         Health = GetComponent<HealthSystem>();
         movement = new EnemyMovement(this);
 
-        // Selección de módulo basada en el tipo
         if (type == EnemyType.Melee)
             combatModule = new MeleeCombatModule(this);
         else
@@ -53,7 +58,6 @@ public class EnemyAI : MonoBehaviour
 
         if (Agent != null)
         {
-            Agent.speed = 1.8f;
             Agent.stoppingDistance = attackRange - 0.2f;
         }
 
@@ -65,7 +69,11 @@ public class EnemyAI : MonoBehaviour
     {
         if (PlayerTarget == null || Health.IsDead)
         {
-            if (Health.IsDead && Agent != null && Agent.isOnNavMesh) Agent.isStopped = true;
+            if (Health.IsDead)
+            {
+                if (Agent != null && Agent.isActiveAndEnabled && Agent.isOnNavMesh) Agent.isStopped = true;
+                UpdateAnimation(0);
+            }
             return;
         }
 
@@ -74,23 +82,45 @@ public class EnemyAI : MonoBehaviour
         if (stunTimer > 0)
         {
             stunTimer -= dt;
-            if (Agent.isOnNavMesh) Agent.isStopped = true;
+            if (Agent.isActiveAndEnabled && Agent.isOnNavMesh) Agent.isStopped = true;
+            UpdateAnimation(0);
             return;
         }
 
         movement.Tick(dt);
         combatModule.UpdateCombat(dt);
 
-        if (animator != null && Agent != null)
-            animator.SetFloat("Speed", Agent.velocity.magnitude);
+        if (Agent != null)
+        {
+            UpdateAnimation(Agent.velocity.magnitude);
+        }
+    }
+
+    private void UpdateAnimation(float speed)
+    {
+        if (animator == null) return;
+
+        animator.SetFloat(speedHash, speed);
+
+        bool isMoving = speed > 0.1f;
+        bool isRunning = speed > 2.5f;
+
+        animator.SetBool(walkHash, isMoving && !isRunning);
+        animator.SetBool(runHash, isRunning);
+
+        bool hasTarget = PlayerTarget != null && Vector3.Distance(transform.position, PlayerTarget.position) < detectionRange;
+        animator.SetBool(idleHash, !isMoving && !hasTarget);
+        animator.SetBool(combatIdleHash, !isMoving && hasTarget);
     }
 
     public void TriggerAttackAnimation()
     {
-        if (animator != null) animator.SetTrigger("Punch");
+        if (animator == null) return;
+
+        animator.SetTrigger(punchHash);
+        animator.SetTrigger(attack1Hash);
     }
 
-    // --- EVENTOS PARA EL MELEE ---
     public void EnemyStartHit()
     {
         if (handDamageScript != null)
@@ -107,7 +137,7 @@ public class EnemyAI : MonoBehaviour
 
     public void ApplyKnockback(Vector3 push, float duration)
     {
-        if (Agent != null && Agent.isOnNavMesh) Agent.Move(push);
+        if (Agent != null && Agent.isActiveAndEnabled && Agent.isOnNavMesh) Agent.Move(push);
         stunTimer = duration;
     }
 }

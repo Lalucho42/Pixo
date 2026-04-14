@@ -7,8 +7,7 @@ public class PlayerJump
     public float VerticalVelocity { get; private set; }
     public event Action OnJumpInitiated;
 
-    // --- NUEVAS VARIABLES DE COOLDOWN ---
-    private float jumpCooldown = 0.5f; // Medio segundo de bloqueo entre saltos
+    private float jumpCooldown = 0.5f;
     private float lastJumpTime = -1f;
 
     public PlayerJump(Player playerBrain)
@@ -19,19 +18,17 @@ public class PlayerJump
 
     private void HandleJumpInput()
     {
-        
         if (player.IsMovementLocked) return;
 
         if (player.Controller.isGrounded && Time.time >= lastJumpTime + jumpCooldown)
         {
             lastJumpTime = Time.time;
-            if (OnJumpInitiated != null) OnJumpInitiated.Invoke();
+            OnJumpInitiated?.Invoke();
         }
     }
 
     public void ApplyJumpForce()
     {
-        // Nota: Si en el paso anterior le cambiaste el nombre a "jumpHeight", borrale el "Idle" acá abajo.
         VerticalVelocity = Mathf.Sqrt(2f * player.jumpHeightIdle * player.gravity);
     }
 
@@ -43,7 +40,6 @@ public class PlayerJump
         }
         else
         {
-            // Aplicamos gravedad constante
             VerticalVelocity -= player.gravity * deltaTime;
         }
 

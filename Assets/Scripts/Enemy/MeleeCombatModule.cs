@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MeleeCombatModule : IEnemyCombat
 {
@@ -15,7 +15,6 @@ public class MeleeCombatModule : IEnemyCombat
 
         float dist = Vector3.Distance(enemy.transform.position, enemy.PlayerTarget.position);
 
-        // Si está en rango, disparamos el Trigger de animación
         if (dist <= enemy.attackRange && timer <= 0)
         {
             enemy.TriggerAttackAnimation();

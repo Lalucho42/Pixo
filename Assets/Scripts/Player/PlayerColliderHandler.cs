@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class PlayerColliderHandler
 {
@@ -7,7 +7,6 @@ public class PlayerColliderHandler
     private Vector3 originalCenter;
     private float rollMultiplier;
 
-    // Esta variable reemplaza al antiguo 'ApplyRollImpulse' del Player
     public bool IsRolling { get; private set; }
 
     public PlayerColliderHandler(CharacterController cc, float multiplier)
@@ -15,7 +14,6 @@ public class PlayerColliderHandler
         controller = cc;
         rollMultiplier = multiplier;
 
-        // Guardamos los valores originales ni bien se crea el módulo
         originalHeight = cc.height;
         originalCenter = cc.center;
     }
@@ -28,11 +26,9 @@ public class PlayerColliderHandler
         {
             if (active)
             {
-                // Achicamos la altura dinámicamente
                 float newHeight = originalHeight * rollMultiplier;
                 controller.height = newHeight;
 
-                // Calculamos el centro para que los pies queden siempre al ras del suelo
                 controller.center = new Vector3(
                     originalCenter.x,
                     newHeight / 2f,
@@ -41,7 +37,6 @@ public class PlayerColliderHandler
             }
             else
             {
-                // Volvemos al estado original exacto
                 controller.height = originalHeight;
                 controller.center = originalCenter;
             }

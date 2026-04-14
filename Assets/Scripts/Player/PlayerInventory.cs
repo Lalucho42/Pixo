@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System;
 
 public class PlayerInventory
@@ -24,7 +24,6 @@ public class PlayerInventory
         if (OnInventoryChanged != null) OnInventoryChanged.Invoke(Madera, Piedra);
     }
 
-    // --- NUEVO: Verifica un recurso específico ---
     public bool HasResource(ResourceType type, int amount)
     {
         if (type == ResourceType.Madera) return Madera >= amount;
@@ -32,7 +31,6 @@ public class PlayerInventory
         return false;
     }
 
-    // --- NUEVO: Consume un recurso específico ---
     public void ConsumeResource(ResourceType type, int amount)
     {
         if (type == ResourceType.Madera) Madera -= amount;

@@ -1,31 +1,30 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 public class ToolItem : MonoBehaviour
 {
-    [Header("Identificación")]
+    [Header("Identificacion")]
     public string toolName;
     public Sprite iconoUI;
     [Range(0.1f, 3f)] public float escalaIcono = 1f;
 
-    [Header("Estadísticas de Combate")]
+    [Header("Estadisticas de Combate")]
     public int attackDamage = 25;
     public float attackRate = 0.5f;
     public float knockbackForce = 3f;
     public AudioClip attackSound;
 
-    [Header("Estadísticas de Recursos")]
+    [Header("Estadisticas de Recursos")]
     public float resourceDamage = 50f;
 
     [Header("Durabilidad")]
     public int usosMaximos = 100;
     public int usosActuales;
 
-    [Header("Evolución (Opcional)")]
-    // --- ESTOS SON LOS DOS HUECOS MÁGICOS ---
-    [Tooltip("El objeto que contiene el modelo 3D viejo (debe estar activado)")]
+    [Header("Evolucion (Opcional)")]
+    [Tooltip("El objeto que contiene el modelo 3D base")]
     public GameObject objetoModeloBase;
-    [Tooltip("El objeto que contiene el modelo 3D mejorado (debe estar desactivado)")]
+    [Tooltip("El objeto que contiene el modelo 3D mejorado")]
     public GameObject objetoModeloMejorado;
 
     public Sprite iconoMejorado;
@@ -48,8 +47,6 @@ public class ToolItem : MonoBehaviour
             damageCollider.enabled = false;
         }
 
-        // --- PREPARACIÓN AL ARRANCAR ---
-        // Nos aseguramos de que el modelo base esté prendido y el mejorado apagado.
         if (objetoModeloBase != null) objetoModeloBase.SetActive(true);
         if (objetoModeloMejorado != null) objetoModeloMejorado.SetActive(false);
 
@@ -116,34 +113,22 @@ public class ToolItem : MonoBehaviour
     {
         usosActuales--;
         if (usosActuales < 0) usosActuales = 0;
-
-        if (usosActuales == 0)
-        {
-            Debug.Log(toolName + " se ha roto.");
-        }
     }
 
     public void RepararArma(int cantidadRestaurada)
     {
         usosActuales += cantidadRestaurada;
         if (usosActuales > usosMaximos) usosActuales = usosMaximos;
-        Debug.Log(toolName + " reparada. Usos: " + usosActuales);
     }
 
-    // --- AQUÍ ESTÁ LA LÓGICA SIMPLE DE LA MEJORA ---
     public void AplicarMejora()
     {
         if (estaMejorada) return;
 
         estaMejorada = true;
 
-        // 1. Apagamos el objeto contenedor del modelo viejo
         if (objetoModeloBase != null) objetoModeloBase.SetActive(false);
-
-        // 2. Prendemos el objeto contenedor del modelo nuevo
         if (objetoModeloMejorado != null) objetoModeloMejorado.SetActive(true);
-
-        Debug.Log(toolName + " fue mejorada al máximo nivel.");
     }
 
     private float CalculateEfficiency(ResourceNode node)

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class EnemyHandDamage : MonoBehaviour
 {
@@ -12,11 +12,10 @@ public class EnemyHandDamage : MonoBehaviour
         if (handCollider != null)
         {
             handCollider.isTrigger = true;
-            handCollider.enabled = false; // Empieza apagado
+            handCollider.enabled = false;
         }
     }
 
-    // El cerebro (EnemyAI) configura el daño antes de golpear
     public void Setup(int damageAmount)
     {
         damage = damageAmount;
@@ -32,14 +31,12 @@ public class EnemyHandDamage : MonoBehaviour
     {
         if (!canDamage) return;
 
-        // Solo golpeamos si es el jugador
         if (other.CompareTag("Player"))
         {
             HealthSystem playerHealth = other.GetComponentInParent<HealthSystem>();
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(damage);
-                // Apagamos para no golpear mil veces en el mismo movimiento
                 SetDamageState(false);
             }
         }

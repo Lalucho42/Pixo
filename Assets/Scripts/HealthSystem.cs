@@ -3,18 +3,17 @@ using UnityEngine.Events;
 
 public class HealthSystem : MonoBehaviour
 {
-    [Header("Configuracion de Vida")]
+    [Header("Health Settings")]
     public int maxHealth = 100;
     public int currentHealth;
 
-    [Header("Eventos")]
+    [Header("Events")]
     public UnityEvent onDeath;
     public UnityEvent onTakeDamage;
 
     [Header("Audio")]
     public AudioClip deathSound;
 
-    // Cambiamos a 'public get' para que el GameManager pueda leerlo
     public bool IsDead { get; private set; } = false;
 
     private void Awake()
@@ -27,7 +26,8 @@ public class HealthSystem : MonoBehaviour
         if (IsDead) return;
 
         currentHealth -= damageAmount;
-        if (onTakeDamage != null) onTakeDamage.Invoke();
+        Debug.Log("HealthSystem (" + gameObject.name + ") took damage: " + damageAmount + ". Current health: " + currentHealth);
+        onTakeDamage?.Invoke();
 
         if (currentHealth <= 0)
         {
@@ -41,12 +41,10 @@ public class HealthSystem : MonoBehaviour
         currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
     }
 
-    // --- ESTA ES LA FUNCIÓN QUE NECESITA EL GAME MANAGER ---
     public void ResetDeath()
     {
         IsDead = false;
         currentHealth = maxHealth;
-        Debug.Log("Vida reseteada: Jugador revivido.");
     }
 
     private void Die()
@@ -57,11 +55,10 @@ public class HealthSystem : MonoBehaviour
         if (deathSound != null && AudioManager.instance != null)
             AudioManager.instance.PlaySFX(deathSound);
 
-        if (onDeath != null) onDeath.Invoke();
+        onDeath?.Invoke();
 
         if (CompareTag("Player"))
         {
-            // Llama al menú de muerte del GameManager
             if (GameManager.instance != null) GameManager.instance.ShowDeathMenu();
         }
         else

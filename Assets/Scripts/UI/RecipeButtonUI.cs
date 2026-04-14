@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
@@ -18,7 +18,6 @@ public class RecipeButtonUI : MonoBehaviour
         bool puedeComprar = true;
         List<ResourceCost> costosAMostrar = receta.costos;
 
-        // Si es un botón de arma, revisamos si la tenemos y si está rota/mejorada
         if (receta.accion == CraftingActionType.MejorarArma || receta.accion == CraftingActionType.RepararArma)
         {
             ToolItem arma = manager.ObtenerJugador().Crafting.ObtenerArma(receta.nombreArmaObjetivo);
@@ -27,13 +26,13 @@ public class RecipeButtonUI : MonoBehaviour
             {
                 if (textoNombre != null) textoNombre.text = receta.nombreReceta + " (BLOQUEADA)";
                 puedeComprar = false;
-                costosAMostrar = new List<ResourceCost>(); // Ocultamos costos si no la tiene
+                costosAMostrar = new List<ResourceCost>();
             }
             else
             {
                 if (receta.accion == CraftingActionType.MejorarArma && arma.estaMejorada)
                 {
-                    if (textoNombre != null) textoNombre.text = receta.nombreReceta + " (MÁXIMA)";
+                    if (textoNombre != null) textoNombre.text = receta.nombreReceta + " (MAXIMA)";
                     puedeComprar = false;
                     costosAMostrar = new List<ResourceCost>();
                 }
@@ -53,7 +52,6 @@ public class RecipeButtonUI : MonoBehaviour
             }
         }
 
-        // Generamos los iconos de madera/piedra solo si hay costos en la lista
         foreach (ResourceCost costo in costosAMostrar)
         {
             if (costo.cantidad <= 0) continue;

@@ -203,7 +203,7 @@ AnimatorStateMachine:
     m_Position: {x: 260, y: 240, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7402622663542713316}
-    m_Position: {x: 470, y: 240, z: 0}
+    m_Position: {x: 460, y: 220, z: 0}
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: -3523597442283441480}
@@ -537,6 +537,12 @@ AnimatorController:
     m_Controller: {fileID: 9100000}
   - m_Name: RollIdle
     m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: IsCombo
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0

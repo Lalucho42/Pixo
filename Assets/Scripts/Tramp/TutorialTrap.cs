@@ -10,7 +10,7 @@ public class TutorialTrap : MonoBehaviour
         PausaDramatica,
         Peleando,
         EsperandoInteraccion,
-        GatoSaliendo, // Fase para asegurar que el gato llegue a la meta
+        GatoSaliendo,
         Terminado
     }
 
@@ -54,9 +54,12 @@ public class TutorialTrap : MonoBehaviour
         player.transform.rotation = Quaternion.LookRotation(direccionGato);
 
         gato.isTrapped = true;
-        gato.Agent.isStopped = false;
-        gato.Agent.updateRotation = true;
-        gato.Agent.SetDestination(ultimoWaypointDelGato.position);
+        if (gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
+        {
+            gato.Agent.isStopped = false;
+            gato.Agent.updateRotation = true;
+            gato.Agent.SetDestination(ultimoWaypointDelGato.position);
+        }
 
         faseActual = FaseTrampa.GatoCorriendo;
     }
@@ -69,8 +72,11 @@ public class TutorialTrap : MonoBehaviour
 
             if (distancia <= 1.5f)
             {
-                gato.Agent.isStopped = true;
-                gato.Agent.velocity = Vector3.zero;
+                if (gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
+                {
+                    gato.Agent.isStopped = true;
+                    gato.Agent.velocity = Vector3.zero;
+                }
 
                 if (escudoVisual != null) escudoVisual.SetActive(true);
 
@@ -92,26 +98,21 @@ public class TutorialTrap : MonoBehaviour
         }
         else if (faseActual == FaseTrampa.Peleando)
         {
-            // Limpia la lista de enemigos muertos
             enemigosVivos.RemoveAll(e => e == null || !e.activeInHierarchy || e.GetComponent<HealthSystem>().IsDead);
 
             if (enemigosVivos.Count == 0)
             {
                 faseActual = FaseTrampa.EsperandoInteraccion;
-                Debug.Log("Pelea terminada. Acercate a interactuar con el escudo.");
             }
         }
-        // --- NUEVA LÓGICA DE SALIDA SEGURA ---
         else if (faseActual == FaseTrampa.GatoSaliendo)
         {
             float distanciaSalida = Vector3.Distance(gato.transform.position, puertaDeSalida.position);
 
-            // Si el gato llega a la puerta, recién ahí lo liberamos
             if (distanciaSalida <= 1.5f)
             {
                 gato.isTrapped = false;
                 faseActual = FaseTrampa.Terminado;
-                Debug.Log("Gato libre y en la salida.");
             }
         }
     }
@@ -134,12 +135,13 @@ public class TutorialTrap : MonoBehaviour
 
         if (escudoVisual != null) escudoVisual.SetActive(false);
 
-        // Mantenemos 'isTrapped = true' para que el gato no intente volver con el jugador
-        gato.Agent.isStopped = false;
-        gato.Agent.updateRotation = true;
-        gato.Agent.SetDestination(puertaDeSalida.position);
+        if (gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
+        {
+            gato.Agent.isStopped = false;
+            gato.Agent.updateRotation = true;
+            gato.Agent.SetDestination(puertaDeSalida.position);
+        }
 
         faseActual = FaseTrampa.GatoSaliendo;
-        Debug.Log("¡Gato libre! Corriendo a la salida.");
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCrafting
@@ -30,7 +30,6 @@ public class PlayerCrafting
         if (health != null) health.Heal(50);
     }
 
-    // --- NUEVO: Busca el arma por el nombre que le pongas en el Inspector ---
     public ToolItem ObtenerArma(string nombreArma)
     {
         return player.WeaponManager.unlockedWeapons.Find(w => w.toolName == nombreArma);

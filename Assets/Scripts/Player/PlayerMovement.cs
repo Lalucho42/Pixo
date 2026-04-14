@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class PlayerMovement
 {
@@ -41,23 +41,19 @@ public class PlayerMovement
             targetSpeed = 0f;
         }
 
-        // --- LA SOLUCIÓN AL PATINAJE ---
-        // Ajustamos la fuerza del Lerp según lo que el jugador esté haciendo
-        float smoothFactor = 15f; // Aceleración normal y responsiva
+        float smoothFactor = 15f;
 
         if (player.ColliderHandler.IsRolling)
         {
-            smoothFactor = 8f; // Suave y con inercia para el roll
+            smoothFactor = 8f;
         }
         else if (input.magnitude < 0.1f)
         {
-            smoothFactor = 30f; // Freno de disco MUY fuerte al soltar la tecla
+            smoothFactor = 30f;
         }
 
         currentVelocity = Mathf.Lerp(currentVelocity, targetSpeed, dt * smoothFactor);
 
-        // Cortamos el deslizamiento residual de raíz si la velocidad ya es muy baja (0.5 o menos)
-        // Esto garantiza que el personaje se clave en el piso junto con la animación
         if (input.magnitude < 0.1f && !player.ColliderHandler.IsRolling && currentVelocity < 0.5f)
         {
             currentVelocity = 0f;

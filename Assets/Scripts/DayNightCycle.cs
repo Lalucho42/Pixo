@@ -1,15 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour
 {
     public Light sunLight;
     public float dayDurationInSeconds = 300f;
-    
+
     [Header("Ambient Lighting")]
     public Color dayAmbientColor = new Color(0.8f, 0.85f, 0.9f);
     public Color nightAmbientColor = new Color(0.05f, 0.05f, 0.1f);
     public float minSunIntensity = 0.05f;
-    
+
     [Header("Skybox Control")]
     public Material skyboxMaterial;
     public float daySkyExposure = 1.0f;
@@ -42,16 +42,13 @@ public class DayNightCycle : MonoBehaviour
         currentRotation += rotationSpeed * Time.deltaTime;
         sunLight.transform.rotation = Quaternion.Euler(currentRotation, -90f, 0f);
 
-        
         float sunAltitude = Vector3.Dot(sunLight.transform.forward, Vector3.down);
 
-        
         float targetFactor = Mathf.Clamp01((sunAltitude + 0.15f) / 0.6f);
         float dayFactor = Mathf.SmoothStep(0f, 1f, targetFactor);
 
-        
         float baseIntensity = (weather != null) ? weather.WeatherIntensity : 1.0f;
-        
+
         sunLight.intensity = Mathf.Lerp(minSunIntensity, baseIntensity, dayFactor);
 
         RenderSettings.ambientLight = Color.Lerp(nightAmbientColor, dayAmbientColor, dayFactor);

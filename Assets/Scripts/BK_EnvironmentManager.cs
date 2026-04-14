@@ -100,7 +100,6 @@ public class BK_EnvironmentManager : MonoBehaviour
             return;
         }
 
-        // Dynamically adjust the size of the matrices array to match volumeSamples
         if (matrices.Length != volumeSamples)
         {
             matrices = new Matrix4x4[volumeSamples];

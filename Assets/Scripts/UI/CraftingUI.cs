@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public enum CraftingActionType { Medikit, AbrirMenuMejora, AbrirMenuReparacion, MejorarArma, RepararArma }
@@ -8,7 +8,7 @@ public class CraftingRecipe
 {
     public string nombreReceta;
     public CraftingActionType accion;
-    [Tooltip("El nombre exacto del arma en tu script ToolItem (Ej: Espada)")]
+    [Tooltip("El nombre exacto del arma en el script ToolItem")]
     public string nombreArmaObjetivo;
     public List<ResourceCost> costos;
 }
@@ -31,7 +31,7 @@ public class CraftingUI : MonoBehaviour
     public List<CraftingRecipe> recetasReparacion;
 
     [Header("Referencias Globales")]
-    public GameObject prefabBotonReceta; // Tu prefab ancho de siempre
+    public GameObject prefabBotonReceta;
     private Player jugadorActual;
 
     private void Start() { CerrarMesa(); }
@@ -90,7 +90,6 @@ public class CraftingUI : MonoBehaviour
 
     public void EjecutarAccion(CraftingRecipe receta)
     {
-        // 1. Botones de Navegación
         if (receta.accion == CraftingActionType.AbrirMenuMejora)
         {
             CambiarPanel(panelMejora, contenedorMejora, recetasMejora);
@@ -102,7 +101,6 @@ public class CraftingUI : MonoBehaviour
             return;
         }
 
-        // 2. Botones de Compra
         List<ResourceCost> costoFinal = receta.costos;
         ToolItem armaElegida = null;
         int usosAReparar = 0;
@@ -110,7 +108,7 @@ public class CraftingUI : MonoBehaviour
         if (receta.accion == CraftingActionType.MejorarArma || receta.accion == CraftingActionType.RepararArma)
         {
             armaElegida = jugadorActual.Crafting.ObtenerArma(receta.nombreArmaObjetivo);
-            if (armaElegida == null) return; // Por seguridad
+            if (armaElegida == null) return;
 
             if (receta.accion == CraftingActionType.MejorarArma && armaElegida.estaMejorada) return;
 
@@ -128,7 +126,6 @@ public class CraftingUI : MonoBehaviour
             else if (receta.accion == CraftingActionType.MejorarArma) jugadorActual.Crafting.AplicarMejoraArma(armaElegida);
             else if (receta.accion == CraftingActionType.RepararArma) jugadorActual.Crafting.AplicarReparacionArma(armaElegida, usosAReparar);
 
-            // Actualizamos la pantalla actual para que el botón diga "(MÁXIMA)" o "(NUEVA)"
             if (panelPrincipal.activeSelf) CambiarPanel(panelPrincipal, contenedorPrincipal, recetasPrincipales);
             else if (panelMejora.activeSelf) CambiarPanel(panelMejora, contenedorMejora, recetasMejora);
             else if (panelReparacion.activeSelf) CambiarPanel(panelReparacion, contenedorReparacion, recetasReparacion);

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DroneCombatModule : IEnemyCombat
 {
@@ -27,15 +27,11 @@ public class DroneCombatModule : IEnemyCombat
 
         GameObject projectile = Object.Instantiate(enemy.projectilePrefab, enemy.shootPoint.position, enemy.shootPoint.rotation);
 
-        // Asumiendo que el proyectil tiene un script que lo mueve hacia adelante
-        // o le aplicamos una fuerza aqu� si tiene Rigidbody
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         if (rb != null)
         {
             Vector3 dir = (enemy.PlayerTarget.position + Vector3.up - enemy.shootPoint.position).normalized;
             rb.AddForce(dir * 20f, ForceMode.Impulse);
         }
-
-        Debug.Log("�Dron dispar�!");
     }
 }

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class PlayerAnimationEventReceiver : MonoBehaviour
 {
@@ -6,11 +6,9 @@ public class PlayerAnimationEventReceiver : MonoBehaviour
 
     private void Awake()
     {
-        // Buscamos al script Player en el objeto padre (ya que este script va en la malla 3D)
         player = GetComponentInParent<Player>();
     }
 
-    // --- BLOQUEO DE MOVIMIENTO ---
     public void LockMovement()
     {
         if (player != null) player.IsMovementLocked = true;
@@ -21,8 +19,6 @@ public class PlayerAnimationEventReceiver : MonoBehaviour
         if (player != null) player.IsMovementLocked = false;
     }
 
-    // --- RODAR ---
-    // Ahora le avisan al módulo encargado de las matemáticas del collider
     public void StartRollImpulse()
     {
         if (player != null && player.ColliderHandler != null)
@@ -39,7 +35,6 @@ public class PlayerAnimationEventReceiver : MonoBehaviour
         }
     }
 
-    // --- SALTO ---
     public void ExecuteJumpImpulse()
     {
         if (player != null && player.Jump != null)
@@ -48,7 +43,6 @@ public class PlayerAnimationEventReceiver : MonoBehaviour
         }
     }
 
-    // --- DAÑO FÍSICO (HITBOX) ---
     public void StartHit()
     {
         if (player != null && player.WeaponManager != null && player.WeaponManager.CurrentTool != null)

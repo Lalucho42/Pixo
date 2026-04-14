@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 
 public class WeaponSlotUI : MonoBehaviour
@@ -26,7 +26,6 @@ public class WeaponSlotUI : MonoBehaviour
 
         icono.sprite = herramientaVinculada.estaMejorada ? herramientaVinculada.iconoMejorado : herramientaVinculada.iconoUI;
 
-        // Modificamos la escala según lo que pida el arma específica
         icono.rectTransform.localScale = Vector3.one * herramientaVinculada.escalaIcono;
 
         float fill = (float)herramientaVinculada.usosActuales / herramientaVinculada.usosMaximos;

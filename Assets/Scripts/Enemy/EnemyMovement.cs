@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyMovement
 {
@@ -14,7 +14,6 @@ public class EnemyMovement
 
         float dist = Vector3.Distance(enemy.transform.position, enemy.PlayerTarget.position);
 
-        // Logica de deteccion
         if (!isChasing && dist <= enemy.detectionRange)
         {
             isChasing = true;
@@ -28,12 +27,15 @@ public class EnemyMovement
 
         if (!isChasing)
         {
-            // Idle si no está persiguiendo
             if (enemy.Agent.isOnNavMesh) enemy.Agent.isStopped = true;
             return;
         }
 
-        // Si está persiguiendo
+        if (dist <= enemy.walkRange)
+            enemy.Agent.speed = enemy.walkSpeed;
+        else
+            enemy.Agent.speed = enemy.runSpeed;
+
         if (dist <= enemy.attackRange)
         {
             if (enemy.Agent.isOnNavMesh) enemy.Agent.isStopped = true;

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ public class ResourceCost
 
 public class RepairableStructure : MonoBehaviour, IInteractable
 {
-    [Header("Costos de Reparación")]
+    [Header("Costos de Reparacion")]
     public List<ResourceCost> costosDeReparacion;
 
     [Header("Visuales 3D")]

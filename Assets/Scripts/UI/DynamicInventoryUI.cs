@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 public class DynamicInventoryUI : MonoBehaviour
@@ -34,8 +34,6 @@ public class DynamicInventoryUI : MonoBehaviour
             if (!slotsCreados.ContainsKey(tipo))
             {
                 GameObject nuevo = Instantiate(resourceSlotPrefab, contenedor);
-
-                // --- MAGIA: Forzamos la escala a 1 para evitar deformaciones ---
                 nuevo.transform.localScale = Vector3.one;
 
                 ResourceSlotUI script = nuevo.GetComponent<ResourceSlotUI>();

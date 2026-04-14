@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public enum WeatherState { Clear, Rain, Wind, HeavyStorm }
@@ -47,7 +47,7 @@ public class SimpleWeatherManager : MonoBehaviour
         RenderSettings.fog = false;
         if (mainLight != null) initialLightIntensity = mainLight.intensity;
         else if (RenderSettings.sun != null) initialLightIntensity = RenderSettings.sun.intensity;
-        
+
         if (rainParticles != null)
         {
             var emission = rainParticles.emission;
@@ -65,7 +65,7 @@ public class SimpleWeatherManager : MonoBehaviour
 
         Shader.SetGlobalFloat("_WindEnabled", 1f);
         Shader.EnableKeyword("DR_WIND_ENABLED");
-        
+
         ChangeWeather(WeatherState.Clear);
         StartCoroutine(WeatherCycle());
     }
@@ -84,7 +84,6 @@ public class SimpleWeatherManager : MonoBehaviour
 
     private IEnumerator DoThunderEffect()
     {
-        
         if (thunderSound != null && AudioManager.instance != null)
         {
             AudioManager.instance.PlaySFX(thunderSound);
@@ -95,7 +94,7 @@ public class SimpleWeatherManager : MonoBehaviour
             float flashIntensity = initialLightIntensity * 3f;
             mainLight.intensity = flashIntensity;
             yield return new WaitForSeconds(0.1f);
-            mainLight.intensity = initialLightIntensity * WeatherIntensity; 
+            mainLight.intensity = initialLightIntensity * WeatherIntensity;
             yield return new WaitForSeconds(0.05f);
             mainLight.intensity = flashIntensity * 0.5f;
             yield return new WaitForSeconds(0.1f);
@@ -173,7 +172,7 @@ public class SimpleWeatherManager : MonoBehaviour
             Shader.SetGlobalFloat("_WindSpeed", currentWind * 0.1f);
 
             WeatherIntensity = Mathf.Lerp(startSun, targetSunIntensity, t);
-            
+
             if (mainLight != null)
             {
                 mainLight.color = Color.Lerp(startColor, targetSunColor, t);
@@ -183,7 +182,6 @@ public class SimpleWeatherManager : MonoBehaviour
             {
                 if (tObj != null && tObj.terrainData != null)
                 {
-                    
                     tObj.terrainData.wavingGrassAmount = Mathf.Clamp(currentWind * 0.25f, 0.05f, 1f);
                     tObj.terrainData.wavingGrassSpeed = Mathf.Clamp(currentWind * 0.2f, 0.05f, 1f);
                     tObj.terrainData.wavingGrassStrength = Mathf.Clamp(currentWind * 0.25f, 0.05f, 1f);

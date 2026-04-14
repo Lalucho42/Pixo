@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
@@ -24,14 +24,14 @@ public class GameManager : MonoBehaviour
     public static bool IsPaused => CurrentState == GameState.Paused;
     public static bool IsDead => CurrentState == GameState.Dead;
 
-    [Header("UI Referencias - Menú de Pausa")]
+    [Header("UI Referencias - Menu de Pausa")]
     public GameObject pauseCanvas;
     public CanvasGroup pauseCanvasGroup;
     public Button pauseContinueButton;
-    public Button pauseRestartButton; // Si no tenés este botón en tu prefab, dejalo vacío
+    public Button pauseRestartButton;
     public Button pauseMainMenuButton;
 
-    [Header("UI Referencias - Menú de Muerte")]
+    [Header("UI Referencias - Menu de Muerte")]
     public GameObject deathCanvas;
     public CanvasGroup deathCanvasGroup;
     public Button deathContinueButton;
@@ -49,22 +49,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Inicializamos los estados de los Canvas
         if (pauseCanvas != null) pauseCanvas.SetActive(false);
         if (deathCanvas != null) deathCanvas.SetActive(false);
 
-        // Conectamos los botones a sus funciones (Listeners)
         SetupButtonListeners();
     }
 
     private void SetupButtonListeners()
     {
-        // Pausa
         if (pauseContinueButton != null) pauseContinueButton.onClick.AddListener(Resume);
         if (pauseRestartButton != null) pauseRestartButton.onClick.AddListener(Restart);
         if (pauseMainMenuButton != null) pauseMainMenuButton.onClick.AddListener(ReturnToMainMenu);
 
-        // Muerte
         if (deathContinueButton != null) deathContinueButton.onClick.AddListener(DeathContinue);
         if (deathMainMenuButton != null) deathMainMenuButton.onClick.AddListener(ReturnToMainMenu);
     }
@@ -77,8 +73,6 @@ public class GameManager : MonoBehaviour
             else if (CurrentState == GameState.Paused) Resume();
         }
     }
-
-    // --- LÓGICA DE ESTADOS ---
 
     public void Pause()
     {
@@ -135,7 +129,6 @@ public class GameManager : MonoBehaviour
 
         if (deathCanvas != null) deathCanvas.SetActive(false);
 
-        // Teletransporte al Checkpoint
         Player player = FindFirstObjectByType<Player>();
         if (player != null)
         {
@@ -167,8 +160,6 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = visible;
     }
-
-    // --- EFECTOS DE FADE ---
 
     private void StartFade(CanvasGroup cg, bool fadeIn, System.Action onComplete = null)
     {

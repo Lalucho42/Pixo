@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerAnimations
 {
@@ -6,7 +6,6 @@ public class PlayerAnimations
     private int speedHash, rollIdleHash, rollMoveHash, jumpHash, groundedHash, vVelHash;
     private int attPaloHash, attPicoHash, attHachaHash;
 
-    // Control de tiempo para evitar spam
     private float rollCooldown = 0.6f;
     private float lastRollTime = -1f;
 
@@ -26,7 +25,6 @@ public class PlayerAnimations
 
         player.InputHandler.OnRollEvent += HandleRollSelection;
 
-        
         player.Jump.OnJumpInitiated += () => player.Animator.SetTrigger(jumpHash);
 
         player.Combat.OnAttackRequested += HandleAttackAnims;
@@ -59,6 +57,12 @@ public class PlayerAnimations
 
         player.Animator.SetBool(groundedHash, player.Controller.isGrounded);
         player.Animator.SetFloat(vVelHash, player.Jump.VerticalVelocity);
+
+        bool canCombo = player.WeaponManager != null &&
+                        player.WeaponManager.CurrentTool != null &&
+                        player.WeaponManager.CurrentTool.toolName == "Palo";
+
+        player.Animator.SetBool("IsCombo", canCombo && player.InputHandler.IsAttackHeld);
     }
 
     private void HandleAttackAnims()

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [RequireComponent(typeof(HealthSystem))]
 public class RangedEnemyAI : MonoBehaviour
@@ -9,7 +9,7 @@ public class RangedEnemyAI : MonoBehaviour
     public float hoverSmoothing = 3f;
     public float groundCheckDistance = 10f;
 
-    [Header("Estética Dron")]
+    [Header("Estetica Dron")]
     public float noiseAmplitude = 0.15f;
     public float noiseFrequency = 0.5f;
     public float tiltAmount = 10f;
@@ -22,9 +22,8 @@ public class RangedEnemyAI : MonoBehaviour
     public float circleSpeed = 30f;
     public float fireCooldown = 2.5f;
 
-    // --- NUEVAS VARIABLES DE DISPARO ---
-    public float projectileSpeed = 18f; // Velocidad de la bala
-    [Range(0f, 3f)] public float shotSpread = 1.5f; // Qué tan "manco" es el dron (0 = puntería perfecta)
+    public float projectileSpeed = 18f;
+    [Range(0f, 3f)] public float shotSpread = 1.5f;
 
     [Header("Referencias")]
     public GameObject projectilePrefab;
@@ -64,7 +63,6 @@ public class RangedEnemyAI : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Si el dron muere, cae por gravedad
         if (health != null && health.IsDead)
         {
             rb.useGravity = true;
@@ -111,13 +109,11 @@ public class RangedEnemyAI : MonoBehaviour
         {
             groundY = hit.point.y;
         }
-        // Lerp: Suaviza el cambio de altura para que no suba/baje de golpe
         return Mathf.Lerp(transform.position.y, groundY + hoverHeight, Time.fixedDeltaTime * hoverSmoothing);
     }
 
     private Vector3 ComputeDroneNoise()
     {
-        // PerlinNoise: Genera un movimiento "flotante" aleatorio pero suave
         float t = Time.time * noiseFrequency;
         float nx = (Mathf.PerlinNoise(t + noiseOffsetX, 0f) - 0.5f) * 2f * noiseAmplitude;
         float ny = (Mathf.PerlinNoise(0f, t + noiseOffsetX) - 0.5f) * 2f * noiseAmplitude * 0.5f;
@@ -136,7 +132,6 @@ public class RangedEnemyAI : MonoBehaviour
 
     private Vector3 ComputeCombatVelocity(float distToPlayer, float targetY)
     {
-        // Trigonometría (Cos/Sin): Calcula un punto en círculo para orbitar al jugador
         circleAngle += circleSpeed * Time.fixedDeltaTime;
         float rad = circleAngle * Mathf.Deg2Rad;
         Vector3 circleOffset = new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * circleRadius;
@@ -160,7 +155,6 @@ public class RangedEnemyAI : MonoBehaviour
 
     private void ApplyDroneTilt()
     {
-        // Dot Product: Calcula cuánto se debe inclinar el modelo según hacia dónde se mueve
         Vector3 vel = rb.linearVelocity;
         float rightTilt = -Vector3.Dot(vel, transform.right) * (tiltAmount / moveSpeed);
         float forwardTilt = Vector3.Dot(vel, transform.forward) * (tiltAmount / moveSpeed);
@@ -177,13 +171,9 @@ public class RangedEnemyAI : MonoBehaviour
 
         if (bulletRb != null)
         {
-            // --- CÁLCULO DE PUNTERÍA IMPERFECTA ---
-            Vector3 targetPos = playerTarget.position + Vector3.up * 1f; // Apunta al pecho
-
-            // Agregamos un error aleatorio basado en 'shotSpread'
+            Vector3 targetPos = playerTarget.position + Vector3.up * 1f;
             Vector3 randomOffset = Random.insideUnitSphere * shotSpread;
             Vector3 aimDir = (targetPos + randomOffset - firePoint.position).normalized;
-
             bulletRb.linearVelocity = aimDir * projectileSpeed;
         }
         fireTimer = fireCooldown;
@@ -201,18 +191,15 @@ public class RangedEnemyAI : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // Esfera Cyan: Rango máximo de detección para empezar a disparar
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, attackRange);
 
-        // Esfera Verde: El círculo que el dron intenta recorrer alrededor del jugador
         if (playerTarget != null)
         {
             Gizmos.color = Color.green;
             DrawWireCircle(playerTarget.position, circleRadius);
         }
 
-        // Rayo Rojo/Verde: Muestra el Raycast de altura hacia el suelo
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, Vector3.down * groundCheckDistance);
     }
