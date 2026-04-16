@@ -11,8 +11,6 @@ public class HealthSystem : MonoBehaviour
     public UnityEvent onDeath;
     public UnityEvent onTakeDamage;
 
-    [Header("Audio")]
-    public AudioClip deathSound;
 
     public bool IsDead { get; private set; } = false;
 
@@ -52,8 +50,6 @@ public class HealthSystem : MonoBehaviour
         if (IsDead) return;
         IsDead = true;
 
-        if (deathSound != null && AudioManager.instance != null)
-            AudioManager.instance.PlaySFX(deathSound);
 
         onDeath?.Invoke();
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class ToolItem : MonoBehaviour
@@ -12,7 +12,6 @@ public class ToolItem : MonoBehaviour
     public int attackDamage = 25;
     public float attackRate = 0.5f;
     public float knockbackForce = 3f;
-    public AudioClip attackSound;
 
     [Header("Estadisticas de Recursos")]
     public float resourceDamage = 50f;
@@ -64,8 +63,6 @@ public class ToolItem : MonoBehaviour
         alreadyHit.Clear();
         if (damageCollider != null) damageCollider.enabled = true;
 
-        if (attackSound != null && AudioManager.instance != null)
-            AudioManager.instance.PlaySFX(attackSound);
     }
 
     public void DisableDamage()
