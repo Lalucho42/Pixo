@@ -109,14 +109,14 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _CausticCutout: 0.63
+    - _CausticCutout: 0.28
     - _CausticsSpeed: 0.03
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _Depth: 2.51
-    - _DepthFalloff: 1
+    - _DepthFalloff: 4.03
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -149,15 +149,15 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Base_Color: {r: 0.26032397, g: 0.5325337, b: 0.8490566, a: 0}
-    - _CausticColor: {r: 0, g: 1.6226416, b: 0.21504903, a: 0}
-    - _CausticTilling: {r: 5, g: 5, b: 0, a: 0}
+    - _CausticColor: {r: 0, g: 0.5926817, b: 0.08067913, a: 0}
+    - _CausticTilling: {r: 3, g: 3, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 0.010902455, g: 0.21176471, b: 0.06956918, a: 0}
     - _FoamSpeed: {r: 0.2, g: 0.2, b: 0, a: 0}
     - _FoamTilling: {r: 10, g: 8, b: 0, a: 0}
-    - _MainColor: {r: 0.09963512, g: 0.08859915, b: 0.103773594, a: 1}
-    - _ShoreColor: {r: 0.032084364, g: 0.066037714, b: 0.045461792, a: 1}
+    - _MainColor: {r: 0.09545213, g: 0.31132078, b: 0.23419502, a: 1}
+    - _ShoreColor: {r: 0.27772337, g: 0.745283, b: 0.48552763, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
