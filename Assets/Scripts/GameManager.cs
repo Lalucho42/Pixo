@@ -9,20 +9,23 @@ public class GameManager : MonoBehaviour
 {
     public enum GameState { Playing, Paused, Dead }
 
+    private static GameManager _instance;
     public static GameManager instance
     {
         get
         {
             if (_instance == null)
-                _instance = FindFirstObjectByType<GameManager>(FindObjectsInactive.Include);
+                _instance = Object.FindFirstObjectByType<GameManager>(FindObjectsInactive.Include);
             return _instance;
         }
     }
-    private static GameManager _instance;
 
     public static GameState CurrentState { get; private set; } = GameState.Playing;
     public static bool IsPaused => CurrentState == GameState.Paused;
     public static bool IsDead => CurrentState == GameState.Dead;
+
+    [Header("Configuracion Tecnica")]
+    [SerializeField] private int targetFPS = 60;
 
     [Header("UI Referencias - Menu de Pausa")]
     public GameObject pauseCanvas;
@@ -37,13 +40,17 @@ public class GameManager : MonoBehaviour
     public Button deathContinueButton;
     public Button deathMainMenuButton;
 
-    private const float FADE_DURATION = 0.25f;
+    private const float FADE_DURATION = 0.2f;
     private Coroutine activeFade;
+    private Player cachedPlayer;
 
     private void Awake()
     {
         if (_instance != null && _instance != this) { Destroy(gameObject); return; }
         _instance = this;
+
+        // Optimizacion de rendimiento: Limitamos FPS para no saturar GPU
+        Application.targetFrameRate = targetFPS;
         CurrentState = GameState.Playing;
     }
 
@@ -67,6 +74,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        // Usamos el nuevo Input System de forma eficiente
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (CurrentState == GameState.Playing) Pause();
@@ -94,19 +102,17 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentState != GameState.Paused) return;
         CurrentState = GameState.Playing;
-
         Time.timeScale = 1f;
         AudioListener.pause = false;
         SetCursorState(false);
 
         if (pauseCanvas != null)
-        {
             StartFade(pauseCanvasGroup, false, () => pauseCanvas.SetActive(false));
-        }
     }
 
     public void ShowDeathMenu()
     {
+        if (CurrentState == GameState.Dead) return;
         CurrentState = GameState.Dead;
         Time.timeScale = 0f;
         AudioListener.pause = true;
@@ -129,31 +135,22 @@ public class GameManager : MonoBehaviour
 
         if (deathCanvas != null) deathCanvas.SetActive(false);
 
-        Player player = FindFirstObjectByType<Player>();
-        if (player != null)
+        if (cachedPlayer == null) cachedPlayer = Object.FindFirstObjectByType<Player>();
+
+        if (cachedPlayer != null)
         {
-            CharacterController cc = player.GetComponent<CharacterController>();
+            CharacterController cc = cachedPlayer.GetComponent<CharacterController>();
             if (cc != null) cc.enabled = false;
-            player.transform.position = CheckpointManager.respawnPosition;
-            player.transform.rotation = CheckpointManager.respawnRotation;
+            cachedPlayer.transform.SetPositionAndRotation(CheckpointManager.respawnPosition, CheckpointManager.respawnRotation);
             if (cc != null) cc.enabled = true;
 
-            HealthSystem hs = player.GetComponent<HealthSystem>();
+            HealthSystem hs = cachedPlayer.GetComponent<HealthSystem>();
             if (hs != null) hs.ResetDeath();
         }
     }
 
-    public void Restart()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public void ReturnToMainMenu()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
-    }
+    public void Restart() { Time.timeScale = 1f; SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+    public void ReturnToMainMenu() { Time.timeScale = 1f; SceneManager.LoadScene("MainMenu"); }
 
     private void SetCursorState(bool visible)
     {

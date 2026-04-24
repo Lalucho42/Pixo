@@ -3,6 +3,8 @@ using Unity.Cinemachine;
 
 public class SetCameraTarget : MonoBehaviour
 {
+    [Header("Rendimiento: Arrastra el PlayerTarget aqui directamente")]
+    [SerializeField] private Transform manualTarget;
     [SerializeField] private string playerName = "Player Variant";
 
     void Start()
@@ -10,19 +12,20 @@ public class SetCameraTarget : MonoBehaviour
         var vcam = GetComponent<CinemachineCamera>();
         if (vcam == null) return;
 
-        var player = GameObject.Find(playerName);
-        if (player == null) return;
+        // Si no asignaste nada manual, buscamos una vez y listo
+        if (manualTarget == null)
+        {
+            var player = GameObject.Find(playerName);
+            if (player != null) manualTarget = player.transform.Find("CameraTarget");
 
-        var cameraTarget = player.transform.Find("CameraTarget");
-        if (cameraTarget != null)
-        {
-            vcam.Follow = cameraTarget;
-            vcam.LookAt = cameraTarget;
+            // Si aun asi no lo encuentra, usamos el transform del player
+            if (manualTarget == null && player != null) manualTarget = player.transform;
         }
-        else
+
+        if (manualTarget != null)
         {
-            vcam.Follow = player.transform;
-            vcam.LookAt = player.transform;
+            vcam.Follow = manualTarget;
+            vcam.LookAt = manualTarget;
         }
     }
 }

@@ -945,7 +945,7 @@ RectTransform:
   m_Father: {fileID: 4892832721337004749}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1006,7 +1006,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5147493631960218022
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1944,8 +1944,6 @@ GameObject:
   - component: {fileID: 7875583063358490264}
   - component: {fileID: 561897550811245685}
   - component: {fileID: 5985940276294483712}
-  - component: {fileID: 181036502114469916}
-  - component: {fileID: 1017207661430399558}
   - component: {fileID: 1267884737757887796}
   m_Layer: 6
   m_Name: Enemy_Mele
@@ -2130,7 +2128,6 @@ MonoBehaviour:
   onTakeDamage:
     m_PersistentCalls:
       m_Calls: []
-  deathSound: {fileID: 0}
 --- !u!114 &5985940276294483712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2184,40 +2181,6 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 0, y: -1, z: 0}
---- !u!114 &181036502114469916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9182482938202650734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21062e3986c1a8649a193a899a7e7e20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  simpleEffect: {fileID: 8278133892299822346, guid: 2813e0da1671cbe4fb41c8cdcf22b4fd, type: 3}
-  footstepClick: {fileID: 8300000, guid: e1a8aae5c83b0204898f7688b5210f24, type: 3}
-  footstepVolume: 0.5
-  isAutomatic: 1
-  stepDistance: 1.5
-  stepPositionOffset: {x: 0, y: -0.8, z: 0}
---- !u!114 &1017207661430399558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9182482938202650734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d37e1a1d92a3d584ab84b8fe45b93b28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceEffect: {fileID: 0}
-  creatureEffect: {fileID: 0}
-  simpleResource: {fileID: 0}
-  simpleCreature: {fileID: 3737007344834230353, guid: cbd487bf59042174e8d434ba770443db, type: 3}
 --- !u!114 &1267884737757887796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2234,9 +2197,12 @@ MonoBehaviour:
   detectionRange: 15
   loseTargetRange: 25
   attackRange: 2.5
+  walkRange: 5
+  runSpeed: 3.5
+  walkSpeed: 1.5
   attackCooldown: 1.5
   damage: 10
   projectilePrefab: {fileID: 0}
   shootPoint: {fileID: 0}
   handDamageScript: {fileID: 6595645470195576557}
-  animator: {fileID: 0}
+  animator: {fileID: 7875583063358490264}

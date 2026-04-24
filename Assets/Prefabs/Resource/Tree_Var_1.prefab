@@ -155,7 +155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceName: 
   type: 0
-  health: 100
+  health: 50
   dropPrefab: {fileID: 4149674811348765159, guid: c9fe6ffa8e69b6b439b8c051fc71c5c1, type: 3}
   dropAmount: 3
   spawnPoint: {fileID: 7927351241911991134}
