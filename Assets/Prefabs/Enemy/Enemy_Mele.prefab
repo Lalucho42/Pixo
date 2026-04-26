@@ -2200,6 +2200,10 @@ MonoBehaviour:
   walkRange: 5
   runSpeed: 3.5
   walkSpeed: 1.5
+  hoverHeight: 2
+  hoverSmoothing: 3
+  noiseAmplitude: 0.2
+  noiseFrequency: 1.5
   attackCooldown: 1.5
   damage: 10
   projectilePrefab: {fileID: 0}
