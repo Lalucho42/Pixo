@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 8
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.18396226, g: 0.20092331, b: 0.24528301, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 0abb308d27287d24c8430daeffdc8e46, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 03e2616f5befa194da5c803432a7da3a, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 12.08
@@ -373401,6 +373401,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 146213485}
     - target: {fileID: 7611925699610637011, guid: 6642896ca3e98c547a000b5e1069bc73, type: 3}
+      propertyPath: m_ClearFlags
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7611925699610637011, guid: 6642896ca3e98c547a000b5e1069bc73, type: 3}
       propertyPath: orthographic
       value: 0
       objectReference: {fileID: 0}
@@ -373419,6 +373423,22 @@ PrefabInstance:
     - target: {fileID: 7611925699610637011, guid: 6642896ca3e98c547a000b5e1069bc73, type: 3}
       propertyPath: near clip plane
       value: 2.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 7611925699610637011, guid: 6642896ca3e98c547a000b5e1069bc73, type: 3}
+      propertyPath: m_BackGroundColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7611925699610637011, guid: 6642896ca3e98c547a000b5e1069bc73, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7611925699610637011, guid: 6642896ca3e98c547a000b5e1069bc73, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7611925699610637011, guid: 6642896ca3e98c547a000b5e1069bc73, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.5801887
       objectReference: {fileID: 0}
     - target: {fileID: 7611925699610637011, guid: 6642896ca3e98c547a000b5e1069bc73, type: 3}
       propertyPath: m_CullingMask.m_Bits
