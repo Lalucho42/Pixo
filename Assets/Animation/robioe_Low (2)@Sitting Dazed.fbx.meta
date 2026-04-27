@@ -1,44 +1,9 @@
 fileFormatVersion: 2
-guid: 0ab71ae231e9dbe438715f8565a902b5
+guid: b14ba9008bd971548b85630119cebe93
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Collar
-    second: {fileID: 2100000, guid: 0af03c2a90a16844d8da8d55606469e2, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Ears
-    second: {fileID: 2100000, guid: 41906a940cea1f244a59d891ee6eeb40, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: EyeColor
-    second: {fileID: 2100000, guid: 4dd1c1a92eafed6478eaf629ce7e291b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: EyeHighlight
-    second: {fileID: 2100000, guid: bb72cf6c4addc554795eaf5de4a35586, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: NormalBlackFur
-    second: {fileID: 2100000, guid: c169d2aca04e38f4eb06d6984dd40fd5, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: NormalFur
-    second: {fileID: 2100000, guid: 5ac9aed41d2bf294e9c53a01b0b9642b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Pupil
-    second: {fileID: 2100000, guid: 423a7f195a323444db3f15ce1ea41aa9, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -124,15 +89,15 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: Root
+    rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 2e05a747a6709c347be39ce67225f341, type: 3}
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 2
+  avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
