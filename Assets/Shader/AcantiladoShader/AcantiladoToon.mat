@@ -67,8 +67,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Blend_Range_High: 0.25
+    - _Blend_Range_Low: 0.15
     - _Layer_Contrast: 5
-    - _Layer_Spread: 0.15
+    - _Layer_Spread: 0.5
+    - _Noise_Bias: -0.05
+    - _Noise_Intensity: 0.3
+    - _Noise_Scale: 50
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ShadowBands: 3

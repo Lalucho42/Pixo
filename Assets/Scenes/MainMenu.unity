@@ -137472,33 +137472,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5316609513351239561, guid: 4db940c31d61ac149801c850fc645d68, type: 3}
   m_PrefabInstance: {fileID: 1062623574}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &826806832 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8394770609823148679, guid: 618e48959fd277347bb506406d3062db, type: 3}
-  m_PrefabInstance: {fileID: 6271311210214872050}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &826806838
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826806832}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3f2a53087102d084ab77ea0598ac09a2, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &827072641
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -375655,12 +375628,13 @@ PrefabInstance:
     - {fileID: 7277905405936999848, guid: 618e48959fd277347bb506406d3062db, type: 3}
     - {fileID: 6011065407337739300, guid: 618e48959fd277347bb506406d3062db, type: 3}
     - {fileID: 3303301781764661482, guid: 618e48959fd277347bb506406d3062db, type: 3}
+    - {fileID: 8394770609823148679, guid: 618e48959fd277347bb506406d3062db, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7585825868232252790, guid: 618e48959fd277347bb506406d3062db, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1410601079}
     - targetCorrespondingSourceObject: {fileID: 9112423699700215647, guid: 618e48959fd277347bb506406d3062db, type: 3}
-      insertIndex: 2
+      insertIndex: 1
       addedObject: {fileID: 494108923}
     - targetCorrespondingSourceObject: {fileID: 8964163156777541780, guid: 618e48959fd277347bb506406d3062db, type: 3}
       insertIndex: 0
@@ -375669,9 +375643,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6606072565145326606, guid: 618e48959fd277347bb506406d3062db, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1790913906}
-    - targetCorrespondingSourceObject: {fileID: 8394770609823148679, guid: 618e48959fd277347bb506406d3062db, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 826806838}
     - targetCorrespondingSourceObject: {fileID: 3996845776011372912, guid: 618e48959fd277347bb506406d3062db, type: 3}
       insertIndex: -1
       addedObject: {fileID: 367227459}
