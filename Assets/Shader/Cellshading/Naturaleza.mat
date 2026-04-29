@@ -53,8 +53,8 @@ Material:
     - _Shadow_Threshold: 0
     m_Colors:
     - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
-    - _Emission_Color: {r: 1.759245, g: 1.645572, b: 1.275194, a: 1}
-    - _Shadow_Color: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 0}
+    - _Emission_Color: {r: 2.3487303, g: 2.3487303, b: 2.3487303, a: 1}
+    - _Shadow_Color: {r: 0.29411766, g: 0.29411766, b: 0.29411766, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &890606096314706844

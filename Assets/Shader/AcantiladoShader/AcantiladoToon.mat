@@ -81,6 +81,7 @@ Material:
     - _Tiling_Base: 1
     - _Tiling_Layer: 0.1
     m_Colors:
-    - _ShadowColor: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 0}
+    - _Color: {r: 0.4339623, g: 0.40693298, b: 0.37459952, a: 0}
+    - _ShadowColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
