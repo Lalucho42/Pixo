@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5364472293612296938
+--- !u!114 &-1314738225206824660
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,14 +20,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MAT_Enemigo
+  m_Name: MAT_Computadora
   m_Shader: {fileID: -6465566751694194690, guid: 145d0c0057ac1014da78ff4237d00947, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 2
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -38,11 +38,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Base_Map:
-        m_Texture: {fileID: 2800000, guid: 6ec1fb8c55e908242beb9878933a3460, type: 3}
+        m_Texture: {fileID: 2800000, guid: c24a26ef211839243ab07180139f97c7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Emission_Map:
-        m_Texture: {fileID: 2800000, guid: 99f6508403f07da4ea3f1cf22eee76c8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 516465a4f43bf46428001b71e388105b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -66,7 +66,7 @@ Material:
     - _Shadow_Threshold: 0
     m_Colors:
     - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
-    - _Emission_Color: {r: 32, g: 0, b: 0, a: 1}
+    - _Emission_Color: {r: 2.3487303, g: 2.3487303, b: 2.3487303, a: 1}
     - _Shadow_Color: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -10,6 +10,7 @@ public class DynamicInventoryUI : MonoBehaviour
     [Header("Iconos de Recursos")]
     public Sprite iconoMadera;
     public Sprite iconoPiedra;
+    public Sprite iconoParteComputadora; // <--- Agregamos este slot
 
     private Dictionary<ResourceType, ResourceSlotUI> slotsCreados = new Dictionary<ResourceType, ResourceSlotUI>();
 
@@ -17,14 +18,14 @@ public class DynamicInventoryUI : MonoBehaviour
     {
         if (player == null) player = FindFirstObjectByType<Player>();
         player.Inventory.OnInventoryChanged += ActualizarInventario;
-
-        foreach (Transform child in contenedor) Destroy(child.gameObject);
     }
 
-    private void ActualizarInventario(int madera, int piedra)
+    // Ahora recibe los 3 datos
+    private void ActualizarInventario(int madera, int piedra, int parte)
     {
         CheckResource(ResourceType.Madera, madera);
         CheckResource(ResourceType.Piedra, piedra);
+        CheckResource(ResourceType.ParteComputadora, parte);
     }
 
     private void CheckResource(ResourceType tipo, int cantidad)
@@ -34,14 +35,10 @@ public class DynamicInventoryUI : MonoBehaviour
             if (!slotsCreados.ContainsKey(tipo))
             {
                 GameObject nuevo = Instantiate(resourceSlotPrefab, contenedor);
-                nuevo.transform.localScale = Vector3.one;
-
                 ResourceSlotUI script = nuevo.GetComponent<ResourceSlotUI>();
                 slotsCreados.Add(tipo, script);
             }
-
-            Sprite icono = GetSpriteForResource(tipo);
-            slotsCreados[tipo].Configurar(icono, cantidad);
+            slotsCreados[tipo].Configurar(GetSpriteForResource(tipo), cantidad);
         }
         else if (slotsCreados.ContainsKey(tipo))
         {
@@ -54,6 +51,7 @@ public class DynamicInventoryUI : MonoBehaviour
     {
         if (tipo == ResourceType.Madera) return iconoMadera;
         if (tipo == ResourceType.Piedra) return iconoPiedra;
+        if (tipo == ResourceType.ParteComputadora) return iconoParteComputadora;
         return null;
     }
 }

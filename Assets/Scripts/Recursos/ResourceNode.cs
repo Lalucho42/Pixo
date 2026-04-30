@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-public enum ResourceType { Madera, Piedra }
-
+public enum ResourceType { Madera, Piedra, ParteComputadora }
 public class ResourceNode : MonoBehaviour
 {
     public string resourceName;

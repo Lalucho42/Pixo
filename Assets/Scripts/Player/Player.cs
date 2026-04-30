@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     [Header("--- Datos de Rodar (Collider) ---")]
     [Range(0.1f, 0.9f)] public float rollHeightMultiplier = 0.5f;
 
+
     public CharacterController Controller { get; private set; }
     public Animator Animator { get; private set; }
     public PlayerWeaponManager WeaponManager { get; private set; }
@@ -66,6 +67,7 @@ public class Player : MonoBehaviour
 
         InputHandler.OnScrollEvent += HandleWeaponScroll;
         IsDead = false;
+
     }
 
     private void OnEnable() { if (InputHandler != null) InputHandler.Enable(); }
