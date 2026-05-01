@@ -181,6 +181,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""InteractPuzzles"",
+                    ""type"": ""Button"",
+                    ""id"": ""1efd2d19-c9db-4ea3-b007-21691a61a909"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -337,6 +346,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""CheatDebug"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19c3686d-5f95-45bf-a411-eea1397637b6"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InteractPuzzles"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -355,6 +375,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
         m_Gameplay_Scroll = m_Gameplay.FindAction("Scroll", throwIfNotFound: true);
         m_Gameplay_CheatDebug = m_Gameplay.FindAction("CheatDebug", throwIfNotFound: true);
+        m_Gameplay_InteractPuzzles = m_Gameplay.FindAction("InteractPuzzles", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -445,6 +466,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Attack;
     private readonly InputAction m_Gameplay_Scroll;
     private readonly InputAction m_Gameplay_CheatDebug;
+    private readonly InputAction m_Gameplay_InteractPuzzles;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -496,6 +518,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/CheatDebug".
         /// </summary>
         public InputAction @CheatDebug => m_Wrapper.m_Gameplay_CheatDebug;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/InteractPuzzles".
+        /// </summary>
+        public InputAction @InteractPuzzles => m_Wrapper.m_Gameplay_InteractPuzzles;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -552,6 +578,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @CheatDebug.started += instance.OnCheatDebug;
             @CheatDebug.performed += instance.OnCheatDebug;
             @CheatDebug.canceled += instance.OnCheatDebug;
+            @InteractPuzzles.started += instance.OnInteractPuzzles;
+            @InteractPuzzles.performed += instance.OnInteractPuzzles;
+            @InteractPuzzles.canceled += instance.OnInteractPuzzles;
         }
 
         /// <summary>
@@ -593,6 +622,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @CheatDebug.started -= instance.OnCheatDebug;
             @CheatDebug.performed -= instance.OnCheatDebug;
             @CheatDebug.canceled -= instance.OnCheatDebug;
+            @InteractPuzzles.started -= instance.OnInteractPuzzles;
+            @InteractPuzzles.performed -= instance.OnInteractPuzzles;
+            @InteractPuzzles.canceled -= instance.OnInteractPuzzles;
         }
 
         /// <summary>
@@ -703,5 +735,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCheatDebug(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "InteractPuzzles" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteractPuzzles(InputAction.CallbackContext context);
     }
 }

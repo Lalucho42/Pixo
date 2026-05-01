@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class StructureRepairUI : MonoBehaviour
 {
     public GameObject slotPrefab;
@@ -32,9 +33,10 @@ public class StructureRepairUI : MonoBehaviour
             transform.forward = mainCam.transform.forward;
         }
     }
-
+    
     public void ConfigurarCartel(List<ResourceCost> costos)
     {
+        
         foreach (Transform child in contenedorSlots) Destroy(child.gameObject);
 
         foreach (ResourceCost costo in costos)
@@ -86,4 +88,6 @@ public class StructureRepairUI : MonoBehaviour
         panelPrincipal.transform.localScale = Vector3.zero;
         panelPrincipal.SetActive(false);
     }
+
+
 }

@@ -18,6 +18,7 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
     [Header("UI")]
     public StructureRepairUI uiFlotante;
 
+    public BasePuzzleModule moduloPuzzle; 
     private bool laPCYaFunciona = false;
     private bool todoTerminado = false;
 
@@ -54,10 +55,25 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
         {
             if (RevisarYQuitarMateriales(elJugador, materialesParaMina))
             {
-                FinalizarTodo();
+                if (moduloPuzzle != null)
+                {
+                    
+                    moduloPuzzle.AlTerminarElPuzzle = (exito) => {
+                        if (exito) FinalizarTodo();
+                    };
+                    moduloPuzzle.StartPuzzle(); 
+                    return; 
+                }
+
+                
+                if (RevisarYQuitarMateriales(elJugador, materialesParaMina))
+                {
+                    FinalizarTodo();
+                }
+            }
+            
             }
         }
-    }
 
     // --- NUEVO: Efecto de caida para la computadora ---
     IEnumerator EfectoCaidaComputadora()

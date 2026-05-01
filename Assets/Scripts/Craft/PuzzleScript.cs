@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PuzzleScript : BasePuzzleModule
 {
@@ -7,47 +8,54 @@ public class PuzzleScript : BasePuzzleModule
     private int toquesActuales = 0;
     private bool puzzleActivo = false;
 
-    // Estas variables son las que la computadora mira para saber si ganaste
-    public bool elPuzzleFueCompletadoConExito = false;
-    public bool elPuzzleYaTermino = false;
+    // Referencia directa a la acción de la tecla F
+    public InputActionReference accionInteractuarF;
 
-    // Esto lo llama la computadora automáticamente[cite: 1, 3]
-    public override void StartPuzzle()
+    private void OnEnable()
     {
-        Debug.Log("¡PC detectada! Iniciando puzzle de 5 toques.");
-        puzzleActivo = true;
-        toquesActuales = 0;
-        elPuzzleYaTermino = false;
-        elPuzzleFueCompletadoConExito = false;
+        
+        if (accionInteractuarF != null)
+        {
+            accionInteractuarF.action.Enable();
+            accionInteractuarF.action.performed += OnFPresionada;
+        }
     }
 
-    private void Update()
+    private void OnDisable()
+    {
+        
+        if (accionInteractuarF != null)
+        {
+            accionInteractuarF.action.performed -= OnFPresionada;
+            accionInteractuarF.action.Disable();
+        }
+    }
+
+    public override void StartPuzzle()
+    {
+        Debug.Log("Se detectó el inicio del Puzzle! Presioná F."); 
+        puzzleActivo = true;
+        toquesActuales = 0;
+    }
+
+    
+    private void OnFPresionada(InputAction.CallbackContext context)
     {
         if (!puzzleActivo) return;
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            toquesActuales++;
-            Debug.Log("Toques: " + toquesActuales + "/" + toquesNecesarios);
+        toquesActuales++;
+        Debug.Log($"Toques recibidos: {toquesActuales}/{toquesNecesarios}");
 
-            if (toquesActuales >= toquesNecesarios)
-            {
-                FinalizarPuzzle();
-            }
+        if (toquesActuales >= toquesNecesarios)
+        {
+            FinalizarPuzzle();
         }
     }
 
     private void FinalizarPuzzle()
     {
         puzzleActivo = false;
-
-        // Seteamos las variables de la Guía Técnica
-        elPuzzleFueCompletadoConExito = true;
-        elPuzzleYaTermino = true;
-
-        Debug.Log("¡Puzzle completado!");
-
-        // Avisamos a la base que el puzzle terminó[cite: 5]
-        EnviarResultadoAlCerebro(true);
+        Debug.Log("¡Puzzle completado con éxito!"); 
+        EnviarResultadoAlCerebro(true); 
     }
 }
