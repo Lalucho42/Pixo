@@ -1,61 +1,98 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using System.Collections; 
 
 public class PuzzleScript : BasePuzzleModule
 {
-    [Header("Configuración del Puzzle")]
-    public int toquesNecesarios = 5;
-    private int toquesActuales = 0;
-    private bool puzzleActivo = false;
+    [Header("Referencias de UI")]
+    public GameObject panelDelPuzzle;
+    public Image imagenDeLaTeclaA;
+    public Image imagenDeLaTeclaD;
 
-    // Referencia directa a la acción de la tecla F
-    public InputActionReference accionInteractuarF;
+    [Header("Colores")]
+    public Color colorGrisNormal = Color.white;
+    public Color colorVerdeExito = Color.green;
+    public Color colorRojoError = Color.red;
 
-    private void OnEnable()
-    {
-        
-        if (accionInteractuarF != null)
-        {
-            accionInteractuarF.action.Enable();
-            accionInteractuarF.action.performed += OnFPresionada;
-        }
-    }
-
-    private void OnDisable()
-    {
-        
-        if (accionInteractuarF != null)
-        {
-            accionInteractuarF.action.performed -= OnFPresionada;
-            accionInteractuarF.action.Disable();
-        }
-    }
+    private int[] patronDeTeclas = { 0, 1, 0, 0, 1 }; // A, D, A, A, D
+    private int pasoEnElQueVaElJugador = 0;
+    private bool elJuegoEstaAndando = false;
 
     public override void StartPuzzle()
     {
-        Debug.Log("Se detectó el inicio del Puzzle! Presioná F."); 
-        puzzleActivo = true;
-        toquesActuales = 0;
+        elJuegoEstaAndando = true;
+        pasoEnElQueVaElJugador = 0;
+
+        if (panelDelPuzzle != null) panelDelPuzzle.SetActive(true);
+
+        Player.Instance.InputHandler.ActivarControlesDelPuzzle();
+        Player.Instance.InputHandler.OnTeclaAPresionada += CuandoElJugadorTocaA;
+        Player.Instance.InputHandler.OnTeclaDPresionada += CuandoElJugadorTocaD;
+
+        ActualizarLosColoresDeLaPantalla();
     }
 
-    
-    private void OnFPresionada(InputAction.CallbackContext context)
+    private void CuandoElJugadorTocaA() { if (elJuegoEstaAndando) RevisarSiGanoOPerdio(0); }
+    private void CuandoElJugadorTocaD() { if (elJuegoEstaAndando) RevisarSiGanoOPerdio(1); }
+
+    private void RevisarSiGanoOPerdio(int teclaQueToco)
     {
-        if (!puzzleActivo) return;
-
-        toquesActuales++;
-        Debug.Log($"Toques recibidos: {toquesActuales}/{toquesNecesarios}");
-
-        if (toquesActuales >= toquesNecesarios)
+       
+        if (teclaQueToco == patronDeTeclas[pasoEnElQueVaElJugador])
         {
-            FinalizarPuzzle();
+            pasoEnElQueVaElJugador = pasoEnElQueVaElJugador + 1;
+
+            if (pasoEnElQueVaElJugador >= patronDeTeclas.Length)
+            {
+                TerminarElPuzzleYGanar();
+            }
+            else
+            {
+                StartCoroutine(EfectoDeTeclaCorrecta());
+            }
+        }
+        else
+        {
+            StartCoroutine(MostrarEfectoDeErrorEnRojo());
         }
     }
 
-    private void FinalizarPuzzle()
+    IEnumerator EfectoDeTeclaCorrecta()
     {
-        puzzleActivo = false;
-        Debug.Log("¡Puzzle completado con éxito!"); 
-        EnviarResultadoAlCerebro(true); 
+       
+        imagenDeLaTeclaA.color = colorGrisNormal;
+        imagenDeLaTeclaD.color = colorGrisNormal;
+        yield return new WaitForSeconds(0.1f);
+        ActualizarLosColoresDeLaPantalla();
+    }
+
+    private void ActualizarLosColoresDeLaPantalla()
+    {
+        imagenDeLaTeclaA.color = colorGrisNormal;
+        imagenDeLaTeclaD.color = colorGrisNormal;
+
+        if (patronDeTeclas[pasoEnElQueVaElJugador] == 0) imagenDeLaTeclaA.color = colorVerdeExito;
+        else imagenDeLaTeclaD.color = colorVerdeExito;
+    }
+
+    IEnumerator MostrarEfectoDeErrorEnRojo()
+    {
+        pasoEnElQueVaElJugador = 0;
+        imagenDeLaTeclaA.color = colorRojoError;
+        imagenDeLaTeclaD.color = colorRojoError;
+        yield return new WaitForSeconds(0.5f);
+        ActualizarLosColoresDeLaPantalla();
+    }
+
+    private void TerminarElPuzzleYGanar()
+    {
+        elJuegoEstaAndando = false;
+        if (panelDelPuzzle != null) panelDelPuzzle.SetActive(false);
+
+        Player.Instance.InputHandler.OnTeclaAPresionada -= CuandoElJugadorTocaA;
+        Player.Instance.InputHandler.OnTeclaDPresionada -= CuandoElJugadorTocaD;
+        Player.Instance.InputHandler.ActivarControlesDeCaminar();
+
+        EnviarResultadoAlCerebro(true);
     }
 }

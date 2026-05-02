@@ -5,25 +5,29 @@ using System;
 public class PlayerInputHandler
 {
     private PlayerControls playerControls;
-
     public Vector2 MoveInput { get; private set; }
     public bool IsRunning { get; private set; }
     public bool IsJumpHeld { get; private set; }
     public bool IsAttackHeld { get; private set; }
-
     public event Action OnRollEvent;
     public event Action OnInteractEvent;
     public event Action OnFlashlightEvent;
     public event Action OnJumpEvent;
     public event Action OnAttackEvent;
-
     public event Action<float> OnScrollEvent;
+    public event Action OnTeclaAPresionada;
+    public event Action OnTeclaDPresionada;
 
     public Vector2 LookInput
     {
         get
         {
-            return playerControls.Gameplay.Look.ReadValue<Vector2>();
+            
+            if (playerControls.Gameplay.enabled == true)
+            {
+                return playerControls.Gameplay.Look.ReadValue<Vector2>();
+            }
+            return Vector2.zero;
         }
     }
 
@@ -33,23 +37,36 @@ public class PlayerInputHandler
 
         playerControls.Gameplay.Move.performed += OnMovePerformed;
         playerControls.Gameplay.Move.canceled += OnMoveCanceled;
-
         playerControls.Gameplay.Run.performed += OnRunPerformed;
         playerControls.Gameplay.Run.canceled += OnRunCanceled;
-
         playerControls.Gameplay.Jump.performed += OnJumpPerformedState;
         playerControls.Gameplay.Jump.canceled += OnJumpCanceledState;
-
         playerControls.Gameplay.Roll.performed += OnRollPerformed;
         playerControls.Gameplay.Interact.performed += OnInteractPerformed;
         playerControls.Gameplay.Flashlight.performed += OnFlashlightPerformed;
         playerControls.Gameplay.Jump.performed += OnJumpEventTrigger;
-        
         playerControls.Gameplay.Attack.performed += OnAttackPerformed;
         playerControls.Gameplay.Attack.performed += ctx => IsAttackHeld = true;
         playerControls.Gameplay.Attack.canceled += ctx => IsAttackHeld = false;
-
         playerControls.Gameplay.Scroll.performed += OnScrollPerformed;
+        playerControls.Puzzle.TeclaA.performed += ctx => OnTeclaAPresionada?.Invoke();
+        playerControls.Puzzle.TeclaD.performed += ctx => OnTeclaDPresionada?.Invoke();
+    }
+
+   
+    public void ActivarControlesDelPuzzle()
+    {
+       
+        playerControls.Gameplay.Disable();
+        playerControls.Puzzle.Enable();
+        MoveInput = Vector2.zero;
+    }
+
+    public void ActivarControlesDeCaminar()
+    {
+        
+        playerControls.Puzzle.Disable();
+        playerControls.Gameplay.Enable();
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -109,8 +126,13 @@ public class PlayerInputHandler
 
     private void OnScrollPerformed(InputAction.CallbackContext context)
     {
-        float scrollY = context.ReadValue<Vector2>().y;
-        if (scrollY != 0f && OnScrollEvent != null) OnScrollEvent.Invoke(scrollY);
+        Vector2 valorDelScroll = context.ReadValue<Vector2>();
+        float direccionVertical = valorDelScroll.y;
+
+        if (direccionVertical != 0f && OnScrollEvent != null)
+        {
+            OnScrollEvent.Invoke(direccionVertical);
+        }
     }
 
     public void Enable()

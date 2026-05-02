@@ -70,18 +70,18 @@ Material:
     - _Blend_Range_High: 0.25
     - _Blend_Range_Low: 0.15
     - _Layer_Contrast: 5
-    - _Layer_Spread: 0.5
+    - _Layer_Spread: 0.46
     - _Noise_Bias: -0.05
     - _Noise_Intensity: 0.3
     - _Noise_Scale: 50
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ShadowBands: 3
-    - _ShadowThreshold: 0.6
+    - _ShadowThreshold: -0.37
     - _Tiling_Base: 1
-    - _Tiling_Layer: 0.1
+    - _Tiling_Layer: 1
     m_Colors:
-    - _Color: {r: 0.4339623, g: 0.40693298, b: 0.37459952, a: 0}
+    - _Color: {r: 0.3773585, g: 0.2868162, b: 0.18333928, a: 0}
     - _ShadowColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

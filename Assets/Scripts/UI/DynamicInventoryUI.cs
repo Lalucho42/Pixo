@@ -10,7 +10,7 @@ public class DynamicInventoryUI : MonoBehaviour
     [Header("Iconos de Recursos")]
     public Sprite iconoMadera;
     public Sprite iconoPiedra;
-    public Sprite iconoParteComputadora; // <--- Agregamos este slot
+    public Sprite iconoParteComputadora; 
 
     private Dictionary<ResourceType, ResourceSlotUI> slotsCreados = new Dictionary<ResourceType, ResourceSlotUI>();
 
@@ -20,7 +20,7 @@ public class DynamicInventoryUI : MonoBehaviour
         player.Inventory.OnInventoryChanged += ActualizarInventario;
     }
 
-    // Ahora recibe los 3 datos
+   
     private void ActualizarInventario(int madera, int piedra, int parte)
     {
         CheckResource(ResourceType.Madera, madera);

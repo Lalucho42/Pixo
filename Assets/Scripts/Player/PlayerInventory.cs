@@ -6,9 +6,7 @@ public class PlayerInventory
     private Player player;
     public int Madera { get; private set; }
     public int Piedra { get; private set; }
-    public int ParteComputadora { get; private set; } // <--- Nueva variable
-
-    // Ahora el evento avisa de tres cosas: Madera, Piedra y Partes
+    public int ParteComputadora { get; private set; } 
     public event Action<int, int, int> OnInventoryChanged;
 
     public PlayerInventory(Player playerBrain)

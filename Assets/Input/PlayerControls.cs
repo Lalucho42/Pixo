@@ -359,6 +359,54 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Puzzle"",
+            ""id"": ""0e13bc22-197f-4495-831c-5b3f2c4075a8"",
+            ""actions"": [
+                {
+                    ""name"": ""TeclaA"",
+                    ""type"": ""Button"",
+                    ""id"": ""3b533f59-0180-47ae-b62a-99270b555110"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TeclaD"",
+                    ""type"": ""Button"",
+                    ""id"": ""f89e98fa-afc0-4fa1-8ec0-5a5216c8791c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6935bd3c-0f51-4c39-a885-a06fdd458f6c"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TeclaA"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""121cf993-6a40-4b9e-a6b9-1f33716ae4f8"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TeclaD"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -376,11 +424,16 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_Scroll = m_Gameplay.FindAction("Scroll", throwIfNotFound: true);
         m_Gameplay_CheatDebug = m_Gameplay.FindAction("CheatDebug", throwIfNotFound: true);
         m_Gameplay_InteractPuzzles = m_Gameplay.FindAction("InteractPuzzles", throwIfNotFound: true);
+        // Puzzle
+        m_Puzzle = asset.FindActionMap("Puzzle", throwIfNotFound: true);
+        m_Puzzle_TeclaA = m_Puzzle.FindAction("TeclaA", throwIfNotFound: true);
+        m_Puzzle_TeclaD = m_Puzzle.FindAction("TeclaD", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
     {
         UnityEngine.Debug.Assert(!m_Gameplay.enabled, "This will cause a leak and performance issues, PlayerControls.Gameplay.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Puzzle.enabled, "This will cause a leak and performance issues, PlayerControls.Puzzle.Disable() has not been called.");
     }
 
     /// <summary>
@@ -658,6 +711,113 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="GameplayActions" /> instance referencing this action map.
     /// </summary>
     public GameplayActions @Gameplay => new GameplayActions(this);
+
+    // Puzzle
+    private readonly InputActionMap m_Puzzle;
+    private List<IPuzzleActions> m_PuzzleActionsCallbackInterfaces = new List<IPuzzleActions>();
+    private readonly InputAction m_Puzzle_TeclaA;
+    private readonly InputAction m_Puzzle_TeclaD;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Puzzle".
+    /// </summary>
+    public struct PuzzleActions
+    {
+        private @PlayerControls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public PuzzleActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Puzzle/TeclaA".
+        /// </summary>
+        public InputAction @TeclaA => m_Wrapper.m_Puzzle_TeclaA;
+        /// <summary>
+        /// Provides access to the underlying input action "Puzzle/TeclaD".
+        /// </summary>
+        public InputAction @TeclaD => m_Wrapper.m_Puzzle_TeclaD;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Puzzle; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="PuzzleActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(PuzzleActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="PuzzleActions" />
+        public void AddCallbacks(IPuzzleActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PuzzleActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PuzzleActionsCallbackInterfaces.Add(instance);
+            @TeclaA.started += instance.OnTeclaA;
+            @TeclaA.performed += instance.OnTeclaA;
+            @TeclaA.canceled += instance.OnTeclaA;
+            @TeclaD.started += instance.OnTeclaD;
+            @TeclaD.performed += instance.OnTeclaD;
+            @TeclaD.canceled += instance.OnTeclaD;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="PuzzleActions" />
+        private void UnregisterCallbacks(IPuzzleActions instance)
+        {
+            @TeclaA.started -= instance.OnTeclaA;
+            @TeclaA.performed -= instance.OnTeclaA;
+            @TeclaA.canceled -= instance.OnTeclaA;
+            @TeclaD.started -= instance.OnTeclaD;
+            @TeclaD.performed -= instance.OnTeclaD;
+            @TeclaD.canceled -= instance.OnTeclaD;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PuzzleActions.UnregisterCallbacks(IPuzzleActions)" />.
+        /// </summary>
+        /// <seealso cref="PuzzleActions.UnregisterCallbacks(IPuzzleActions)" />
+        public void RemoveCallbacks(IPuzzleActions instance)
+        {
+            if (m_Wrapper.m_PuzzleActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="PuzzleActions.AddCallbacks(IPuzzleActions)" />
+        /// <seealso cref="PuzzleActions.RemoveCallbacks(IPuzzleActions)" />
+        /// <seealso cref="PuzzleActions.UnregisterCallbacks(IPuzzleActions)" />
+        public void SetCallbacks(IPuzzleActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PuzzleActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PuzzleActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="PuzzleActions" /> instance referencing this action map.
+    /// </summary>
+    public PuzzleActions @Puzzle => new PuzzleActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Gameplay" which allows adding and removing callbacks.
     /// </summary>
@@ -742,5 +902,27 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteractPuzzles(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Puzzle" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="PuzzleActions.AddCallbacks(IPuzzleActions)" />
+    /// <seealso cref="PuzzleActions.RemoveCallbacks(IPuzzleActions)" />
+    public interface IPuzzleActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "TeclaA" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTeclaA(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TeclaD" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTeclaD(InputAction.CallbackContext context);
     }
 }

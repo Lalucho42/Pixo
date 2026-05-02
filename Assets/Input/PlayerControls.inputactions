@@ -273,6 +273,54 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Puzzle",
+            "id": "0e13bc22-197f-4495-831c-5b3f2c4075a8",
+            "actions": [
+                {
+                    "name": "TeclaA",
+                    "type": "Button",
+                    "id": "3b533f59-0180-47ae-b62a-99270b555110",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TeclaD",
+                    "type": "Button",
+                    "id": "f89e98fa-afc0-4fa1-8ec0-5a5216c8791c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6935bd3c-0f51-4c39-a885-a06fdd458f6c",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TeclaA",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "121cf993-6a40-4b9e-a6b9-1f33716ae4f8",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TeclaD",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

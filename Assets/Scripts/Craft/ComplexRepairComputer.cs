@@ -4,115 +4,123 @@ using System.Collections.Generic;
 
 public class ComplexRepairComputer : MonoBehaviour, IInteractable
 {
-    [Header("Referencia a la Mina")]
-    public ComplexRepairableStructure estructuraObjetivo;
+    public ComplexRepairableStructure estructuraDeLosEscombros;
 
-    [Header("FASE 1: Arreglar la PC")]
-    public List<ResourceCost> materialesParaPC;
-    public GameObject modeloComputadoraRota;
-    public GameObject modeloComputadoraEncendida;
-
-    [Header("FASE 2: Arreglar los Escombros")]
-    public List<ResourceCost> materialesParaMina;
-
-    [Header("UI")]
-    public StructureRepairUI uiFlotante;
-
-    public BasePuzzleModule moduloPuzzle; 
+    [Header("FASE 1: Materiales para la PC")]
+    public List<ResourceCost> costosPC;
+    public GameObject pcRota;
+    public GameObject pcEncendida;
+    [Header("FASE 2: Materiales para la Mina")]
+    public List<ResourceCost> costosMina;
+    [Header("UI del Cartel")]
+    public StructureRepairUI cartelVisual; 
+    private BasePuzzleModule scriptDelPuzzle;
     private bool laPCYaFunciona = false;
-    private bool todoTerminado = false;
+    private bool todoElNivelEstaTerminado = false;
 
     void Start()
     {
-        if (modeloComputadoraRota != null) modeloComputadoraRota.SetActive(true);
-        if (modeloComputadoraEncendida != null) modeloComputadoraEncendida.SetActive(false);
+       
+        scriptDelPuzzle = GetComponent<BasePuzzleModule>();
+        if (pcRota != null) pcRota.SetActive(true);
 
-        if (uiFlotante != null)
+        if (pcEncendida != null) pcEncendida.SetActive(false);
+
+        if (cartelVisual != null)
         {
-            uiFlotante.ConfigurarCartel(materialesParaPC);
-            uiFlotante.Ocultar();
+            cartelVisual.ConfigurarCartel(costosPC);
+            cartelVisual.Ocultar();
         }
     }
 
-    public void Interact(Player elJugador)
+    public void Interact(Player jugador)
     {
-        if (todoTerminado) return;
+        if (todoElNivelEstaTerminado) return;
 
-        // --- PASO 1: ARREGLAR LA COMPUTADORA ---
         if (laPCYaFunciona == false)
         {
-            if (RevisarYQuitarMateriales(elJugador, materialesParaPC))
+            if (RevisarSiTieneMateriales(jugador, costosPC))
             {
                 laPCYaFunciona = true;
-                // Iniciamos el efecto de caida para la propia computadora
-                StartCoroutine(EfectoCaidaComputadora());
+                StartCoroutine(EfectoCaidaPC());
             }
             return;
         }
 
-        // --- PASO 2: ARREGLAR LA MINA ---
         if (laPCYaFunciona == true)
         {
-            if (RevisarYQuitarMateriales(elJugador, materialesParaMina))
+            if (RevisarSiTieneMateriales(jugador, costosMina))
             {
-                if (moduloPuzzle != null)
+                if (scriptDelPuzzle != null)
                 {
-                    
-                    moduloPuzzle.AlTerminarElPuzzle = (exito) => {
-                        if (exito) FinalizarTodo();
-                    };
-                    moduloPuzzle.StartPuzzle(); 
-                    return; 
-                }
+                    if (cartelVisual != null) cartelVisual.Ocultar();
 
-                
-                if (RevisarYQuitarMateriales(elJugador, materialesParaMina))
-                {
-                    FinalizarTodo();
+                    scriptDelPuzzle.AlTerminarElPuzzle = (resultado) => {
+                        if (resultado == true) FinalizarTodoElNivel();
+                    };
+
+                    scriptDelPuzzle.StartPuzzle();
                 }
-            }
-            
+                else
+                {
+                    FinalizarTodoElNivel();
+                }
             }
         }
+    }
 
-    // --- NUEVO: Efecto de caida para la computadora ---
-    IEnumerator EfectoCaidaComputadora()
+    IEnumerator EfectoCaidaPC()
     {
-        if (modeloComputadoraRota != null) modeloComputadoraRota.SetActive(false);
-
-        if (modeloComputadoraEncendida != null)
+        if (pcRota != null) pcRota.SetActive(false);
+        if (pcEncendida != null)
         {
-            Vector3 posicionFinalPC = modeloComputadoraEncendida.transform.localPosition;
-            // La movemos arriba para que caiga
-            modeloComputadoraEncendida.transform.localPosition = posicionFinalPC + new Vector3(0, 10, 0);
-            modeloComputadoraEncendida.SetActive(true);
+            Vector3 sitioFinal = pcEncendida.transform.localPosition;
+            pcEncendida.transform.localPosition = sitioFinal + new Vector3(0, 10, 0);
+            pcEncendida.SetActive(true);
 
-            float progreso = 0;
-            while (progreso < 1.0f)
+            float tiempo = 0;
+            while (tiempo < 1.0f)
             {
-                progreso = progreso + Time.deltaTime * 4f;
-                modeloComputadoraEncendida.transform.localPosition = Vector3.Lerp(modeloComputadoraEncendida.transform.localPosition, posicionFinalPC, progreso);
+                tiempo = tiempo + Time.deltaTime * 4.0f;
+                pcEncendida.transform.localPosition = Vector3.Lerp(pcEncendida.transform.localPosition, sitioFinal, tiempo);
                 yield return null;
             }
-            modeloComputadoraEncendida.transform.localPosition = posicionFinalPC;
+            pcEncendida.transform.localPosition = sitioFinal;
         }
 
-        // Una vez que cayo la PC, cambiamos el cartel para la mina
-        if (uiFlotante != null)
+        if (cartelVisual != null)
         {
-            uiFlotante.ConfigurarCartel(materialesParaMina);
-            uiFlotante.Mostrar();
+            cartelVisual.ConfigurarCartel(costosMina);
+            cartelVisual.Mostrar(); 
         }
     }
 
-    void FinalizarTodo()
+    void FinalizarTodoElNivel()
     {
-        todoTerminado = true;
-        if (uiFlotante != null) uiFlotante.Ocultar();
-        if (estructuraObjetivo != null) estructuraObjetivo.TriggerRepair();
+        todoElNivelEstaTerminado = true;
+        if (cartelVisual != null) cartelVisual.Ocultar();
+        if (estructuraDeLosEscombros != null) estructuraDeLosEscombros.TriggerRepair();
     }
 
-    bool RevisarYQuitarMateriales(Player p, List<ResourceCost> lista)
+    private void OnTriggerEnter(Collider other)
+    {
+       
+        if (other.CompareTag("Player") && cartelVisual != null && !todoElNivelEstaTerminado)
+        {
+            cartelVisual.Mostrar();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+       
+        if (other.CompareTag("Player") && cartelVisual != null)
+        {
+            cartelVisual.Ocultar();
+        }
+    }
+
+    bool RevisarSiTieneMateriales(Player p, List<ResourceCost> lista)
     {
         for (int i = 0; i < lista.Count; i++)
         {
@@ -123,15 +131,5 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
             p.Inventory.ConsumeResource(lista[i].tipoRecurso, lista[i].cantidad);
         }
         return true;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player") && uiFlotante != null && !todoTerminado) uiFlotante.Mostrar();
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player") && uiFlotante != null) uiFlotante.Ocultar();
     }
 }

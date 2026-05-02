@@ -8,21 +8,17 @@ public class Player : MonoBehaviour
     public float runSpeed = 6f;
     public float rollImpulseSpeed = 8f;
     public float rotationSpeed = 12f;
-
     [Header("--- Datos de Salto y Fisica ---")]
     public float jumpHeightIdle = 1.5f;
     public float gravity = 15f;
-
     [Header("--- Datos de Camara ---")]
     public Transform cameraFollowTarget;
     public float cameraSensitivity = 1.5f;
     public float cameraClampMin = -30f;
     public float cameraClampMax = 40f;
-
     [Header("--- Datos de Combate ---")]
     public Transform attackPoint;
     public float stunDuration = 0.5f;
-
     [Header("--- Datos de Rodar (Collider) ---")]
     [Range(0.1f, 0.9f)] public float rollHeightMultiplier = 0.5f;
 
@@ -30,7 +26,6 @@ public class Player : MonoBehaviour
     public CharacterController Controller { get; private set; }
     public Animator Animator { get; private set; }
     public PlayerWeaponManager WeaponManager { get; private set; }
-
     public PlayerInputHandler InputHandler { get; private set; }
     public PlayerMovement Movement { get; private set; }
     public PlayerJump Jump { get; private set; }
@@ -43,10 +38,12 @@ public class Player : MonoBehaviour
     public PlayerCrafting Crafting { get; private set; }
 
     public static bool IsDead = false;
+    public static Player Instance;
     public bool IsMovementLocked { get; set; }
 
     private void Awake()
     {
+        Instance = this;
         Controller = GetComponent<CharacterController>();
         Animator = GetComponentInChildren<Animator>();
         WeaponManager = GetComponent<PlayerWeaponManager>();

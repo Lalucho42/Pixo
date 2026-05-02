@@ -19,6 +19,9 @@ public class RepairableStructure : MonoBehaviour, IInteractable
     public GameObject modeloRoto;
     public GameObject modeloReparado;
 
+    [Header("Bloqueo de Paso")]
+    public GameObject paredInvisible; 
+
     [Header("UI Flotante")]
     public StructureRepairUI uiFlotante;
 
@@ -31,19 +34,20 @@ public class RepairableStructure : MonoBehaviour, IInteractable
             uiFlotante.ConfigurarCartel(costosDeReparacion);
             uiFlotante.Ocultar();
         }
+
+        if (paredInvisible != null) paredInvisible.SetActive(true);
+        if (modeloReparado != null) modeloReparado.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (estaReparado) return;
-        Player player = other.GetComponent<Player>();
-        if (player != null && uiFlotante != null) uiFlotante.Mostrar();
+        if (other.CompareTag("Player") && uiFlotante != null) uiFlotante.Mostrar();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Player player = other.GetComponent<Player>();
-        if (player != null && uiFlotante != null) uiFlotante.Ocultar();
+        if (other.CompareTag("Player") && uiFlotante != null) uiFlotante.Ocultar();
     }
 
     public void Interact(Player player)
@@ -63,55 +67,30 @@ public class RepairableStructure : MonoBehaviour, IInteractable
         estaReparado = true;
         if (uiFlotante != null) uiFlotante.Ocultar();
 
-        StartCoroutine(EfectoImpactoConstruccion());
+        StartCoroutine(EfectoCaidaSimple());
     }
 
-    private IEnumerator EfectoImpactoConstruccion()
+    private IEnumerator EfectoCaidaSimple()
     {
-        if (modeloRoto != null)
-        {
-            Renderer[] graficosRotos = modeloRoto.GetComponentsInChildren<Renderer>();
-            foreach (Renderer r in graficosRotos)
-            {
-                r.enabled = false;
-            }
-        }
+        if (modeloRoto != null) modeloRoto.SetActive(false);
 
         if (modeloReparado != null)
         {
-            Vector3 posOriginal = modeloReparado.transform.localPosition;
-            Vector3 escalaOriginal = modeloReparado.transform.localScale;
-
-            Vector3 posCielo = posOriginal + new Vector3(0, 15f, 0);
-            modeloReparado.transform.localPosition = posCielo;
+            Vector3 posFinal = modeloReparado.transform.localPosition;
+            modeloReparado.transform.localPosition = posFinal + new Vector3(0, 15f, 0);
             modeloReparado.SetActive(true);
 
             float progreso = 0f;
-            float velocidadCaida = 3.5f;
             while (progreso < 1f)
             {
-                progreso += Time.deltaTime * velocidadCaida;
-                float easeIn = progreso * progreso;
-                modeloReparado.transform.localPosition = Vector3.Lerp(posCielo, posOriginal, easeIn);
+                progreso += Time.deltaTime * 3.5f;
+                modeloReparado.transform.localPosition = Vector3.Lerp(modeloReparado.transform.localPosition, posFinal, progreso);
                 yield return null;
             }
-
-            modeloReparado.transform.localPosition = posOriginal;
-
-            if (modeloRoto != null) modeloRoto.SetActive(false);
-
-            Vector3 escalaAplastada = new Vector3(escalaOriginal.x * 1.15f, escalaOriginal.y * 0.7f, escalaOriginal.z * 1.15f);
-            modeloReparado.transform.localScale = escalaAplastada;
-
-            progreso = 0f;
-            float velocidadRebote = 8f;
-            while (progreso < 1f)
-            {
-                progreso += Time.deltaTime * velocidadRebote;
-                modeloReparado.transform.localScale = Vector3.Lerp(escalaAplastada, escalaOriginal, progreso);
-                yield return null;
-            }
-            modeloReparado.transform.localScale = escalaOriginal;
+            modeloReparado.transform.localPosition = posFinal;
         }
+
+        
+        if (paredInvisible != null) paredInvisible.SetActive(false);
     }
 }

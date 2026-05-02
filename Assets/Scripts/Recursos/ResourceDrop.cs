@@ -1,18 +1,35 @@
 ﻿using UnityEngine;
 
-public class ResourceDrop : MonoBehaviour
+
+public class ResourceDrop : MonoBehaviour, IInteractable
 {
-    public ResourceType type;
-    public int amount = 1;
+    public ResourceType tipoDeRecurso;
+    public int cantidad = 1;
 
     private void OnTriggerEnter(Collider other)
     {
-        Player player = other.GetComponent<Player>();
-
-        if (player != null && player.Inventory != null)
+        if (tipoDeRecurso != ResourceType.ParteComputadora)
         {
-            player.Inventory.AddResource(type, amount);
-            Destroy(gameObject);
+            Player jugador = other.GetComponent<Player>();
+
+            if (jugador != null && jugador.Inventory != null)
+            {
+                AgarrarObjeto(jugador);
+            }
         }
+    }
+
+    public void Interact(Player jugador)
+    {
+        if (tipoDeRecurso == ResourceType.ParteComputadora)
+        {
+            AgarrarObjeto(jugador);
+        }
+    }
+
+    private void AgarrarObjeto(Player jugador)
+    {
+        jugador.Inventory.AddResource(tipoDeRecurso, cantidad);
+        Destroy(gameObject);
     }
 }
