@@ -54,10 +54,8 @@ public class CatJump
         {
             cat.transform.position = finSalto;
             cat.Agent.CompleteOffMeshLink();
-
             cat.Agent.updatePosition = true;
             cat.Agent.updateRotation = true;
-
             cat.estaSaltando = false;
         }
         else

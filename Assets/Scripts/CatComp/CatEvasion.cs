@@ -38,6 +38,7 @@ public class CatEvasion
     {
         cat.Agent.isStopped = false;
         cat.Agent.updateRotation = true;
+        cat.esperandoAlJugador = false; 
 
         Vector3 direccionHuida = (cat.transform.position - enemigo.position).normalized;
         Vector3 destinoSeguro = cat.transform.position + (direccionHuida * cat.distanciaHuida);

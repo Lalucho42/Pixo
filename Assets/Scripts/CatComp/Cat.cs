@@ -8,29 +8,32 @@ public class Cat : MonoBehaviour
     public Transform player;
     public Transform[] waypoints;
 
-    [Header("Configuracion del Guia")]
-    public float distanciaMaxima = 8f;
-    public float distanciaAlPunto = 1.5f;
-    public float distanciaParaAvanzar = 3f;
+    [Header("Configuracion")]
+    public float distanciaAlPunto = 1.2f;
+    public float distanciaParaAvanzar = 3.5f;
+    public bool seguirJugador = false;
 
-    [Header("Configuracion de Huida")]
-    public float radioDeteccion = 8f;
-    public float distanciaHuida = 5f;
+    [Header("Estados")]
+    public bool esperandoAlJugador = false;
+    public bool estaSentado = false;
+    public bool bloqueadoPorAnimacion = false;
+    public bool estaGirando = false;
+    public bool isTrapped = false;
 
-    [Header("Configuracion de Salto")]
+    [Header("Config Salto")]
     public float alturaSalto = 2f;
     public float duracionSalto = 0.6f;
     public bool estaSaltando = false;
-
-    public bool isTrapped = false;
+    public float radioDeteccion = 8f;
+    public float distanciaHuida = 5f;
 
     public NavMeshAgent Agent { get; private set; }
     public Animator Anim { get; private set; }
 
-    public CatJump Jump { get; private set; }
-    public CatEvasion Evasion { get; private set; }
     public CatMovement Movement { get; private set; }
     public CatAnimations Animations { get; private set; }
+    public CatJump Jump { get; private set; }
+    public CatEvasion Evasion { get; private set; }
 
     private void Awake()
     {
@@ -46,18 +49,23 @@ public class Cat : MonoBehaviour
 
     private void Update()
     {
-        if (player == null) return;
-
-        if (isTrapped)
-        {
-            Animations.Tick();
-            return;
-        }
-
+        if (player == null || isTrapped) return;
         if (Jump.Tick()) { Animations.Tick(); return; }
         if (Evasion.Tick()) { Animations.Tick(); return; }
-
         Movement.Tick();
         Animations.Tick();
+    }
+
+    public void EventoFinalizarLevantado()
+    {
+        bloqueadoPorAnimacion = false;
+        estaSentado = false;
+        if (Agent != null) Agent.isStopped = false;
+    }
+
+    public void EventoFinalizarGiro()
+    {
+        estaGirando = false;
+        if (Agent != null) Agent.isStopped = false;
     }
 }
