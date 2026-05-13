@@ -825,15 +825,6 @@
             "m_Id": "42382b949bc240ed87c3b64c0556e180"
         },
         {
-            "m_Id": "183dcc9a60ad43bdb1b1784a55717453"
-        },
-        {
-            "m_Id": "f45d71451b5144bb8dbb9d80b0c9c5ea"
-        },
-        {
-            "m_Id": "017477fe0f7b4765a58a7291d79de0a8"
-        },
-        {
             "m_Id": "8a3df4a64bba445c98267cad04dc03bc"
         },
         {
@@ -841,6 +832,15 @@
         },
         {
             "m_Id": "c0d183aeea824c18b5ab7f6f509da6bb"
+        },
+        {
+            "m_Id": "183dcc9a60ad43bdb1b1784a55717453"
+        },
+        {
+            "m_Id": "f45d71451b5144bb8dbb9d80b0c9c5ea"
+        },
+        {
+            "m_Id": "017477fe0f7b4765a58a7291d79de0a8"
         }
     ]
 }
@@ -1731,7 +1731,7 @@
     ],
     "synonyms": [],
     "m_Precision": 0,
-    "m_PreviewExpanded": false,
+    "m_PreviewExpanded": true,
     "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
