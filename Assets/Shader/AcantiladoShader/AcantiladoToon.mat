@@ -100,10 +100,10 @@ Material:
     - _Tiling_Base: 1
     - _Tiling_Layer: 1
     m_Colors:
-    - _Color: {r: 0.3773585, g: 0.2868162, b: 0.18333928, a: 0}
-    - _RimLigthColor: {r: 2, g: 2, b: 2, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _RimLigthColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0}
-    - _Shadow_Color: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 0}
+    - _Shadow_Color: {r: 0.2641509, g: 0.2641509, b: 0.2641509, a: 1}
     - _Specular_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Tint: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

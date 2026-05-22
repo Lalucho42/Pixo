@@ -73,8 +73,8 @@ Material:
     m_Colors:
     - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Emission_Color: {r: 3.5184903, g: 3.3874938, b: 2.8335042, a: 1}
-    - _RimLigthColor: {r: 2, g: 2, b: 2, a: 0}
-    - _Shadow_Color: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 1}
+    - _RimLigthColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Shadow_Color: {r: 0.2641509, g: 0.2641509, b: 0.2641509, a: 0}
     - _Specular_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Tint: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

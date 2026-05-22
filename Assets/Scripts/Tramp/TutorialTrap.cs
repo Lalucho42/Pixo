@@ -53,7 +53,11 @@ public class TutorialTrap : MonoBehaviour
         direccionGato.y = 0;
         player.transform.rotation = Quaternion.LookRotation(direccionGato);
 
+        // --- INTEGRACIÓN CON MÁQUINA DE ESTADOS ---
         gato.isTrapped = true;
+        gato.estadoActual = Cat.CatState.Moving; // Le avisamos al sistema que el gato debe moverse
+        gato.Anim.SetBool("IsSitting", false);    // Quitamos la pose de sentado inmediatamente
+
         if (gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
         {
             gato.Agent.isStopped = false;
@@ -77,6 +81,12 @@ public class TutorialTrap : MonoBehaviour
                     gato.Agent.isStopped = true;
                     gato.Agent.velocity = Vector3.zero;
                 }
+
+                // --- INTEGRACIÓN CON MÁQUINA DE ESTADOS ---
+                // El gato llegó a la trampa, forzamos el estado de sentado visual
+                gato.estadoActual = Cat.CatState.Sitting;
+                gato.Anim.SetTrigger("SitDown");
+                gato.Anim.SetBool("IsSitting", true);
 
                 if (escudoVisual != null) escudoVisual.SetActive(true);
 
@@ -112,6 +122,8 @@ public class TutorialTrap : MonoBehaviour
             if (distanciaSalida <= 1.5f)
             {
                 gato.isTrapped = false;
+                // Devolvemos el gato al estado Moving normal para que retome su IA común
+                gato.estadoActual = Cat.CatState.Moving;
                 faseActual = FaseTrampa.Terminado;
             }
         }
@@ -134,6 +146,11 @@ public class TutorialTrap : MonoBehaviour
         if (faseActual != FaseTrampa.EsperandoInteraccion) return;
 
         if (escudoVisual != null) escudoVisual.SetActive(false);
+
+        // --- INTEGRACIÓN CON MÁQUINA DE ESTADOS ---
+        // Liberamos al gato: pasa a Moving y se apaga el bool de sentado
+        gato.estadoActual = Cat.CatState.Moving;
+        gato.Anim.SetBool("IsSitting", false);
 
         if (gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
         {

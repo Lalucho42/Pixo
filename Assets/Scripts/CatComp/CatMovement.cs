@@ -11,37 +11,29 @@ public class CatMovement
     {
         if (cat.Agent == null || !cat.Agent.isActiveAndEnabled || !cat.Agent.isOnNavMesh) return;
 
-        ActualizarEstadoEspera();
+        // Evaluamos distancias y actualizamos el Enum de estado
+        ActualizarEstadoIA();
 
-        // 1. Prioridad: Mirar al jugador si estamos esperando o sentados
-        if (cat.esperandoAlJugador)
+        // Bloqueo absoluto: Si la IA no está en modo Moving, el motor se clava a cero
+        if (cat.estadoActual != Cat.CatState.Moving)
         {
-            MirarHacia(cat.player.position);
-            return;
-        }
-
-        // 2. Bloqueos de animación (levantarse o girar)
-        if (cat.bloqueadoPorAnimacion || cat.estaSentado || cat.estaGirando)
-        {
-            MirarHacia(ObtenerPosicionObjetivo());
-            return;
-        }
-
-        // 3. Lógica de arranque
-        // Si el ángulo es muy cerrado (> 0.8), activamos el giro de 90 grados
-        if (Mathf.Abs(cat.Animations.TurnValue) > 0.8f)
-        {
-            cat.estaGirando = true;
             cat.Agent.isStopped = true;
+            cat.Agent.velocity = Vector3.zero;
+
+            // Si está esperando/sentado mira al jugador. Si se está levantando mira al frente (waypoint).
+            Vector3 objetivoMirada = (cat.estadoActual == Cat.CatState.Waiting || cat.estadoActual == Cat.CatState.Sitting)
+                ? cat.player.position
+                : ObtenerPosicionObjetivo();
+
+            MirarHacia(objetivoMirada);
+            return;
         }
-        else
-        {
-            // Si no estamos esperando ni bloqueados, ¡CAMINAMOS!
-            ReanudarMarcha(ObtenerPosicionObjetivo());
-        }
+
+        // Solo si pasó el filtro anterior, el NavMeshAgent puede avanzar
+        ReanudarMarcha(ObtenerPosicionObjetivo());
     }
 
-    private void ActualizarEstadoEspera()
+    private void ActualizarEstadoIA()
     {
         Vector3 targetPos = ObtenerPosicionObjetivo();
         float distDestino = Vector3.Distance(cat.transform.position, targetPos);
@@ -49,24 +41,58 @@ public class CatMovement
 
         if (cat.seguirJugador)
         {
-            cat.esperandoAlJugador = (distDestino <= cat.distanciaAlPunto);
+            if (distDestino <= cat.distanciaAlPunto)
+            {
+                if (cat.estadoActual == Cat.CatState.Moving)
+                {
+                    cat.estadoActual = Cat.CatState.Waiting;
+                    cat.Anim.SetTrigger("SitDown");
+                    cat.Anim.SetBool("IsSitting", true);
+                }
+            }
+            else
+            {
+                // Si el jugador se aleja, nos paramos
+                if (cat.estadoActual == Cat.CatState.Sitting || cat.estadoActual == Cat.CatState.Waiting)
+                {
+                    cat.estadoActual = Cat.CatState.StandingUp;
+                    cat.Anim.SetTrigger("StandUp");
+                    cat.Anim.SetBool("IsSitting", false);
+                }
+            }
         }
-        else
+        else // MODO WAYPOINTS
         {
             if (cat.waypoints.Length == 0 || puntoActual >= cat.waypoints.Length)
             {
-                cat.esperandoAlJugador = true;
+                if (cat.estadoActual == Cat.CatState.Moving)
+                {
+                    cat.estadoActual = Cat.CatState.Waiting;
+                    cat.Anim.SetTrigger("SitDown");
+                    cat.Anim.SetBool("IsSitting", true);
+                }
                 return;
             }
 
             if (distDestino <= cat.distanciaAlPunto)
             {
-                cat.esperandoAlJugador = true;
-                // Si el jugador está cerca, pasamos al siguiente punto
+                if (cat.estadoActual == Cat.CatState.Moving)
+                {
+                    cat.estadoActual = Cat.CatState.Waiting;
+                    cat.Anim.SetTrigger("SitDown");
+                    cat.Anim.SetBool("IsSitting", true);
+                }
+
+                // Si el jugador llega al radio de activación, avanzamos de punto e iniciamos el levantado
                 if (distJugador <= cat.distanciaParaAvanzar)
                 {
-                    puntoActual++;
-                    cat.esperandoAlJugador = false;
+                    if (cat.estadoActual == Cat.CatState.Sitting || cat.estadoActual == Cat.CatState.Waiting)
+                    {
+                        puntoActual++;
+                        cat.estadoActual = Cat.CatState.StandingUp;
+                        cat.Anim.SetTrigger("StandUp");
+                        cat.Anim.SetBool("IsSitting", false);
+                    }
                 }
             }
         }
@@ -74,24 +100,13 @@ public class CatMovement
 
     private void MirarHacia(Vector3 objetivo)
     {
-        cat.Agent.isStopped = true;
-        cat.Agent.velocity = Vector3.zero;
-
         Vector3 dir = (objetivo - cat.transform.position).normalized;
         dir.y = 0;
         if (dir != Vector3.zero)
         {
             Quaternion targetRot = Quaternion.LookRotation(dir);
-            cat.transform.rotation = Quaternion.Slerp(cat.transform.rotation, targetRot, Time.deltaTime * 6f);
+            cat.transform.rotation = Quaternion.Slerp(cat.transform.rotation, targetRot, Time.deltaTime * 5f);
         }
-    }
-
-    public Vector3 ObtenerDireccionAlObjetivo()
-    {
-        Vector3 posDestino = ObtenerPosicionObjetivo();
-        Vector3 dir = (posDestino - cat.transform.position).normalized;
-        dir.y = 0;
-        return dir;
     }
 
     private Vector3 ObtenerPosicionObjetivo()
@@ -104,7 +119,6 @@ public class CatMovement
 
     private void ReanudarMarcha(Vector3 destino)
     {
-        // Forzamos al agente a encenderse
         if (cat.Agent.isStopped) cat.Agent.isStopped = false;
         cat.Agent.SetDestination(destino);
     }

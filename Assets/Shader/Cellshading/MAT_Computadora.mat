@@ -72,7 +72,7 @@ Material:
     - _AddLights_Bands: 3
     - _AddLights_Multiplier: 2
     - _AddLights_Smoothness: 0.05
-    - _AmbientIntensity: 0.2
+    - _AmbientIntensity: 1
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _QueueControl: 0
@@ -86,8 +86,8 @@ Material:
     m_Colors:
     - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Emission_Color: {r: 2.3487303, g: 2.3487303, b: 2.3487303, a: 1}
-    - _RimLigthColor: {r: 2, g: 2, b: 2, a: 0}
-    - _Shadow_Color: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 0}
+    - _RimLigthColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Shadow_Color: {r: 0.2641509, g: 0.2641509, b: 0.2641509, a: 0}
     - _Specular_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Tint: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
