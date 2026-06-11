@@ -30,6 +30,21 @@ public class ToolItem : MonoBehaviour
     public int bonusDamage = 15;
     public bool estaMejorada { get; private set; } = false;
 
+    // --- NUEVA SECCIÓN DE AUDIO ---
+    [Header("Audio de Impactos")]
+    public AudioSource audioSource;
+    public AudioClip sonidoGolpeEnemigo; // Sonido exclusivo para enemigos
+
+    [System.Serializable]
+    public struct SonidoRecurso
+    {
+        public ResourceType material;
+        public AudioClip clip;
+    }
+    public List<SonidoRecurso> sonidosDeRecursos; // Lista de sonidos para recursos
+    private Dictionary<ResourceType, AudioClip> diccionarioSonidos;
+    // -------------------------------
+
     private Collider damageCollider;
     private List<GameObject> alreadyHit = new List<GameObject>();
     private Player owner;
@@ -53,6 +68,16 @@ public class ToolItem : MonoBehaviour
         if (rb == null) { rb = gameObject.AddComponent<Rigidbody>(); }
         rb.isKinematic = true;
         rb.useGravity = false;
+
+        // INICIALIZAMOS EL DICCIONARIO DE SONIDOS
+        diccionarioSonidos = new Dictionary<ResourceType, AudioClip>();
+        foreach (var item in sonidosDeRecursos)
+        {
+            if (!diccionarioSonidos.ContainsKey(item.material))
+            {
+                diccionarioSonidos.Add(item.material, item.clip);
+            }
+        }
     }
 
     public virtual void OnEquip() { }
@@ -62,7 +87,6 @@ public class ToolItem : MonoBehaviour
     {
         alreadyHit.Clear();
         if (damageCollider != null) damageCollider.enabled = true;
-
     }
 
     public void DisableDamage()
@@ -80,6 +104,7 @@ public class ToolItem : MonoBehaviour
         bool golpeoAlgo = false;
         int danoFinal = estaMejorada ? attackDamage + bonusDamage : attackDamage;
 
+        // 1. SI GOLPEAMOS A UN ENEMIGO
         if (other.CompareTag("Enemy"))
         {
             HealthSystem health = other.GetComponentInParent<HealthSystem>();
@@ -88,9 +113,13 @@ public class ToolItem : MonoBehaviour
                 health.TakeDamage(danoFinal);
                 alreadyHit.Add(other.gameObject);
                 golpeoAlgo = true;
+
+                // Reproducir sonido de enemigo
+                ReproducirSonidoDeGolpe(sonidoGolpeEnemigo);
             }
         }
 
+        // 2. SI GOLPEAMOS UN RECURSO
         ResourceNode node = other.GetComponentInParent<ResourceNode>();
         if (node != null)
         {
@@ -98,6 +127,12 @@ public class ToolItem : MonoBehaviour
             node.TakeDamage(danoRecurso);
             alreadyHit.Add(other.gameObject);
             golpeoAlgo = true;
+
+            // Buscar y reproducir sonido según el material
+            if (diccionarioSonidos.TryGetValue(node.type, out AudioClip sonidoRecurso))
+            {
+                ReproducirSonidoDeGolpe(sonidoRecurso);
+            }
         }
 
         if (golpeoAlgo)
@@ -105,6 +140,17 @@ public class ToolItem : MonoBehaviour
             GastarDurabilidad();
         }
     }
+
+    // --- NUEVO MÉTODO PARA REPRODUCIR SONIDO ---
+    private void ReproducirSonidoDeGolpe(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.pitch = Random.Range(0.9f, 1.1f); // Da variedad al sonido
+            audioSource.PlayOneShot(clip);
+        }
+    }
+    // -------------------------------------------
 
     private void GastarDurabilidad()
     {
