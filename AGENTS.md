@@ -2,7 +2,7 @@
 - Project name: Pixo
 - Unity version: Unity 6000.0.62f1
 - Active game object:
-  - Name: PickWeapon_Hand 
+  - Name: MainMenuPanel
   - Tag: Untagged
-  - Layer: Default
+  - Layer: UI
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
