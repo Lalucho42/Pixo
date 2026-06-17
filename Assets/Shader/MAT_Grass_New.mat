@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-897967428377582662
+--- !u!114 &-2601878882349379171
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AcantiladoToon
-  m_Shader: {fileID: -6465566751694194690, guid: 1eb0efbd1cd6db64cb1888947ad4e840, type: 3}
+  m_Name: MAT_Grass_New
+  m_Shader: {fileID: -6465566751694194690, guid: d801feb87e149f8409e39969ca6e85e0, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -30,7 +30,7 @@ Material:
   - _MAIN_LIGHT_SHADOWS
   - _MAIN_LIGHT_SHADOWS_CASCADE
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -42,23 +42,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 2af1601ba09f43e4f8b69a794b72fb75, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Base_Albedo:
-        m_Texture: {fileID: 2800000, guid: 13d3955d0153433b832582a7269b95ba, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Base_Normal:
-        m_Texture: {fileID: 2800000, guid: 88224559c04b49a18b23286d0429c635, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Layer_Albedo:
-        m_Texture: {fileID: 2800000, guid: 74848f042ef647c6a75740464c4286d6, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Layer_Normal:
-        m_Texture: {fileID: 2800000, guid: bad155c3a6ed442b8e02e15669600978, type: 3}
+    - _Emission_Map:
+        m_Texture: {fileID: 2800000, guid: 516465a4f43bf46428001b71e388105b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -81,30 +69,21 @@ Material:
     - _AddLights_Multiplier: 2
     - _AddLights_Smoothness: 0.05
     - _AmbientIntensity: 1
-    - _Blend_Range_High: 0.25
-    - _Blend_Range_Low: 0.15
-    - _Layer_Contrast: 5
-    - _Layer_Spread: 0.46
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
-    - _Noise_Bias: -0.05
-    - _Noise_Intensity: 0.3
-    - _Noise_Scale: 1.7
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RimLightPower: 10
-    - _ShadowBands: 3
-    - _ShadowThreshold: -0.37
     - _Specular_Size: 0.95
     - _Specular_Smoothness: 0.97
-    - _Tiling_Base: 0.07
-    - _Tiling_Layer: 1
+    - _Wind_Frequency: 0.5
+    - _Wind_Intensity: 0.5
+    - _Wind_Speed: 0.25
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
-    - _RimLigthColor: {r: 0, g: 0, b: 0, a: 0}
-    - _ShadowColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0}
-    - _Shadow_Color: {r: 0.2641509, g: 0.2641509, b: 0.2641509, a: 1}
+    - _Emission_Color: {r: 0.28341308, g: 2.3487303, b: 0, a: 1}
+    - _RimLigthColor: {r: 0, g: 0.05660379, b: 0.0007560795, a: 0}
+    - _Shadow_Color: {r: 0, g: 0.16037738, b: 0.016670736, a: 0}
     - _Specular_Color: {r: 1, g: 1, b: 1, a: 0}
-    - _Tint: {r: 1, g: 1, b: 1, a: 0}
+    - _Tint: {r: 0, g: 0.5377358, b: 0.17385633, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

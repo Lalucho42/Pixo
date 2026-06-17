@@ -178,7 +178,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4116643096677770289}
-  - component: {fileID: 169232502203808668}
   m_Layer: 0
   m_Name: Suelocaja
   m_TagString: Untagged
@@ -202,31 +201,3 @@ Transform:
   - {fileID: 6662884361875780812}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &169232502203808668
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8961268963021944985}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a32040657336924ea1c00f83e1d72b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grassPrefabs:
-  - {fileID: 919132149155446097, guid: d70158004096d9445a6231c90eb77e80, type: 3}
-  - {fileID: 919132149155446097, guid: d7adc79e108085540bd256aa216cfe6f, type: 3}
-  - {fileID: 919132149155446097, guid: dd81406b368c8b44c90c2090e9793fb9, type: 3}
-  - {fileID: 919132149155446097, guid: 8d6cb28315aba684a8542190cdaea8b3, type: 3}
-  - {fileID: 919132149155446097, guid: d4374490b62bdf642a9ac253c6b4c25c, type: 3}
-  - {fileID: 919132149155446097, guid: 3d10435d64a815644a38d0769d47c663, type: 3}
-  - {fileID: 919132149155446097, guid: ab9ae1b79b6c19249a977501c3e6e4bd, type: 3}
-  - {fileID: 919132149155446097, guid: fbfa2e0eec6c92e4d94a9a349cadc2dc, type: 3}
-  grassDensity: 30
-  areaSize: {x: 4.56, y: 6.69}
-  spawnOffset: {x: -0.09, y: -0.2, z: -0.12}
-  minScale: 0.5
-  maxScale: 1
-  randomRotation: 1
-  gizmoColor: {r: 0, g: 1, b: 0, a: 0.3}
