@@ -68,12 +68,12 @@ Material:
     - _AddLights_Bands: 3
     - _AddLights_Multiplier: 2
     - _AddLights_Smoothness: 0.05
-    - _AmbientIntensity: 1
+    - _AmbientIntensity: 0
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _RimLightPower: 10
+    - _RimLightPower: 0
     - _Specular_Size: 0.95
     - _Specular_Smoothness: 0.97
     - _Wind_Frequency: 0.5
