@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class MeleeCombatModule : IEnemyCombat
+public class MeleeCombatModule
 {
     private EnemyAI enemy;
     private float timer;

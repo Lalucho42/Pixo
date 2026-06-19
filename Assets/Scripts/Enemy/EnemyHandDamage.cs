@@ -37,7 +37,7 @@ public class EnemyHandDamage : MonoBehaviour
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(damage);
-                SetDamageState(false);
+                SetDamageState(false); 
             }
         }
     }

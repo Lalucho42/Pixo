@@ -54,7 +54,10 @@ public class ToolItem : MonoBehaviour
         owner = GetComponentInParent<Player>();
         usosActuales = usosMaximos;
 
+        // MEJORA: Si el collider no está en el root, lo busca en los hijos automáticamente
         damageCollider = GetComponent<Collider>();
+        if (damageCollider == null) damageCollider = GetComponentInChildren<Collider>();
+
         if (damageCollider != null)
         {
             damageCollider.isTrigger = true;
@@ -104,7 +107,7 @@ public class ToolItem : MonoBehaviour
         bool golpeoAlgo = false;
         int danoFinal = estaMejorada ? attackDamage + bonusDamage : attackDamage;
 
-        // 1. SI GOLPEAMOS A UN ENEMIGO
+        // 1. SI GOLPEAMOS A UN ENEMIGO CONVENCIONAL
         if (other.CompareTag("Enemy"))
         {
             HealthSystem health = other.GetComponentInParent<HealthSystem>();
@@ -119,7 +122,7 @@ public class ToolItem : MonoBehaviour
             }
         }
 
-        // 2. SI GOLPEAMOS UN RECURSO
+        // 2. SI GOLPEAMOS UN RECURSO (MINERAL / ÁRBOL)
         ResourceNode node = other.GetComponentInParent<ResourceNode>();
         if (node != null)
         {
@@ -135,13 +138,25 @@ public class ToolItem : MonoBehaviour
             }
         }
 
+        // 3. INTEGRACIÓN: SI GOLPEAMOS AL DUMMY DEL TUTORIAL (SACO DE BOXEO)
+        // Buscamos si el objeto impactado tiene nuestro script de temblor
+        TutorialDummy dummy = other.GetComponentInParent<TutorialDummy>();
+        if (dummy != null)
+        {
+            dummy.TakeDamage(danoFinal); // Le manda la orden de recibir daño
+            alreadyHit.Add(other.gameObject); // Lo añade para evitar registrar múltiples golpes en el mismo swing
+            golpeoAlgo = true;
+
+            // Le ponemos el sonido de golpe metálico/enemigo para dar feedback
+            ReproducirSonidoDeGolpe(sonidoGolpeEnemigo);
+        }
+
         if (golpeoAlgo)
         {
             GastarDurabilidad();
         }
     }
 
-    // --- NUEVO MÉTODO PARA REPRODUCIR SONIDO ---
     private void ReproducirSonidoDeGolpe(AudioClip clip)
     {
         if (audioSource != null && clip != null)
@@ -150,7 +165,6 @@ public class ToolItem : MonoBehaviour
             audioSource.PlayOneShot(clip);
         }
     }
-    // -------------------------------------------
 
     private void GastarDurabilidad()
     {
