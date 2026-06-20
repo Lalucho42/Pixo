@@ -21,10 +21,14 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MAT_Tree
-  m_Shader: {fileID: -6465566751694194690, guid: d144bc9a7303fce48a68c4c0904e0c5e, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: d801feb87e149f8409e39969ca6e85e0, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _ADDITIONAL_LIGHTS
+  - _ADDITIONAL_LIGHT_SHADOWS
+  - _MAIN_LIGHT_SHADOWS
+  - _MAIN_LIGHT_SHADOWS_CASCADE
   m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
@@ -37,8 +41,16 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: eb22f6c85fef5a646a1e0561f48d212e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Base_Map:
         m_Texture: {fileID: 2800000, guid: eb22f6c85fef5a646a1e0561f48d212e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Emission_Map:
+        m_Texture: {fileID: 2800000, guid: 516465a4f43bf46428001b71e388105b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -55,15 +67,30 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _ADDITIONAL_LIGHTS: 1
+    - _ADDITIONAL_LIGHT_SHADOWS: 1
+    - _AddLights_Bands: 3
+    - _AddLights_Multiplier: 2
+    - _AddLights_Smoothness: 0.05
     - _Alpha_Clip_Threshold: 0.5
+    - _AmbientIntensity: 1
+    - _MAIN_LIGHT_SHADOWS: 1
+    - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _RimLightPower: 0
     - _Shadow_Bands: 3
-    - _Wind_Frequency: 10
-    - _Wind_Intensity: 0.02
-    - _Wind_Speed: 1
+    - _Specular_Size: 0.95
+    - _Specular_Smoothness: 0.97
+    - _Wind_Frequency: 0.5
+    - _Wind_Intensity: 0.01
+    - _Wind_Speed: 0.25
     m_Colors:
     - _Base_Color: {r: 0.050980393, g: 0.28235295, b: 0.12941177, a: 0}
-    - _Shadow_Color: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 0}
+    - _Emission_Color: {r: 0.28341308, g: 2.3487303, b: 0, a: 1}
+    - _RimLigthColor: {r: 0, g: 0.05660379, b: 0.0007560795, a: 0}
+    - _Shadow_Color: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 0}
+    - _Specular_Color: {r: 0, g: 0, b: 0, a: 0}
+    - _Tint: {r: 0.010506745, g: 0.09433961, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
