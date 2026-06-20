@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Playables;
 using System.Collections.Generic;
 
 public class TutorialTrap : MonoBehaviour
@@ -6,31 +7,31 @@ public class TutorialTrap : MonoBehaviour
     public enum FaseTrampa
     {
         EsperandoJugador,
-        GatoCorriendo,
-        PausaDramatica,
+        CinematicaEnCurso,
         Peleando,
         EsperandoInteraccion,
         GatoSaliendo,
         Terminado
     }
 
-    [Header("Estado Actual")]
+    [Header("Estado de la Misión")]
     public FaseTrampa faseActual = FaseTrampa.EsperandoJugador;
 
-    [Header("Referencias Clave")]
+    [Header("Referencias de Actores")]
     public Player player;
     public Cat gato;
 
-    [Header("El Escudo y Salida")]
+    [Header("Director de la Cinemática")]
+    public PlayableDirector timelineCinematica;
+
+    [Header("Elementos de la Trampa")]
     public GameObject escudoVisual;
-    public Transform ultimoWaypointDelGato;
     public Transform puertaDeSalida;
 
-    [Header("Los Enemigos (Spawns)")]
+    [Header("Spawns de Combate")]
     public EnemySpawnPoint[] puntosDeSpawn;
 
     private List<GameObject> enemigosVivos = new List<GameObject>();
-    private float cronometro = 0f;
 
     private void Start()
     {
@@ -47,66 +48,47 @@ public class TutorialTrap : MonoBehaviour
 
     private void IniciarCinematica()
     {
-        player.IsMovementLocked = true;
+        faseActual = FaseTrampa.CinematicaEnCurso;
+        player.IsMovementLocked = true; // Congela el New Input System visualmente
 
-        Vector3 direccionGato = (ultimoWaypointDelGato.position - player.transform.position).normalized;
-        direccionGato.y = 0;
-        player.transform.rotation = Quaternion.LookRotation(direccionGato);
+        Vector3 direccionTrampa = (escudoVisual.transform.position - player.transform.position).normalized;
+        direccionTrampa.y = 0;
+        player.transform.rotation = Quaternion.LookRotation(direccionTrampa);
 
-        // --- INTEGRACIÓN CON MÁQUINA DE ESTADOS ---
         gato.isTrapped = true;
-        gato.estadoActual = Cat.CatState.Moving; // Le avisamos al sistema que el gato debe moverse
-        gato.Anim.SetBool("IsSitting", false);    // Quitamos la pose de sentado inmediatamente
 
-        if (gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
+        if (timelineCinematica != null)
         {
-            gato.Agent.isStopped = false;
-            gato.Agent.updateRotation = true;
-            gato.Agent.SetDestination(ultimoWaypointDelGato.position);
+            timelineCinematica.Play(); // Arranca el Timeline normalmente
         }
+    }
 
-        faseActual = FaseTrampa.GatoCorriendo;
+    // Cambiamos el escuchador por una función directa que llamaremos desde el Update
+    private void FinalizarCinematica()
+    {
+        faseActual = FaseTrampa.Peleando;
+
+        // ¡DEVOLVEMOS EL CONTROL! Al volverse false, PlayerMovement y PlayerCombat vuelven a leer el New Input System
+        player.IsMovementLocked = false;
+
+        // Materializamos los enemigos con IA real en sus marcas
+        SpawnearEnemigos();
     }
 
     private void Update()
     {
-        if (faseActual == FaseTrampa.GatoCorriendo)
+        // CONTROL MATEMÁTICO DEL TIMELINE:
+        // Si la película está corriendo, revisamos si el tiempo actual llegó a la duración total
+        if (faseActual == FaseTrampa.CinematicaEnCurso)
         {
-            float distancia = Vector3.Distance(gato.transform.position, ultimoWaypointDelGato.position);
-
-            if (distancia <= 1.5f)
+            if (timelineCinematica != null && timelineCinematica.time >= (timelineCinematica.duration - 0.05f))
             {
-                if (gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
-                {
-                    gato.Agent.isStopped = true;
-                    gato.Agent.velocity = Vector3.zero;
-                }
-
-                // --- INTEGRACIÓN CON MÁQUINA DE ESTADOS ---
-                // El gato llegó a la trampa, forzamos el estado de sentado visual
-                gato.estadoActual = Cat.CatState.Sitting;
-                gato.Anim.SetTrigger("SitDown");
-                gato.Anim.SetBool("IsSitting", true);
-
-                if (escudoVisual != null) escudoVisual.SetActive(true);
-
-                SpawnearEnemigos();
-
-                cronometro = 1.5f;
-                faseActual = FaseTrampa.PausaDramatica;
+                FinalizarCinematica();
             }
+            return; // Evitamos procesar lo de abajo mientras dure la película
         }
-        else if (faseActual == FaseTrampa.PausaDramatica)
-        {
-            cronometro -= Time.deltaTime;
 
-            if (cronometro <= 0f)
-            {
-                player.IsMovementLocked = false;
-                faseActual = FaseTrampa.Peleando;
-            }
-        }
-        else if (faseActual == FaseTrampa.Peleando)
+        if (faseActual == FaseTrampa.Peleando)
         {
             enemigosVivos.RemoveAll(e => e == null || !e.activeInHierarchy || e.GetComponent<HealthSystem>().IsDead);
 
@@ -122,7 +104,6 @@ public class TutorialTrap : MonoBehaviour
             if (distanciaSalida <= 1.5f)
             {
                 gato.isTrapped = false;
-                // Devolvemos el gato al estado Moving normal para que retome su IA común
                 gato.estadoActual = Cat.CatState.Moving;
                 faseActual = FaseTrampa.Terminado;
             }
@@ -147,8 +128,7 @@ public class TutorialTrap : MonoBehaviour
 
         if (escudoVisual != null) escudoVisual.SetActive(false);
 
-        // --- INTEGRACIÓN CON MÁQUINA DE ESTADOS ---
-        // Liberamos al gato: pasa a Moving y se apaga el bool de sentado
+        gato.isTrapped = false;
         gato.estadoActual = Cat.CatState.Moving;
         gato.Anim.SetBool("IsSitting", false);
 
