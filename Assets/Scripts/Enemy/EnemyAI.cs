@@ -2,15 +2,16 @@
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent), typeof(HealthSystem))]
+[RequireComponent(typeof(AudioSource))]
 public class EnemyAI : MonoBehaviour
 {
-    [Header("Configuración de Movimiento")]
+    [Header("Configuracion de Movimiento")]
     public float detectionRange = 15f;
     public float loseTargetRange = 25f;
     public float attackRange = 1.6f;
     public float walkSpeed = 1.5f;
 
-    [Header("Configuración Combate")]
+    [Header("Configuracion Combate")]
     public float attackCooldown = 1.5f;
     public int damage = 10;
 
@@ -18,9 +19,13 @@ public class EnemyAI : MonoBehaviour
     public EnemyHandDamage handDamageScript;
     public Animator animator;
 
+    [Header("Control de Cinematicas")]
+    public bool isInCinematic = false;
+
     public NavMeshAgent Agent { get; private set; }
     public HealthSystem Health { get; private set; }
     public Transform PlayerTarget { get; private set; }
+    public AudioSource AudioSource { get; private set; }
 
     private EnemyMovement movement;
     private MeleeCombatModule combatModule;
@@ -30,6 +35,13 @@ public class EnemyAI : MonoBehaviour
     {
         Agent = GetComponent<NavMeshAgent>();
         Health = GetComponent<HealthSystem>();
+        AudioSource = GetComponent<AudioSource>();
+
+        AudioSource.spatialBlend = 1f;
+        AudioSource.dopplerLevel = 0f;
+        AudioSource.minDistance = 2f;
+        AudioSource.maxDistance = 30f;
+        AudioSource.rolloffMode = AudioRolloffMode.Linear;
 
         if (animator == null) animator = GetComponentInChildren<Animator>();
         if (handDamageScript == null) handDamageScript = GetComponentInChildren<EnemyHandDamage>();
@@ -48,6 +60,11 @@ public class EnemyAI : MonoBehaviour
         if (handDamageScript != null)
         {
             handDamageScript.Setup(damage);
+        }
+
+        if (AudioManager.Instance != null && AudioManager.Instance.grupoSFX != null)
+        {
+            AudioSource.outputAudioMixerGroup = AudioManager.Instance.grupoSFX;
         }
     }
 
@@ -73,6 +90,20 @@ public class EnemyAI : MonoBehaviour
         if (animator != null) animator.SetFloat("Speed", velocidadParaAnim);
     }
 
+    public void PlayEnemyFootstep()
+    {
+        if (Health.IsDead || AudioManager.Instance == null || AudioSource == null) return;
+
+        bool enCinematica = isInCinematic || !Agent.enabled || !Agent.isOnNavMesh;
+
+        if (!enCinematica)
+        {
+            if (Agent.isStopped || Agent.velocity.magnitude < 0.15f) return;
+        }
+
+        AudioManager.Instance.PlaySFX3D("Enemigo_Paso", AudioSource);
+    }
+
     public void TriggerAttackAnimation()
     {
         if (animator != null) animator.SetTrigger("Punch");
@@ -87,22 +118,15 @@ public class EnemyAI : MonoBehaviour
     public void ActivarDañoMano()
     {
         if (handDamageScript != null) handDamageScript.SetDamageState(true);
+
+        if (AudioManager.Instance != null && AudioSource != null && !Health.IsDead)
+        {
+            AudioManager.Instance.PlaySFX3D("Enemigo_Ataque", AudioSource);
+        }
     }
 
     public void DesactivarDañoMano()
     {
         if (handDamageScript != null) handDamageScript.SetDamageState(false);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
-
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, loseTargetRange);
     }
 }

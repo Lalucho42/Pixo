@@ -7,29 +7,43 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
     public ComplexRepairableStructure estructuraDeLosEscombros;
 
     [Header("FASE 1: Materiales para la PC")]
+    public bool laPCYaFunciona = false;
     public List<ResourceCost> costosPC;
     public GameObject pcRota;
     public GameObject pcEncendida;
+
     [Header("FASE 2: Materiales para la Mina")]
     public List<ResourceCost> costosMina;
+
     [Header("UI del Cartel")]
-    public StructureRepairUI cartelVisual; 
+    public StructureRepairUI cartelVisual;
+
     private BasePuzzleModule scriptDelPuzzle;
-    private bool laPCYaFunciona = false;
     private bool todoElNivelEstaTerminado = false;
 
     void Start()
     {
-       
         scriptDelPuzzle = GetComponent<BasePuzzleModule>();
-        if (pcRota != null) pcRota.SetActive(true);
 
-        if (pcEncendida != null) pcEncendida.SetActive(false);
-
-        if (cartelVisual != null)
+        if (laPCYaFunciona)
         {
-            cartelVisual.ConfigurarCartel(costosPC);
-            cartelVisual.Ocultar();
+            if (pcRota != null) pcRota.SetActive(false);
+            if (pcEncendida != null) pcEncendida.SetActive(true);
+            if (cartelVisual != null)
+            {
+                cartelVisual.ConfigurarCartel(costosMina);
+                cartelVisual.Ocultar();
+            }
+        }
+        else
+        {
+            if (pcRota != null) pcRota.SetActive(true);
+            if (pcEncendida != null) pcEncendida.SetActive(false);
+            if (cartelVisual != null)
+            {
+                cartelVisual.ConfigurarCartel(costosPC);
+                cartelVisual.Ocultar();
+            }
         }
     }
 
@@ -42,6 +56,10 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
             if (RevisarSiTieneMateriales(jugador, costosPC))
             {
                 laPCYaFunciona = true;
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySFX2D("PC_Reparada");
+                }
                 StartCoroutine(EfectoCaidaPC());
             }
             return;
@@ -91,7 +109,7 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
         if (cartelVisual != null)
         {
             cartelVisual.ConfigurarCartel(costosMina);
-            cartelVisual.Mostrar(); 
+            cartelVisual.Mostrar();
         }
     }
 
@@ -104,7 +122,6 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
 
     private void OnTriggerEnter(Collider other)
     {
-       
         if (other.CompareTag("Player") && cartelVisual != null && !todoElNivelEstaTerminado)
         {
             cartelVisual.Mostrar();
@@ -113,7 +130,6 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
 
     private void OnTriggerExit(Collider other)
     {
-       
         if (other.CompareTag("Player") && cartelVisual != null)
         {
             cartelVisual.Ocultar();

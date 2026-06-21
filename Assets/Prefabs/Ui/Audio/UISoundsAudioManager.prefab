@@ -1,0 +1,325 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1634488286233296296
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7347728534269532313}
+  - component: {fileID: 7466655597051959122}
+  m_Layer: 0
+  m_Name: VFXManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7347728534269532313
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634488286233296296}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7540840055837289608}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7466655597051959122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634488286233296296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e315dc6288ba924482679af4cf9a0f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseDeDatosVFX:
+  - nombreID: Impacto_Madera
+    prefabParticula: {fileID: 7214918318218661354, guid: 46867f81379b0b941be34a6ef45d50b6, type: 3}
+    tiempoDeVida: 2
+  - nombreID: Impacto_Piedra
+    prefabParticula: {fileID: 4485295098786883134, guid: 69873ea6a6c113e49aab30ab261294ae, type: 3}
+    tiempoDeVida: 2
+  - nombreID: Impacto_Enemigo
+    prefabParticula: {fileID: 1728017302251973810, guid: ba418d241fdb40c45afb5910fdd8b012, type: 3}
+    tiempoDeVida: 2
+--- !u!1 &5388870265293801290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7540840055837289608}
+  - component: {fileID: 7357582471405900568}
+  - component: {fileID: 6244203880288041896}
+  m_Layer: 0
+  m_Name: UISoundsAudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7540840055837289608
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5388870265293801290}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.7731714, y: 11.138991, z: 9.505273}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7347728534269532313}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &7357582471405900568
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5388870265293801290}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 8225078595982006690, guid: 8333c28c90edff0488b008be513c420d, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &6244203880288041896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5388870265293801290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75e79a61fbd03f34098938b61805ef0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMixer: {fileID: 24100000, guid: 8333c28c90edff0488b008be513c420d, type: 2}
+  grupoMusica: {fileID: -6443978140751729186, guid: 8333c28c90edff0488b008be513c420d, type: 2}
+  grupoSFX: {fileID: -3596307359361267033, guid: 8333c28c90edff0488b008be513c420d, type: 2}
+  grupoUI: {fileID: 8225078595982006690, guid: 8333c28c90edff0488b008be513c420d, type: 2}
+  musicaTracks:
+  - nombre: Ambiente_Bosque
+    clips:
+    - {fileID: 8300000, guid: be625333d762b6641bfccf09ce8b6b40, type: 3}
+    volumen: 0.5
+    pitch: 1
+    usarPitchAleatorio: 0
+  - nombre: Ambiente_Suspenso
+    clips:
+    - {fileID: 8300000, guid: df1b69906a7f2644597afa72df1748e1, type: 3}
+    volumen: 0.6
+    pitch: 1
+    usarPitchAleatorio: 0
+  sfxClips:
+  - nombre: Gato_Paso
+    clips:
+    - {fileID: 8300000, guid: a12eaefceab05364ca4bdbee5f5cc411, type: 3}
+    - {fileID: 8300000, guid: babaefc808dd5b144a37eb4480b5f67d, type: 3}
+    - {fileID: 8300000, guid: a12eaefceab05364ca4bdbee5f5cc411, type: 3}
+    volumen: 0.6
+    pitch: 0
+    usarPitchAleatorio: 1
+  - nombre: Arma_Agarrar
+    clips:
+    - {fileID: 8300000, guid: 82f1b361de73d664fb10fdb0a2e1a848, type: 3}
+    volumen: 0.5
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Player_Paso
+    clips:
+    - {fileID: 8300000, guid: e9f68d80d55b6164cb8314520f52fb7c, type: 3}
+    - {fileID: 8300000, guid: babaefc808dd5b144a37eb4480b5f67d, type: 3}
+    - {fileID: 8300000, guid: a12eaefceab05364ca4bdbee5f5cc411, type: 3}
+    volumen: 1
+    pitch: 0.5
+    usarPitchAleatorio: 1
+  - nombre: Player_Salto
+    clips:
+    - {fileID: 8300000, guid: cc36f4a9891464c4b8de3a80f1fc399f, type: 3}
+    volumen: 1
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Player_Rodar
+    clips:
+    - {fileID: 8300000, guid: 90213c63dbda7004db510cdd382cffc8, type: 3}
+    volumen: 1
+    pitch: 0
+    usarPitchAleatorio: 0
+  - nombre: Player_Aterrizar
+    clips:
+    - {fileID: 8300000, guid: 289fff222628211488d42357c138de0e, type: 3}
+    volumen: 1
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Player_Curarse
+    clips:
+    - {fileID: 8300000, guid: c2e8900a1415ca7448e75ebbef781f0b, type: 3}
+    volumen: 0.6
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Enemigo_Paso
+    clips:
+    - {fileID: 8300000, guid: e9f68d80d55b6164cb8314520f52fb7c, type: 3}
+    - {fileID: 8300000, guid: babaefc808dd5b144a37eb4480b5f67d, type: 3}
+    - {fileID: 8300000, guid: a12eaefceab05364ca4bdbee5f5cc411, type: 3}
+    volumen: 1
+    pitch: 0
+    usarPitchAleatorio: 1
+  - nombre: Enemigo_Ataque
+    clips:
+    - {fileID: 8300000, guid: eb5e4fd7b43f4344bbd81911dac30d21, type: 3}
+    volumen: 0.6
+    pitch: 0.5
+    usarPitchAleatorio: 1
+  - nombre: Escudo_Activar
+    clips:
+    - {fileID: 8300000, guid: 1f7eee27332e1dd4caa190e02b5fa27d, type: 3}
+    volumen: 0.6
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Impacto_Enemigo
+    clips:
+    - {fileID: 8300000, guid: 17b5863aca65e4b4fb32fc668d13a6a7, type: 3}
+    volumen: 1
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Impacto_Madera
+    clips:
+    - {fileID: 8300000, guid: e2022d1a7b2312441bf1618c29ae3733, type: 3}
+    volumen: 1
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Impacto_Piedra
+    clips:
+    - {fileID: 8300000, guid: 5d8a520fe92b18945b55e47d5a909568, type: 3}
+    volumen: 1
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: PC_Reparada
+    clips:
+    - {fileID: 8300000, guid: fd89add885f20f24095df4fd152dd85b, type: 3}
+    volumen: 0.6
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Estructura_Reparada
+    clips:
+    - {fileID: 8300000, guid: b255c4992f0b1c9419f1b9b6d6229cd4, type: 3}
+    volumen: 0.6
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Puzzle_Correcto
+    clips:
+    - {fileID: 8300000, guid: 8de6396237d12934f82f2c097c4e467b, type: 3}
+    volumen: 0.6
+    pitch: 0.5
+    usarPitchAleatorio: 0
+  - nombre: Puzzle_Error
+    clips:
+    - {fileID: 8300000, guid: 2083dba63b3d5dd48b2627db7442e7eb, type: 3}
+    volumen: 0.6
+    pitch: 0.5
+    usarPitchAleatorio: 0

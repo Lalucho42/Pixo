@@ -33,12 +33,12 @@ public class PlayerAnimations
     private void HandleRollSelection()
     {
         if (player.IsMovementLocked) return;
-
         if (player.ColliderHandler.IsRolling || Time.time < lastRollTime + rollCooldown) return;
 
         lastRollTime = Time.time;
         float currentSpeed = player.Animator.GetFloat(speedHash);
 
+        // Dispara la animación correcta según la velocidad, y ambas ejecutarán el StartRollImpulse
         if (currentSpeed < 0.2f) player.Animator.SetTrigger(rollIdleHash);
         else player.Animator.SetTrigger(rollMoveHash);
     }

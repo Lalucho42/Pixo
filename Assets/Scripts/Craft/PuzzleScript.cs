@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections; 
+using System.Collections;
 
 public class PuzzleScript : BasePuzzleModule
 {
@@ -14,7 +14,7 @@ public class PuzzleScript : BasePuzzleModule
     public Color colorVerdeExito = Color.green;
     public Color colorRojoError = Color.red;
 
-    private int[] patronDeTeclas = { 0, 1, 0, 0, 1 }; // A, D, A, A, D
+    private int[] patronDeTeclas = { 0, 1, 0, 0, 1 };
     private int pasoEnElQueVaElJugador = 0;
     private bool elJuegoEstaAndando = false;
 
@@ -37,10 +37,14 @@ public class PuzzleScript : BasePuzzleModule
 
     private void RevisarSiGanoOPerdio(int teclaQueToco)
     {
-       
         if (teclaQueToco == patronDeTeclas[pasoEnElQueVaElJugador])
         {
             pasoEnElQueVaElJugador = pasoEnElQueVaElJugador + 1;
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX2D("Puzzle_Correcto");
+            }
 
             if (pasoEnElQueVaElJugador >= patronDeTeclas.Length)
             {
@@ -53,13 +57,16 @@ public class PuzzleScript : BasePuzzleModule
         }
         else
         {
-            StartCoroutine(MostrarEfectoDeErrorEnRojo());
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX2D("Puzzle_Error");
+            }
+            StartCoroutine(MostrarEFERojo());
         }
     }
 
     IEnumerator EfectoDeTeclaCorrecta()
     {
-       
         imagenDeLaTeclaA.color = colorGrisNormal;
         imagenDeLaTeclaD.color = colorGrisNormal;
         yield return new WaitForSeconds(0.1f);
@@ -75,7 +82,7 @@ public class PuzzleScript : BasePuzzleModule
         else imagenDeLaTeclaD.color = colorVerdeExito;
     }
 
-    IEnumerator MostrarEfectoDeErrorEnRojo()
+    IEnumerator MostrarEFERojo()
     {
         pasoEnElQueVaElJugador = 0;
         imagenDeLaTeclaA.color = colorRojoError;

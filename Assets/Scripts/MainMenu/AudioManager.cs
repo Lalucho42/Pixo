@@ -1,5 +1,5 @@
-using UnityEngine;
-using UnityEngine.Audio; // Necesario para el Mixer
+﻿using UnityEngine;
+using UnityEngine.Audio;
 using System;
 
 public class AudioManager : MonoBehaviour
@@ -8,21 +8,21 @@ public class AudioManager : MonoBehaviour
     public class Sound
     {
         public string nombre;
-        public AudioClip clip;
+        public AudioClip[] clips;
         [Range(0f, 1f)] public float volumen = 1f;
         [Range(0.5f, 1.5f)] public float pitch = 1f;
-        public bool usarPitchAleatorio = false; // Da variedad a pasos/golpes
+        public bool usarPitchAleatorio = false;
     }
 
     public static AudioManager Instance;
 
     [Header("Referencia al Mixer")]
-    public AudioMixer mainMixer; // Tu referencia original del Mixer
+    public AudioMixer mainMixer;
 
     [Header("Ruteo a Grupos del Mixer")]
     public AudioMixerGroup grupoMusica;
     public AudioMixerGroup grupoSFX;
-    public AudioMixerGroup grupoUI; // Nuevo: Para conectar tus sonidos de interfaz
+    public AudioMixerGroup grupoUI;
 
     [Header("Base de Datos de Sonidos")]
     public Sound[] musicaTracks;
@@ -34,11 +34,10 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        // --- PATR�N SINGLETON ---
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // No se destruye al cambiar de escena
+            DontDestroyOnLoad(gameObject);
             ConfigurarFuentesInternas();
         }
         else
@@ -49,90 +48,81 @@ public class AudioManager : MonoBehaviour
 
     private void ConfigurarFuentesInternas()
     {
-        // Creamos los altavoces internos globales
         fuenteMusica = gameObject.AddComponent<AudioSource>();
         fuenteSFX2D = gameObject.AddComponent<AudioSource>();
         fuenteUI2D = gameObject.AddComponent<AudioSource>();
 
-        // Los ruteamos de forma inteligente a los canales del Mixer que mostr�s en tu captura
         if (grupoMusica != null) fuenteMusica.outputAudioMixerGroup = grupoMusica;
         if (grupoSFX != null) fuenteSFX2D.outputAudioMixerGroup = grupoSFX;
         if (grupoUI != null) fuenteUI2D.outputAudioMixerGroup = grupoUI;
     }
 
-    // ==========================================
-    // REPRODUCCI�N DE AUDIO
-    // ==========================================
+    // ========================================================
+    // 🎛️ CANALES GLOBALES 2D (Música, Menús e Interfaz)
+    // ========================================================
 
     public void PlayMusic(string nombre)
     {
         Sound s = Array.Find(musicaTracks, sound => sound.nombre == nombre);
-        if (s == null) return;
+        if (s == null || s.clips.Length == 0) return;
 
-        if (fuenteMusica.clip == s.clip && fuenteMusica.isPlaying) return;
+        if (fuenteMusica.clip == s.clips[0] && fuenteMusica.isPlaying) return;
 
-        fuenteMusica.clip = s.clip;
+        fuenteMusica.clip = s.clips[0];
         fuenteMusica.volume = s.volumen;
         fuenteMusica.pitch = s.pitch;
         fuenteMusica.loop = true;
         fuenteMusica.Play();
     }
 
-    public void PlaySFX2D(string nombre)
-    {
-        Sound s = Array.Find(sfxClips, sound => sound.nombre == nombre);
-        if (s == null) return;
-
-        fuenteSFX2D.pitch = s.usarPitchAleatorio ? UnityEngine.Random.Range(0.9f, 1.1f) : s.pitch;
-        fuenteSFX2D.PlayOneShot(s.clip, s.volumen);
-    }
-
-    // Nuevo m�todo: Reproduce sonidos que se ver�n afectados por el Slider de la UI
     public void PlayUI(string nombre)
     {
         Sound s = Array.Find(sfxClips, sound => sound.nombre == nombre);
-        if (s == null) return;
+        if (s == null || s.clips.Length == 0) return;
 
+        AudioClip clipAleatorio = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
         fuenteUI2D.pitch = s.pitch;
-        fuenteUI2D.PlayOneShot(s.clip, s.volumen);
+        fuenteUI2D.PlayOneShot(clipAleatorio, s.volumen);
     }
 
-    // Auxiliar para que los enemigos/gato obtengan sonidos 3D f�sicos en el mapa
-    public AudioClip GetClip(string nombre, out float vol, out float pit, out bool aleatorio)
+    public void PlaySFX2D(string nombre)
     {
         Sound s = Array.Find(sfxClips, sound => sound.nombre == nombre);
-        if (s != null)
-        {
-            vol = s.volumen;
-            pit = s.pitch;
-            aleatorio = s.usarPitchAleatorio;
-            return s.clip;
-        }
-        vol = 1f; pit = 1f; aleatorio = false;
-        return null;
+        if (s == null || s.clips.Length == 0) return;
+
+        AudioClip clipAleatorio = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
+        fuenteSFX2D.pitch = s.usarPitchAleatorio ? UnityEngine.Random.Range(0.9f, 1.1f) : s.pitch;
+        fuenteSFX2D.PlayOneShot(clipAleatorio, s.volumen);
+
+        Debug.Log($"<color=cyan><b>[UML 2D BYPASS]</b></color> Sonó: {nombre}");
     }
 
-    // ==========================================
-    // TUS FUNCIONES ORIGINALES DEL MEN� (CONSERVADAS)
-    // ==========================================
-
-    public void CambiarVolumenMaster(float valorSlider)
+    // ========================================================
+    // 🔊 MÉTODO MAESTRO 3D (Responsabilidad Única)
+    // ========================================================
+    /// <summary>
+    /// Recibe un AudioSource del mundo físico (Player, Enemigo, etc.) y le inyecta la lógica de reproducción centralizada.
+    /// </summary>
+    public void PlaySFX3D(string nombre, AudioSource fuenteEmisora)
     {
-        mainMixer.SetFloat("MasterVol", Mathf.Log10(valorSlider) * 20); //
+        if (fuenteEmisora == null) return;
+
+        Sound s = Array.Find(sfxClips, sound => sound.nombre == nombre);
+        if (s == null || s.clips.Length == 0) return;
+
+        // El Manager calcula el clip aleatorio y el pitch según su base de datos interna
+        AudioClip clipElegido = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
+        fuenteEmisora.pitch = s.usarPitchAleatorio ? UnityEngine.Random.Range(0.88f, 1.12f) : s.pitch;
+
+        // El Manager ejecuta la reproducción sobre el parlante corporal del objeto
+        fuenteEmisora.PlayOneShot(clipElegido, s.volumen);
+
+        Debug.Log($"<color=red><b>[UML 3D ESPACIAL]</b></color> Entidad: {fuenteEmisora.gameObject.name} -> Sonido: {nombre} ({clipElegido.name})");
     }
 
-    public void CambiarVolumenMusica(float valorSlider)
-    {
-        mainMixer.SetFloat("MusicVol", Mathf.Log10(valorSlider) * 20); //
-    }
-
-    public void CambiarVolumenSFX(float valorSlider)
-    {
-        mainMixer.SetFloat("SFXVol", Mathf.Log10(valorSlider) * 20); //
-    }
-
-    public void CambiarVolumenUI(float valorSlider)
-    {
-        mainMixer.SetFloat("UIVol", Mathf.Log10(valorSlider) * 20); //
-    }
+    // Controles del menú del Mixer
+    public void CambiarVolumenMaster(float valorSlider) { mainMixer.SetFloat("MasterVol", Mathf.Log10(valorSlider) * 20); }
+    public void CambiarVolumenMusica(float valorSlider) { mainMixer.SetFloat("MusicVol", Mathf.Log10(valorSlider) * 20); }
+    public void CambiarVolumenSFX(float valorSlider) { mainMixer.SetFloat("SFXVol", Mathf.Log10(valorSlider) * 20); }
+    public void CambiarVolumenUI(float valorSlider) { mainMixer.SetFloat("UIVol", Mathf.Log10(valorSlider) * 20); }
 }

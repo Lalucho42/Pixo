@@ -5,6 +5,7 @@ public class ComplexRepairableStructure : MonoBehaviour
 {
     public GameObject modeloDeLosEscombros;
     public GameObject modeloDeLaEstructuraReparada;
+    public GameObject paredInvisible;
 
     public void TriggerRepair()
     {
@@ -13,6 +14,11 @@ public class ComplexRepairableStructure : MonoBehaviour
 
     IEnumerator EfectoCaida()
     {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX2D("Estructura_Reparada");
+        }
+
         if (modeloDeLosEscombros != null) modeloDeLosEscombros.SetActive(false);
 
         if (modeloDeLaEstructuraReparada != null)
@@ -30,5 +36,7 @@ public class ComplexRepairableStructure : MonoBehaviour
             }
             modeloDeLaEstructuraReparada.transform.localPosition = posFinal;
         }
+
+        if (paredInvisible != null) paredInvisible.SetActive(false);
     }
 }

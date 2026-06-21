@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 public class ToolItem : MonoBehaviour
@@ -6,7 +6,7 @@ public class ToolItem : MonoBehaviour
     [Header("Identificacion")]
     public string toolName;
     public Sprite iconoUI;
-    [Range(0.1f, 3f)] public float escalaIcono = 1f;
+    public float escalaIcono = 1f;
 
     [Header("Estadisticas de Combate")]
     public int attackDamage = 25;
@@ -20,30 +20,15 @@ public class ToolItem : MonoBehaviour
     public int usosMaximos = 100;
     public int usosActuales;
 
-    [Header("Evolucion (Opcional)")]
-    [Tooltip("El objeto que contiene el modelo 3D base")]
+    [Header("Evolucion")]
     public GameObject objetoModeloBase;
-    [Tooltip("El objeto que contiene el modelo 3D mejorado")]
     public GameObject objetoModeloMejorado;
-
     public Sprite iconoMejorado;
     public int bonusDamage = 15;
     public bool estaMejorada { get; private set; } = false;
 
-    // --- NUEVA SECCIÓN DE AUDIO ---
-    [Header("Audio de Impactos")]
+    [Header("Audio")]
     public AudioSource audioSource;
-    public AudioClip sonidoGolpeEnemigo; // Sonido exclusivo para enemigos
-
-    [System.Serializable]
-    public struct SonidoRecurso
-    {
-        public ResourceType material;
-        public AudioClip clip;
-    }
-    public List<SonidoRecurso> sonidosDeRecursos; // Lista de sonidos para recursos
-    private Dictionary<ResourceType, AudioClip> diccionarioSonidos;
-    // -------------------------------
 
     private Collider damageCollider;
     private List<GameObject> alreadyHit = new List<GameObject>();
@@ -54,7 +39,6 @@ public class ToolItem : MonoBehaviour
         owner = GetComponentInParent<Player>();
         usosActuales = usosMaximos;
 
-        // MEJORA: Si el collider no está en el root, lo busca en los hijos automáticamente
         damageCollider = GetComponent<Collider>();
         if (damageCollider == null) damageCollider = GetComponentInChildren<Collider>();
 
@@ -71,16 +55,6 @@ public class ToolItem : MonoBehaviour
         if (rb == null) { rb = gameObject.AddComponent<Rigidbody>(); }
         rb.isKinematic = true;
         rb.useGravity = false;
-
-        // INICIALIZAMOS EL DICCIONARIO DE SONIDOS
-        diccionarioSonidos = new Dictionary<ResourceType, AudioClip>();
-        foreach (var item in sonidosDeRecursos)
-        {
-            if (!diccionarioSonidos.ContainsKey(item.material))
-            {
-                diccionarioSonidos.Add(item.material, item.clip);
-            }
-        }
     }
 
     public virtual void OnEquip() { }
@@ -100,30 +74,19 @@ public class ToolItem : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (usosActuales <= 0) return;
-
         if (owner != null && other.gameObject == owner.gameObject) return;
         if (alreadyHit.Contains(other.gameObject)) return;
 
         bool golpeoAlgo = false;
         int danoFinal = estaMejorada ? attackDamage + bonusDamage : attackDamage;
 
-        // 1. SI GOLPEAMOS A UN ENEMIGO CONVENCIONAL
-        if (other.CompareTag("Enemy"))
-        {
-            HealthSystem health = other.GetComponentInParent<HealthSystem>();
-            if (health != null)
-            {
-                health.TakeDamage(danoFinal);
-                alreadyHit.Add(other.gameObject);
-                golpeoAlgo = true;
+        Vector3 puntoImpacto = transform.position;
+        Quaternion rotacionImpacto = Quaternion.LookRotation(transform.forward);
 
-                // Reproducir sonido de enemigo
-                ReproducirSonidoDeGolpe(sonidoGolpeEnemigo);
-            }
-        }
-
-        // 2. SI GOLPEAMOS UN RECURSO (MINERAL / ÁRBOL)
         ResourceNode node = other.GetComponentInParent<ResourceNode>();
+        TutorialDummy dummy = other.GetComponentInParent<TutorialDummy>();
+        HealthSystem health = other.GetComponentInParent<HealthSystem>();
+
         if (node != null)
         {
             float danoRecurso = CalculateEfficiency(node);
@@ -131,39 +94,34 @@ public class ToolItem : MonoBehaviour
             alreadyHit.Add(other.gameObject);
             golpeoAlgo = true;
 
-            // Buscar y reproducir sonido según el material
-            if (diccionarioSonidos.TryGetValue(node.type, out AudioClip sonidoRecurso))
-            {
-                ReproducirSonidoDeGolpe(sonidoRecurso);
-            }
-        }
+            string tagDinamico = "Impacto_" + node.type.ToString();
 
-        // 3. INTEGRACIÓN: SI GOLPEAMOS AL DUMMY DEL TUTORIAL (SACO DE BOXEO)
-        // Buscamos si el objeto impactado tiene nuestro script de temblor
-        TutorialDummy dummy = other.GetComponentInParent<TutorialDummy>();
-        if (dummy != null)
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX3D(tagDinamico, audioSource);
+            if (VFXManager.Instance != null) VFXManager.Instance.SpawnVFX(tagDinamico, puntoImpacto, rotacionImpacto);
+            else Debug.LogError("VFXManager es NULL. Inicia desde Menu Principal.");
+        }
+        else if (dummy != null)
         {
-            dummy.TakeDamage(danoFinal); // Le manda la orden de recibir daño
-            alreadyHit.Add(other.gameObject); // Lo añade para evitar registrar múltiples golpes en el mismo swing
+            dummy.TakeDamage(danoFinal);
+            alreadyHit.Add(other.gameObject);
             golpeoAlgo = true;
 
-            // Le ponemos el sonido de golpe metálico/enemigo para dar feedback
-            ReproducirSonidoDeGolpe(sonidoGolpeEnemigo);
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX3D("Impacto_Enemigo", audioSource);
+            if (VFXManager.Instance != null) VFXManager.Instance.SpawnVFX("Impacto_Enemigo", puntoImpacto, rotacionImpacto);
+            else Debug.LogError("VFXManager es NULL. Inicia desde Menu Principal.");
+        }
+        else if (health != null)
+        {
+            health.TakeDamage(danoFinal);
+            alreadyHit.Add(other.gameObject);
+            golpeoAlgo = true;
+
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX3D("Impacto_Enemigo", audioSource);
+            if (VFXManager.Instance != null) VFXManager.Instance.SpawnVFX("Impacto_Enemigo", puntoImpacto, rotacionImpacto);
+            else Debug.LogError("VFXManager es NULL. Inicia desde Menu Principal.");
         }
 
-        if (golpeoAlgo)
-        {
-            GastarDurabilidad();
-        }
-    }
-
-    private void ReproducirSonidoDeGolpe(AudioClip clip)
-    {
-        if (audioSource != null && clip != null)
-        {
-            audioSource.pitch = Random.Range(0.9f, 1.1f); // Da variedad al sonido
-            audioSource.PlayOneShot(clip);
-        }
+        if (golpeoAlgo) GastarDurabilidad();
     }
 
     private void GastarDurabilidad()
@@ -181,9 +139,7 @@ public class ToolItem : MonoBehaviour
     public void AplicarMejora()
     {
         if (estaMejorada) return;
-
         estaMejorada = true;
-
         if (objetoModeloBase != null) objetoModeloBase.SetActive(false);
         if (objetoModeloMejorado != null) objetoModeloMejorado.SetActive(true);
     }
@@ -191,11 +147,9 @@ public class ToolItem : MonoBehaviour
     private float CalculateEfficiency(ResourceNode node)
     {
         float multiplier = estaMejorada ? 1.5f : 1f;
-
         if (toolName == "Hacha" && node.type == ResourceType.Madera) return resourceDamage * multiplier;
         if (toolName == "Pico" && node.type == ResourceType.Piedra) return resourceDamage * multiplier;
         if (toolName == "Palo") return resourceDamage * 0.3f * multiplier;
-
         return resourceDamage * 0.1f * multiplier;
     }
 }

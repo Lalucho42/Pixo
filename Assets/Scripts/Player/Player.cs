@@ -1,6 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(AudioSource))]
 public class Player : MonoBehaviour
 {
     [Header("--- Datos de Movimiento ---")]
@@ -8,24 +9,28 @@ public class Player : MonoBehaviour
     public float runSpeed = 6f;
     public float rollImpulseSpeed = 8f;
     public float rotationSpeed = 12f;
+
     [Header("--- Datos de Salto y Fisica ---")]
     public float jumpHeightIdle = 1.5f;
     public float gravity = 15f;
+
     [Header("--- Datos de Camara ---")]
     public Transform cameraFollowTarget;
     public float cameraSensitivity = 1.5f;
     public float cameraClampMin = -30f;
     public float cameraClampMax = 40f;
+
     [Header("--- Datos de Combate ---")]
     public Transform attackPoint;
     public float stunDuration = 0.5f;
+
     [Header("--- Datos de Rodar (Collider) ---")]
     [Range(0.1f, 0.9f)] public float rollHeightMultiplier = 0.5f;
-
 
     public CharacterController Controller { get; private set; }
     public Animator Animator { get; private set; }
     public PlayerWeaponManager WeaponManager { get; private set; }
+    public AudioSource AudioSource { get; private set; }
     public PlayerInputHandler InputHandler { get; private set; }
     public PlayerMovement Movement { get; private set; }
     public PlayerJump Jump { get; private set; }
@@ -35,7 +40,6 @@ public class Player : MonoBehaviour
     public PlayerCamera PlayerCamera { get; private set; }
     public PlayerColliderHandler ColliderHandler { get; private set; }
     public PlayerInventory Inventory { get; private set; }
-    public PlayerCrafting Crafting { get; private set; }
 
     public static bool IsDead = false;
     public static Player Instance;
@@ -47,6 +51,14 @@ public class Player : MonoBehaviour
         Controller = GetComponent<CharacterController>();
         Animator = GetComponentInChildren<Animator>();
         WeaponManager = GetComponent<PlayerWeaponManager>();
+        AudioSource = GetComponent<AudioSource>();
+
+        // Configuración física del emisor 3D del Player
+        AudioSource.spatialBlend = 1f;
+        AudioSource.dopplerLevel = 0f;
+        AudioSource.minDistance = 3f;
+        AudioSource.maxDistance = 100f;
+        AudioSource.rolloffMode = AudioRolloffMode.Linear;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -54,7 +66,7 @@ public class Player : MonoBehaviour
         InputHandler = new PlayerInputHandler();
         ColliderHandler = new PlayerColliderHandler(Controller, rollHeightMultiplier);
         Inventory = new PlayerInventory(this);
-        Crafting = new PlayerCrafting(this);
+
         Movement = new PlayerMovement(this, walkSpeed, runSpeed, rollImpulseSpeed);
         Jump = new PlayerJump(this);
         Combat = new PlayerCombat(this);
@@ -64,7 +76,14 @@ public class Player : MonoBehaviour
 
         InputHandler.OnScrollEvent += HandleWeaponScroll;
         IsDead = false;
+    }
 
+    private void Start()
+    {
+        if (AudioManager.Instance != null && AudioManager.Instance.grupoSFX != null)
+        {
+            AudioSource.outputAudioMixerGroup = AudioManager.Instance.grupoSFX;
+        }
     }
 
     private void OnEnable() { if (InputHandler != null) InputHandler.Enable(); }
@@ -80,6 +99,7 @@ public class Player : MonoBehaviour
         Combat.Tick(dt);
         Interact.Tick(dt);
         Animations.Tick(dt);
+
         if (PlayerCamera != null) PlayerCamera.Tick(dt);
     }
 

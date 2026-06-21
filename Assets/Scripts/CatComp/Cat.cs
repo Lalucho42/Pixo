@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(AudioSource))]
 public class Cat : MonoBehaviour
 {
-    // El único origen de la verdad para la IA
     public enum CatState { Moving, Waiting, Sitting, StandingUp }
 
     [Header("Referencias")]
@@ -26,8 +27,16 @@ public class Cat : MonoBehaviour
     public CatState estadoActual = CatState.Moving;
     public bool isTrapped = false;
 
+    [Header("Control de Cinematicas")]
+    public bool isInCinematic = false;
+
+    [Header("Ajuste de Audio Pasos")]
+    public float cooldownPasosGato = 0.24f;
+    private float ultimoTiempoPasoGato = 0f;
+
     public NavMeshAgent Agent { get; private set; }
     public Animator Anim { get; private set; }
+    public AudioSource AudioSource { get; private set; }
 
     public CatJump Jump { get; private set; }
     public CatEvasion Evasion { get; private set; }
@@ -42,11 +51,26 @@ public class Cat : MonoBehaviour
         Agent.autoTraverseOffMeshLink = false;
         Agent.updateRotation = true;
         Anim = GetComponentInChildren<Animator>();
+        AudioSource = GetComponent<AudioSource>();
+
+        AudioSource.spatialBlend = 1f;
+        AudioSource.dopplerLevel = 0f;
+        AudioSource.minDistance = 2f;
+        AudioSource.maxDistance = 25f;
+        AudioSource.rolloffMode = AudioRolloffMode.Linear;
 
         Jump = new CatJump(this);
         Evasion = new CatEvasion(this);
         Movement = new CatMovement(this);
         Animations = new CatAnimations(this);
+    }
+
+    private void Start()
+    {
+        if (AudioManager.Instance != null && AudioManager.Instance.grupoSFX != null)
+        {
+            AudioSource.outputAudioMixerGroup = AudioManager.Instance.grupoSFX;
+        }
     }
 
     private void Update()
@@ -59,13 +83,11 @@ public class Cat : MonoBehaviour
             return;
         }
 
-        // FAIL-SAFE PROFESIONAL: Solo corre si el estado se quedó trabado en "StandingUp"
         if (estadoActual == CatState.StandingUp)
         {
             timerSeguridadBloqueo += Time.deltaTime;
-            if (timerSeguridadBloqueo > 2.0f) // 2 segundos es un margen seguro para cualquier transición
+            if (timerSeguridadBloqueo > 2.0f)
             {
-                Debug.LogWarning("[IA Gato] Fail-safe activado: Forzando estado Moving.");
                 EventoFinalizarLevantado();
             }
         }
@@ -74,7 +96,6 @@ public class Cat : MonoBehaviour
             timerSeguridadBloqueo = 0f;
         }
 
-        // Módulos de acción prioritaria
         if (Jump.Tick()) { Animations.Tick(); return; }
         if (Evasion.Tick()) { Animations.Tick(); return; }
 
@@ -82,7 +103,23 @@ public class Cat : MonoBehaviour
         Animations.Tick();
     }
 
-    // Tu Animation Event de confianza
+    public void PlayCatFootstep()
+    {
+        if (isTrapped) return;
+        if (AudioManager.Instance == null || AudioSource == null) return;
+        if (Time.time < ultimoTiempoPasoGato + cooldownPasosGato) return;
+
+        bool enCinematica = isInCinematic || !Agent.enabled || !Agent.isOnNavMesh;
+
+        if (!enCinematica)
+        {
+            if (estaSaltando || estadoActual != CatState.Moving || Agent.velocity.magnitude < 0.15f) return;
+        }
+
+        ultimoTiempoPasoGato = Time.time;
+        AudioManager.Instance.PlaySFX3D("Gato_Paso", AudioSource);
+    }
+
     public void EventoFinalizarLevantado()
     {
         if (estadoActual == CatState.StandingUp)
