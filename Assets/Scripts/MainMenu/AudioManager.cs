@@ -57,10 +57,6 @@ public class AudioManager : MonoBehaviour
         if (grupoUI != null) fuenteUI2D.outputAudioMixerGroup = grupoUI;
     }
 
-    // ========================================================
-    // 🎛️ CANALES GLOBALES 2D (Música, Menús e Interfaz)
-    // ========================================================
-
     public void PlayMusic(string nombre)
     {
         Sound s = Array.Find(musicaTracks, sound => sound.nombre == nombre);
@@ -73,6 +69,14 @@ public class AudioManager : MonoBehaviour
         fuenteMusica.pitch = s.pitch;
         fuenteMusica.loop = true;
         fuenteMusica.Play();
+    }
+
+    public void StopMusic()
+    {
+        if (fuenteMusica != null)
+        {
+            fuenteMusica.Stop();
+        }
     }
 
     public void PlayUI(string nombre)
@@ -93,16 +97,8 @@ public class AudioManager : MonoBehaviour
         AudioClip clipAleatorio = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
         fuenteSFX2D.pitch = s.usarPitchAleatorio ? UnityEngine.Random.Range(0.9f, 1.1f) : s.pitch;
         fuenteSFX2D.PlayOneShot(clipAleatorio, s.volumen);
-
-        Debug.Log($"<color=cyan><b>[UML 2D BYPASS]</b></color> Sonó: {nombre}");
     }
 
-    // ========================================================
-    // 🔊 MÉTODO MAESTRO 3D (Responsabilidad Única)
-    // ========================================================
-    /// <summary>
-    /// Recibe un AudioSource del mundo físico (Player, Enemigo, etc.) y le inyecta la lógica de reproducción centralizada.
-    /// </summary>
     public void PlaySFX3D(string nombre, AudioSource fuenteEmisora)
     {
         if (fuenteEmisora == null) return;
@@ -110,17 +106,11 @@ public class AudioManager : MonoBehaviour
         Sound s = Array.Find(sfxClips, sound => sound.nombre == nombre);
         if (s == null || s.clips.Length == 0) return;
 
-        // El Manager calcula el clip aleatorio y el pitch según su base de datos interna
         AudioClip clipElegido = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
         fuenteEmisora.pitch = s.usarPitchAleatorio ? UnityEngine.Random.Range(0.88f, 1.12f) : s.pitch;
-
-        // El Manager ejecuta la reproducción sobre el parlante corporal del objeto
         fuenteEmisora.PlayOneShot(clipElegido, s.volumen);
-
-        Debug.Log($"<color=red><b>[UML 3D ESPACIAL]</b></color> Entidad: {fuenteEmisora.gameObject.name} -> Sonido: {nombre} ({clipElegido.name})");
     }
 
-    // Controles del menú del Mixer
     public void CambiarVolumenMaster(float valorSlider) { mainMixer.SetFloat("MasterVol", Mathf.Log10(valorSlider) * 20); }
     public void CambiarVolumenMusica(float valorSlider) { mainMixer.SetFloat("MusicVol", Mathf.Log10(valorSlider) * 20); }
     public void CambiarVolumenSFX(float valorSlider) { mainMixer.SetFloat("SFXVol", Mathf.Log10(valorSlider) * 20); }

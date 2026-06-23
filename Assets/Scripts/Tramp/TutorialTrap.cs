@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Playables;
 using System.Collections.Generic;
 
@@ -20,13 +21,14 @@ public class TutorialTrap : MonoBehaviour
     [Header("Referencias de Actores")]
     public Player player;
     public Cat gato;
+    public NavMeshAgent ciervoBebe;
 
     [Header("Director de la Cinemática")]
     public PlayableDirector timelineCinematica;
 
     [Header("Elementos de la Trampa")]
     public GameObject escudoVisual;
-    public Transform puertaDeSalida;
+    public Transform puntoFinalTutorial;
 
     [Header("Spawns de Combate")]
     public EnemySpawnPoint[] puntosDeSpawn;
@@ -35,7 +37,15 @@ public class TutorialTrap : MonoBehaviour
 
     private void Start()
     {
-        if (escudoVisual != null) escudoVisual.SetActive(false);
+        if (gato != null && gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
+        {
+            gato.Agent.isStopped = true;
+        }
+
+        if (ciervoBebe != null && ciervoBebe.isActiveAndEnabled && ciervoBebe.isOnNavMesh)
+        {
+            ciervoBebe.isStopped = true;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -49,48 +59,64 @@ public class TutorialTrap : MonoBehaviour
     private void IniciarCinematica()
     {
         faseActual = FaseTrampa.CinematicaEnCurso;
-        player.IsMovementLocked = true; // Congela el New Input System visualmente
+        player.IsMovementLocked = true;
 
-        Vector3 direccionTrampa = (escudoVisual.transform.position - player.transform.position).normalized;
+        Vector3 direccionTrampa = (puntoFinalTutorial.position - player.transform.position).normalized;
         direccionTrampa.y = 0;
         player.transform.rotation = Quaternion.LookRotation(direccionTrampa);
 
-        gato.isTrapped = true;
+        if (gato != null) gato.isTrapped = true;
 
         if (timelineCinematica != null)
         {
-            timelineCinematica.Play(); // Arranca el Timeline normalmente
+            timelineCinematica.Play();
         }
     }
 
-    // Cambiamos el escuchador por una función directa que llamaremos desde el Update
     private void FinalizarCinematica()
     {
         faseActual = FaseTrampa.Peleando;
-
-        // ¡DEVOLVEMOS EL CONTROL! Al volverse false, PlayerMovement y PlayerCombat vuelven a leer el New Input System
         player.IsMovementLocked = false;
 
-        // Materializamos los enemigos con IA real en sus marcas
+        if (timelineCinematica != null)
+        {
+            timelineCinematica.Stop();
+        }
+        if (escudoVisual != null)
+        {
+            escudoVisual.SetActive(true);
+        }
+
         SpawnearEnemigos();
     }
 
     private void Update()
     {
-        // CONTROL MATEMÁTICO DEL TIMELINE:
-        // Si la película está corriendo, revisamos si el tiempo actual llegó a la duración total
         if (faseActual == FaseTrampa.CinematicaEnCurso)
         {
             if (timelineCinematica != null && timelineCinematica.time >= (timelineCinematica.duration - 0.05f))
             {
                 FinalizarCinematica();
             }
-            return; // Evitamos procesar lo de abajo mientras dure la película
+            return;
         }
 
         if (faseActual == FaseTrampa.Peleando)
         {
-            enemigosVivos.RemoveAll(e => e == null || !e.activeInHierarchy || e.GetComponent<HealthSystem>().IsDead);
+            for (int i = enemigosVivos.Count - 1; i >= 0; i--)
+            {
+                if (enemigosVivos[i] == null || !enemigosVivos[i].activeInHierarchy)
+                {
+                    enemigosVivos.RemoveAt(i);
+                    continue;
+                }
+
+                HealthSystem hp = enemigosVivos[i].GetComponent<HealthSystem>();
+                if (hp != null && hp.IsDead)
+                {
+                    enemigosVivos.RemoveAt(i);
+                }
+            }
 
             if (enemigosVivos.Count == 0)
             {
@@ -99,13 +125,15 @@ public class TutorialTrap : MonoBehaviour
         }
         else if (faseActual == FaseTrampa.GatoSaliendo)
         {
-            float distanciaSalida = Vector3.Distance(gato.transform.position, puertaDeSalida.position);
-
-            if (distanciaSalida <= 1.5f)
+            if (gato != null)
             {
-                gato.isTrapped = false;
-                gato.estadoActual = Cat.CatState.Moving;
-                faseActual = FaseTrampa.Terminado;
+                float distanciaSalida = Vector3.Distance(gato.transform.position, puntoFinalTutorial.position);
+                if (distanciaSalida <= 2.0f)
+                {
+                    gato.isTrapped = false;
+                    gato.estadoActual = Cat.CatState.Waiting;
+                    faseActual = FaseTrampa.Terminado;
+                }
             }
         }
     }
@@ -128,15 +156,25 @@ public class TutorialTrap : MonoBehaviour
 
         if (escudoVisual != null) escudoVisual.SetActive(false);
 
-        gato.isTrapped = false;
-        gato.estadoActual = Cat.CatState.Moving;
-        gato.Anim.SetBool("IsSitting", false);
-
-        if (gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
+        if (gato != null)
         {
-            gato.Agent.isStopped = false;
-            gato.Agent.updateRotation = true;
-            gato.Agent.SetDestination(puertaDeSalida.position);
+            gato.isTrapped = false;
+            gato.estadoActual = Cat.CatState.Moving;
+            if (gato.Anim != null) gato.Anim.SetBool("IsSitting", false);
+
+            if (gato.Agent != null && gato.Agent.isActiveAndEnabled && gato.Agent.isOnNavMesh)
+            {
+                gato.Agent.isStopped = false;
+                gato.Agent.updateRotation = true;
+                gato.Agent.SetDestination(puntoFinalTutorial.position);
+            }
+        }
+
+        if (ciervoBebe != null && ciervoBebe.isActiveAndEnabled && ciervoBebe.isOnNavMesh)
+        {
+            ciervoBebe.isStopped = false;
+            ciervoBebe.updateRotation = true;
+            ciervoBebe.SetDestination(puntoFinalTutorial.position);
         }
 
         faseActual = FaseTrampa.GatoSaliendo;
