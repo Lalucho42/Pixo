@@ -1,56 +1,79 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class InteractableOutline : MonoBehaviour
 {
     [Header("Configuración del Outline")]
-    [Tooltip("Arrastra aquí el objeto 3D que tiene la malla (ej: pickaxe)")]
-    public MeshRenderer mallaObjetivo;
+    [Tooltip("Arrastra aquí todas las mallas que forman este objeto y que requieran outline.")]
+    public MeshRenderer[] mallasObjetivo;
 
-    [Tooltip("El nombre de REFERENCIA en el Shader Graph. Ej: _OutlineThickness")]
     public string nombrePropiedadGrosor = "_OutlineThickness";
-
-    [Tooltip("El grosor que tendrá el borde cuando mires el objeto")]
     public float grosorActivo = 0.025f;
 
-    private Material materialOutlineInstancia;
+    [Header("Modo de Activación")]
+    [Tooltip("SÍ: Se activa solo por Trigger (Herramientas). NO: Lo controla otro script (Computadora).")]
+    public bool usarTriggersAutomaticos = true;
+
+    private List<Material> materialesOutlineInstancias = new List<Material>();
     private bool esActivo = false;
 
     private void Start()
     {
-        if (mallaObjetivo == null) return;
-
-        // Obtenemos los materiales (esto crea una instancia única para este objeto)
-        Material[] materiales = mallaObjetivo.materials;
-
-        // Asumimos que el outline es el SEGUNDO material (el último de la lista)
-        if (materiales.Length > 1)
+        // Si el array está vacío, intentamos auto-detectar si el objeto mismo tiene un MeshRenderer
+        if (mallasObjetivo == null || mallasObjetivo.Length == 0)
         {
-            materialOutlineInstancia = materiales[materiales.Length - 1];
-
-            // Forzamos que empiece invisible (0)
-            materialOutlineInstancia.SetFloat(nombrePropiedadGrosor, 0f);
+            MeshRenderer mallaPropia = GetComponent<MeshRenderer>();
+            if (mallaPropia != null)
+            {
+                mallasObjetivo = new MeshRenderer[] { mallaPropia };
+            }
         }
-        else
+
+        if (mallasObjetivo == null || mallasObjetivo.Length == 0) return;
+
+        // Buscamos y guardamos la instancia del material de outline de cada una de las mallas
+        foreach (MeshRenderer malla in mallasObjetivo)
         {
-            Debug.LogWarning($"[Outline] {gameObject.name} no tiene un segundo material asignado en su MeshRenderer.");
+            if (malla == null) continue;
+
+            Material[] materiales = malla.materials;
+
+            if (materiales.Length > 1)
+            {
+                Material matOutline = materiales[materiales.Length - 1];
+                matOutline.SetFloat(nombrePropiedadGrosor, 0f); // Forzamos inicio invisible
+                materialesOutlineInstancias.Add(matOutline);
+            }
+            else
+            {
+                Debug.LogWarning($"[Outline] El objeto '{malla.gameObject.name}' no tiene un segundo material asignado en su MeshRenderer.");
+            }
         }
     }
 
     public void SetOutline(bool active)
     {
-        if (materialOutlineInstancia == null || active == esActivo) return;
+        if (materialesOutlineInstancias.Count == 0 || active == esActivo) return;
 
         esActivo = active;
         float grosorDestino = active ? grosorActivo : 0f;
 
-        materialOutlineInstancia.SetFloat(nombrePropiedadGrosor, grosorDestino);
+        // Encendemos o apagamos el grosor en todas las mallas registradas a la vez
+        foreach (Material mat in materialesOutlineInstancias)
+        {
+            if (mat != null)
+            {
+                mat.SetFloat(nombrePropiedadGrosor, grosorDestino);
+            }
+        }
     }
 
-    // --- NUEVA DETECCIÓN AUTOMÁTICA POR TRIGGERS ---
+    // --- DETECCIÓN POR TRIGGERS (PARA HERRAMIENTAS) ---
 
     private void OnTriggerEnter(Collider other)
     {
-        // Si lo que entra al trigger tiene el script 'Player' (es el jugador)
+        if (!usarTriggersAutomaticos) return;
+
         if (other.GetComponent<Player>() != null || other.CompareTag("Player"))
         {
             SetOutline(true);
@@ -59,7 +82,8 @@ public class InteractableOutline : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        // Si lo que sale del trigger es el jugador
+        if (!usarTriggersAutomaticos) return;
+
         if (other.GetComponent<Player>() != null || other.CompareTag("Player"))
         {
             SetOutline(false);

@@ -1,13 +1,20 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private string GameScene;
+    [SerializeField] private string GameScene = "Boceto";
+    [SerializeField] private GestorDeEscenas gestorDeEscenas;
 
     public void StartGame()
     {
-        SceneManager.LoadScene(GameScene);
+        if (gestorDeEscenas != null)
+        {
+            gestorDeEscenas.CargarJuego(GameScene);
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(GameScene);
+        }
     }
 
     public void QuitGame()

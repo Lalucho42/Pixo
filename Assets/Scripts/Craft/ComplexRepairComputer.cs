@@ -18,12 +18,24 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
     [Header("UI del Cartel")]
     public StructureRepairUI cartelVisual;
 
+    [Header("Textos de Misión Automáticos (Opcional)")]
+    public string misionAlAcercarse;
+    public string misionAlCompletar;
+
+    [Header("Efecto de Outline Visual")]
+    public InteractableOutline scriptOutline;
+
     private BasePuzzleModule scriptDelPuzzle;
     private bool todoElNivelEstaTerminado = false;
 
     void Start()
     {
         scriptDelPuzzle = GetComponent<BasePuzzleModule>();
+
+        if (scriptOutline != null)
+        {
+            scriptOutline.SetOutline(false);
+        }
 
         if (laPCYaFunciona)
         {
@@ -117,14 +129,35 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
     {
         todoElNivelEstaTerminado = true;
         if (cartelVisual != null) cartelVisual.Ocultar();
+
+        if (scriptOutline != null)
+        {
+            scriptOutline.SetOutline(false);
+        }
+
+        if (!string.IsNullOrEmpty(misionAlCompletar) && MissionUI.Instance != null)
+        {
+            MissionUI.Instance.ActualizarMision(misionAlCompletar);
+        }
+
         if (estructuraDeLosEscombros != null) estructuraDeLosEscombros.TriggerRepair();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && cartelVisual != null && !todoElNivelEstaTerminado)
+        if (other.CompareTag("Player") && !todoElNivelEstaTerminado)
         {
-            cartelVisual.Mostrar();
+            if (cartelVisual != null) cartelVisual.Mostrar();
+
+            if (scriptOutline != null)
+            {
+                scriptOutline.SetOutline(true);
+            }
+
+            if (!string.IsNullOrEmpty(misionAlAcercarse) && MissionUI.Instance != null)
+            {
+                MissionUI.Instance.ActualizarMision(misionAlAcercarse);
+            }
         }
     }
 
@@ -133,6 +166,11 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
         if (other.CompareTag("Player") && cartelVisual != null)
         {
             cartelVisual.Ocultar();
+
+            if (scriptOutline != null)
+            {
+                scriptOutline.SetOutline(false);
+            }
         }
     }
 

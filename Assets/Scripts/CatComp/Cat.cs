@@ -30,6 +30,10 @@ public class Cat : MonoBehaviour
     [Header("Control de Cinematicas")]
     public bool isInCinematic = false;
 
+    [Header("Control Externo (Orquestadores, ej: TutorialTrap)")]
+    [Tooltip("Cuando es true, el gato ignora por completo su IA autonoma (CatMovement y CatEvasion: seguir/esperar al jugador, sentarse cerca de el, huir de enemigos). Un script externo controla el destino del NavMeshAgent directamente. Se activa/desactiva con IniciarControlExterno() / DetenerControlExterno().")]
+    public bool invalidarSeguimiento = false;
+
     [Header("Ajuste de Audio Pasos")]
     public float cooldownPasosGato = 0.24f;
     private float ultimoTiempoPasoGato = 0f;
@@ -83,6 +87,24 @@ public class Cat : MonoBehaviour
             return;
         }
 
+        if (invalidarSeguimiento)
+        {
+            // Un orquestador externo (ej: TutorialTrap) tiene el control total de la
+            // navegacion. Ignoramos CatMovement (seguir/esperar al jugador) y CatEvasion
+            // (huida de enemigos) para que no "secuestren" el destino frame a frame.
+            // Conservamos CatJump para que un OffMeshLink en el camino al destino externo
+            // siga animandose como un salto en vez de romperse, y CatAnimations para que
+            // el blend tree de locomocion siga recibiendo la velocidad real del Agent.
+            if (Jump.Tick())
+            {
+                Animations.Tick();
+                return;
+            }
+
+            Animations.Tick();
+            return;
+        }
+
         if (estadoActual == CatState.StandingUp)
         {
             timerSeguridadBloqueo += Time.deltaTime;
@@ -126,6 +148,56 @@ public class Cat : MonoBehaviour
         {
             estadoActual = CatState.Moving;
             if (Agent != null) Agent.isStopped = false;
+        }
+    }
+
+    /// <summary>
+    /// Entrega el control de la navegacion a un script externo (orquestador).
+    /// Desactiva la IA autonoma (CatMovement / CatEvasion) y manda al gato directo
+    /// al destino indicado usando el NavMeshAgent, con animacion de carrera normal.
+    /// </summary>
+    public void IniciarControlExterno(Vector3 destino)
+    {
+        enabled = true;
+        isTrapped = false;
+        invalidarSeguimiento = true;
+        estadoActual = CatState.Moving;
+        estaSaltando = false;
+
+        if (Anim != null)
+        {
+            // Igual que en CatMovement: para salir de la animacion de Sentado hay
+            // que disparar el Trigger, no alcanza con apagar el bool IsSitting.
+            Anim.SetTrigger("StandUp");
+            Anim.SetBool("IsSitting", false);
+        }
+
+        if (Agent != null && Agent.isActiveAndEnabled && Agent.isOnNavMesh)
+        {
+            Agent.isStopped = false;
+            Agent.updateRotation = true;
+            Agent.SetDestination(destino);
+        }
+    }
+
+    /// <summary>
+    /// Frena al gato en el lugar. Sigue bajo control externo (no se reactiva la IA
+    /// autonoma): pensado para el final de una secuencia guiada por un orquestador.
+    /// </summary>
+    public void DetenerControlExterno(bool sentarse)
+    {
+        if (Agent != null && Agent.isActiveAndEnabled && Agent.isOnNavMesh)
+        {
+            Agent.isStopped = true;
+            Agent.velocity = Vector3.zero;
+            Agent.ResetPath();
+        }
+
+        estadoActual = sentarse ? CatState.Waiting : CatState.Moving;
+
+        if (Anim != null)
+        {
+            Anim.SetBool("IsSitting", sentarse);
         }
     }
 }

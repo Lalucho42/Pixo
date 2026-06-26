@@ -68,7 +68,7 @@ Material:
     - _AddLights_Bands: 3
     - _AddLights_Multiplier: 2
     - _AddLights_Smoothness: 0.05
-    - _AmbientIntensity: 0
+    - _AmbientIntensity: 1
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _QueueControl: 0

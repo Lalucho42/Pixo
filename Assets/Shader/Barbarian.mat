@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3114417931752853828
+--- !u!114 &-479089776599996595
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,13 +20,17 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MAT_Drone
-  m_Shader: {fileID: -6465566751694194690, guid: 145d0c0057ac1014da78ff4237d00947, type: 3}
+  m_Name: Barbarian
+  m_Shader: {fileID: -6465566751694194690, guid: bdc5851cec08e6b4facc471556eb0e5e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _ADDITIONAL_LIGHTS
+  - _ADDITIONAL_LIGHT_SHADOWS
+  - _MAIN_LIGHT_SHADOWS
+  - _MAIN_LIGHT_SHADOWS_CASCADE
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -37,12 +41,12 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _Base_Map:
-        m_Texture: {fileID: 2800000, guid: 3968453b347f327459f2fb90c9180a4b, type: 3}
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: bb648b1ed06cd6e4fa782b63f3cc85d2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Emission_Map:
-        m_Texture: {fileID: 2800000, guid: b6c155f979b34e748aebc4b9a1466f68, type: 3}
+        m_Texture: {fileID: 2800000, guid: 516465a4f43bf46428001b71e388105b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -59,14 +63,24 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _ADDITIONAL_LIGHTS: 1
+    - _ADDITIONAL_LIGHT_SHADOWS: 1
+    - _AddLights_Bands: 3
+    - _AddLights_Multiplier: 2
+    - _AddLights_Smoothness: 0.05
+    - _AmbientIntensity: 1
+    - _MAIN_LIGHT_SHADOWS: 1
+    - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Shadow_Bands: 2
-    - _Shadow_Smoothness: 0.1
-    - _Shadow_Threshold: 0
+    - _RimLightPower: 10
+    - _Specular_Size: 0.95
+    - _Specular_Smoothness: 0.97
     m_Colors:
-    - _Base_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Emission_Color: {r: 1.759245, g: 1.645572, b: 1.275194, a: 1}
+    - _RimLigthColor: {r: 0, g: 0, b: 0, a: 0}
     - _Shadow_Color: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 0}
+    - _Specular_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Tint: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -202,16 +202,16 @@ MonoBehaviour:
   grupoSFX: {fileID: -3596307359361267033, guid: 8333c28c90edff0488b008be513c420d, type: 2}
   grupoUI: {fileID: 8225078595982006690, guid: 8333c28c90edff0488b008be513c420d, type: 2}
   musicaTracks:
+  - nombre: Musica_Menu
+    clips:
+    - {fileID: 8300000, guid: 403c3a14cd4bb4441943597be2a8cc94, type: 3}
+    volumen: 0.6
+    pitch: 1
+    usarPitchAleatorio: 0
   - nombre: Ambiente_Bosque
     clips:
     - {fileID: 8300000, guid: be625333d762b6641bfccf09ce8b6b40, type: 3}
     volumen: 0.5
-    pitch: 1
-    usarPitchAleatorio: 0
-  - nombre: Ambiente_Suspenso
-    clips:
-    - {fileID: 8300000, guid: df1b69906a7f2644597afa72df1748e1, type: 3}
-    volumen: 0.6
     pitch: 1
     usarPitchAleatorio: 0
   sfxClips:
@@ -226,7 +226,7 @@ MonoBehaviour:
   - nombre: Arma_Agarrar
     clips:
     - {fileID: 8300000, guid: 82f1b361de73d664fb10fdb0a2e1a848, type: 3}
-    volumen: 0.5
+    volumen: 1
     pitch: 0.5
     usarPitchAleatorio: 0
   - nombre: Player_Paso

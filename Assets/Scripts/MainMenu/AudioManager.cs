@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using System;
 
 public class AudioManager : MonoBehaviour
@@ -43,6 +44,28 @@ public class AudioManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += AlCargarEscena;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= AlCargarEscena;
+    }
+
+    private void AlCargarEscena(Scene escena, LoadSceneMode modo)
+    {
+        if (escena.name == "MenuPrincipal")
+        {
+            PlayMusic("Musica_Menu");
+        }
+        else if (escena.name == "Boceto" || escena.name == "Juego")
+        {
+            PlayMusic("Ambiente_Bosque");
         }
     }
 
