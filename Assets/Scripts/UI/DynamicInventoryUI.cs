@@ -10,7 +10,8 @@ public class DynamicInventoryUI : MonoBehaviour
     [Header("Iconos de Recursos")]
     public Sprite iconoMadera;
     public Sprite iconoPiedra;
-    public Sprite iconoParteComputadora; 
+    public Sprite iconoParteComputadora;
+    public Sprite iconoHierro;
 
     private Dictionary<ResourceType, ResourceSlotUI> slotsCreados = new Dictionary<ResourceType, ResourceSlotUI>();
 
@@ -21,11 +22,12 @@ public class DynamicInventoryUI : MonoBehaviour
     }
 
    
-    private void ActualizarInventario(int madera, int piedra, int parte)
+    private void ActualizarInventario(int madera, int piedra, int parte, int hierro)
     {
         CheckResource(ResourceType.Madera, madera);
         CheckResource(ResourceType.Piedra, piedra);
         CheckResource(ResourceType.ParteComputadora, parte);
+        CheckResource(ResourceType.Hierro, hierro);
     }
 
     private void CheckResource(ResourceType tipo, int cantidad)
@@ -52,6 +54,7 @@ public class DynamicInventoryUI : MonoBehaviour
         if (tipo == ResourceType.Madera) return iconoMadera;
         if (tipo == ResourceType.Piedra) return iconoPiedra;
         if (tipo == ResourceType.ParteComputadora) return iconoParteComputadora;
+        if (tipo == ResourceType.Hierro) return iconoHierro;
         return null;
     }
 }
