@@ -11,7 +11,6 @@ public class CatAnimations
     {
         if (cat.Anim == null) return;
 
-        // Mandamos velocidad al Blend Tree de Locomotion solo si el estado es Moving
         float velocidadReal = cat.Agent.velocity.magnitude;
         velocidadSuavizada = Mathf.Lerp(velocidadSuavizada, velocidadReal, Time.deltaTime * 8f);
 

@@ -16,64 +16,64 @@ public class PlayerMovement
 
     public void Tick(float dt)
     {
-        if (player.IsMovementLocked) return; //
+        if (player.IsMovementLocked) return; 
 
-        Vector2 input = player.InputHandler.MoveInput; //
-        Vector3 forward = player.PlayerCamera.CameraForward; //
-        Vector3 right = player.PlayerCamera.CameraRight; //
+        Vector2 input = player.InputHandler.MoveInput; 
+        Vector3 forward = player.PlayerCamera.CameraForward; 
+        Vector3 right = player.PlayerCamera.CameraRight; 
 
-        forward.y = 0; //
-        right.y = 0; //
-        forward.Normalize(); //
-        right.Normalize(); //
+        forward.y = 0; 
+        right.y = 0; 
+        forward.Normalize(); 
+        right.Normalize(); 
 
-        Vector3 moveDir = (forward * input.y + right * input.x).normalized; //
+        Vector3 moveDir = (forward * input.y + right * input.x).normalized; 
 
-        if (player.ColliderHandler.IsRolling) //
+        if (player.ColliderHandler.IsRolling) 
         {
-            if (moveDir.magnitude < 0.1f) moveDir = player.transform.forward; //
+            if (moveDir.magnitude < 0.1f) moveDir = player.transform.forward; 
         }
 
-        float targetSpeed = player.ColliderHandler.IsRolling ? roll : (player.InputHandler.IsRunning ? run : walk); //
+        float targetSpeed = player.ColliderHandler.IsRolling ? roll : (player.InputHandler.IsRunning ? run : walk); 
 
-        if (input.magnitude < 0.1f && !player.ColliderHandler.IsRolling) //
+        if (input.magnitude < 0.1f && !player.ColliderHandler.IsRolling) 
         {
-            targetSpeed = 0f; //
+            targetSpeed = 0f; 
         }
 
-        float smoothFactor = 15f; //
+        float smoothFactor = 15f; 
 
-        if (player.ColliderHandler.IsRolling) //
+        if (player.ColliderHandler.IsRolling) 
         {
-            smoothFactor = 8f; //
+            smoothFactor = 8f; 
         }
-        else if (input.magnitude < 0.1f) //
+        else if (input.magnitude < 0.1f) 
         {
-            smoothFactor = 30f; //
-        }
-
-        currentVelocity = Mathf.Lerp(currentVelocity, targetSpeed, dt * smoothFactor); //
-
-        if (input.magnitude < 0.1f && !player.ColliderHandler.IsRolling && currentVelocity < 0.5f) //
-        {
-            currentVelocity = 0f; //
+            smoothFactor = 30f; 
         }
 
-        if (moveDir.magnitude > 0.1f || currentVelocity > 0.1f) //
-        {
-            Vector3 finalDir = moveDir.magnitude > 0.1f ? moveDir : player.transform.forward; //
+        currentVelocity = Mathf.Lerp(currentVelocity, targetSpeed, dt * smoothFactor); 
 
-            if (input.magnitude > 0.1f) //
+        if (input.magnitude < 0.1f && !player.ColliderHandler.IsRolling && currentVelocity < 0.5f) 
+        {
+            currentVelocity = 0f; 
+        }
+
+        if (moveDir.magnitude > 0.1f || currentVelocity > 0.1f) 
+        {
+            Vector3 finalDir = moveDir.magnitude > 0.1f ? moveDir : player.transform.forward; 
+
+            if (input.magnitude > 0.1f) 
             {
-                Quaternion targetRotation = Quaternion.LookRotation(finalDir); //
-                player.transform.rotation = Quaternion.Slerp( //
-                    player.transform.rotation, //
-                    targetRotation, //
-                    dt * player.rotationSpeed //
-                ); //
+                Quaternion targetRotation = Quaternion.LookRotation(finalDir); 
+                player.transform.rotation = Quaternion.Slerp(
+                    player.transform.rotation, 
+                    targetRotation, 
+                    dt * player.rotationSpeed 
+                ); 
             }
 
-            player.Controller.Move(finalDir * currentVelocity * dt); //
+            player.Controller.Move(finalDir * currentVelocity * dt); 
         }
     }
 }

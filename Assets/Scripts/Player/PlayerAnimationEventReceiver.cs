@@ -26,7 +26,6 @@ public class PlayerAnimationEventReceiver : MonoBehaviour
 
         ultimoTiempoPaso = Time.time;
 
-        // UML PERFECTO: Solo le mandamos el texto de la base de datos y nuestro parlante corporal
         AudioManager.Instance.PlaySFX3D("Player_Paso", player.AudioSource);
     }
 
@@ -42,7 +41,6 @@ public class PlayerAnimationEventReceiver : MonoBehaviour
         {
             player.ColliderHandler.SetRollState(true);
 
-            // UML PERFECTO: Bypass 2D instantáneo directo al Manager
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlaySFX2D("Player_Rodar");
@@ -56,7 +54,6 @@ public class PlayerAnimationEventReceiver : MonoBehaviour
         {
             player.Jump.ApplyJumpForce();
 
-            // UML PERFECTO: Bypass 2D instantáneo directo al Manager
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlaySFX2D("Player_Salto");

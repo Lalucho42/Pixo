@@ -2,6 +2,7 @@
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using System;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
@@ -17,17 +18,18 @@ public class AudioManager : MonoBehaviour
 
     public static AudioManager Instance;
 
-    [Header("Referencia al Mixer")]
     public AudioMixer mainMixer;
-
-    [Header("Ruteo a Grupos del Mixer")]
     public AudioMixerGroup grupoMusica;
     public AudioMixerGroup grupoSFX;
     public AudioMixerGroup grupoUI;
 
-    [Header("Base de Datos de Sonidos")]
     public Sound[] musicaTracks;
     public Sound[] sfxClips;
+
+    [HideInInspector] public float volumenMaster = 1f;
+    [HideInInspector] public float volumenMusica = 1f;
+    [HideInInspector] public float volumenSFX = 1f;
+    [HideInInspector] public float volumenUI = 1f;
 
     private AudioSource fuenteMusica;
     private AudioSource fuenteSFX2D;
@@ -40,10 +42,19 @@ public class AudioManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             ConfigurarFuentesInternas();
+            CargarConfiguracion();
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        if (this == Instance)
+        {
+            SincronizarMixer();
         }
     }
 
@@ -59,11 +70,20 @@ public class AudioManager : MonoBehaviour
 
     private void AlCargarEscena(Scene escena, LoadSceneMode modo)
     {
-        if (escena.name == "MenuPrincipal")
+        if (this != Instance) return;
+        StartCoroutine(CambiarMusicaDeEscenaSeguro(escena.name));
+    }
+
+    private IEnumerator CambiarMusicaDeEscenaSeguro(string nombreEscena)
+    {
+        yield return new WaitForEndOfFrame();
+        SincronizarMixer();
+
+        if (nombreEscena == "MainMenu")
         {
             PlayMusic("Musica_Menu");
         }
-        else if (escena.name == "Boceto" || escena.name == "Juego")
+        else if (nombreEscena == "Boceto")
         {
             PlayMusic("Ambiente_Bosque");
         }
@@ -78,6 +98,23 @@ public class AudioManager : MonoBehaviour
         if (grupoMusica != null) fuenteMusica.outputAudioMixerGroup = grupoMusica;
         if (grupoSFX != null) fuenteSFX2D.outputAudioMixerGroup = grupoSFX;
         if (grupoUI != null) fuenteUI2D.outputAudioMixerGroup = grupoUI;
+    }
+
+    private void CargarConfiguracion()
+    {
+        volumenMaster = PlayerPrefs.GetFloat("VolMaster", 1f);
+        volumenMusica = PlayerPrefs.GetFloat("VolMusica", 1f);
+        volumenSFX = PlayerPrefs.GetFloat("VolSFX", 1f);
+        volumenUI = PlayerPrefs.GetFloat("VolUI", 1f);
+    }
+
+    public void SincronizarMixer()
+    {
+        if (mainMixer == null) return;
+        mainMixer.SetFloat("MasterVol", Mathf.Log10(Mathf.Max(0.0001f, volumenMaster)) * 20);
+        mainMixer.SetFloat("MusicVol", Mathf.Log10(Mathf.Max(0.0001f, volumenMusica)) * 20);
+        mainMixer.SetFloat("SFXVol", Mathf.Log10(Mathf.Max(0.0001f, volumenSFX)) * 20);
+        mainMixer.SetFloat("UIVol", Mathf.Log10(Mathf.Max(0.0001f, volumenUI)) * 20);
     }
 
     public void PlayMusic(string nombre)
@@ -134,8 +171,31 @@ public class AudioManager : MonoBehaviour
         fuenteEmisora.PlayOneShot(clipElegido, s.volumen);
     }
 
-    public void CambiarVolumenMaster(float valorSlider) { mainMixer.SetFloat("MasterVol", Mathf.Log10(valorSlider) * 20); }
-    public void CambiarVolumenMusica(float valorSlider) { mainMixer.SetFloat("MusicVol", Mathf.Log10(valorSlider) * 20); }
-    public void CambiarVolumenSFX(float valorSlider) { mainMixer.SetFloat("SFXVol", Mathf.Log10(valorSlider) * 20); }
-    public void CambiarVolumenUI(float valorSlider) { mainMixer.SetFloat("UIVol", Mathf.Log10(valorSlider) * 20); }
+    public void CambiarVolumenMaster(float valorSlider)
+    {
+        volumenMaster = valorSlider;
+        PlayerPrefs.SetFloat("VolMaster", valorSlider);
+        mainMixer.SetFloat("MasterVol", Mathf.Log10(Mathf.Max(0.0001f, valorSlider)) * 20);
+    }
+
+    public void CambiarVolumenMusica(float valorSlider)
+    {
+        volumenMusica = valorSlider;
+        PlayerPrefs.SetFloat("VolMusica", valorSlider);
+        mainMixer.SetFloat("MusicVol", Mathf.Log10(Mathf.Max(0.0001f, valorSlider)) * 20);
+    }
+
+    public void CambiarVolumenSFX(float valorSlider)
+    {
+        volumenSFX = valorSlider;
+        PlayerPrefs.SetFloat("VolSFX", valorSlider);
+        mainMixer.SetFloat("SFXVol", Mathf.Log10(Mathf.Max(0.0001f, valorSlider)) * 20);
+    }
+
+    public void CambiarVolumenUI(float valorSlider)
+    {
+        volumenUI = valorSlider;
+        PlayerPrefs.SetFloat("VolUI", valorSlider);
+        mainMixer.SetFloat("UIVol", Mathf.Log10(Mathf.Max(0.0001f, valorSlider)) * 20);
+    }
 }

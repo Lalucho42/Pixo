@@ -1,5 +1,5 @@
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -8,6 +8,7 @@ public class InventoryUI : MonoBehaviour
     public TextMeshProUGUI textoPiedra;
     public TextMeshProUGUI textoParteComputadora;
     public TextMeshProUGUI textoHierro;
+
     private void Start()
     {
         Player player = FindFirstObjectByType<Player>();
@@ -25,6 +26,6 @@ public class InventoryUI : MonoBehaviour
         if (textoMadera != null) textoMadera.text = cantidadMadera.ToString();
         if (textoPiedra != null) textoPiedra.text = cantidadPiedra.ToString();
         if (textoParteComputadora != null) textoParteComputadora.text = cantidadParte.ToString();
-        if (textoMadera != null) textoHierro.text = cantidadHierro.ToString();
+        if (textoHierro != null) textoHierro.text = cantidadHierro.ToString();
     }
 }

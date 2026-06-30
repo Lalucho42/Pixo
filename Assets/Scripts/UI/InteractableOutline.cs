@@ -19,7 +19,6 @@ public class InteractableOutline : MonoBehaviour
 
     private void Start()
     {
-        // Si el array está vacío, intentamos auto-detectar si el objeto mismo tiene un MeshRenderer
         if (mallasObjetivo == null || mallasObjetivo.Length == 0)
         {
             MeshRenderer mallaPropia = GetComponent<MeshRenderer>();
@@ -31,7 +30,6 @@ public class InteractableOutline : MonoBehaviour
 
         if (mallasObjetivo == null || mallasObjetivo.Length == 0) return;
 
-        // Buscamos y guardamos la instancia del material de outline de cada una de las mallas
         foreach (MeshRenderer malla in mallasObjetivo)
         {
             if (malla == null) continue;
@@ -41,7 +39,7 @@ public class InteractableOutline : MonoBehaviour
             if (materiales.Length > 1)
             {
                 Material matOutline = materiales[materiales.Length - 1];
-                matOutline.SetFloat(nombrePropiedadGrosor, 0f); // Forzamos inicio invisible
+                matOutline.SetFloat(nombrePropiedadGrosor, 0f); 
                 materialesOutlineInstancias.Add(matOutline);
             }
             else
@@ -58,7 +56,6 @@ public class InteractableOutline : MonoBehaviour
         esActivo = active;
         float grosorDestino = active ? grosorActivo : 0f;
 
-        // Encendemos o apagamos el grosor en todas las mallas registradas a la vez
         foreach (Material mat in materialesOutlineInstancias)
         {
             if (mat != null)
@@ -68,7 +65,6 @@ public class InteractableOutline : MonoBehaviour
         }
     }
 
-    // --- DETECCIÓN POR TRIGGERS (PARA HERRAMIENTAS) ---
 
     private void OnTriggerEnter(Collider other)
     {

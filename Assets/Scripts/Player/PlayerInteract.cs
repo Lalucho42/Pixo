@@ -11,7 +11,6 @@ public class PlayerInteract
         player.InputHandler.OnInteractEvent += TryInteract;
     }
 
-    // Lo dejamos vacío como al principio, ya no necesitamos calcular distancias aquí
     public void Tick(float deltaTime) { }
 
     private void TryInteract()

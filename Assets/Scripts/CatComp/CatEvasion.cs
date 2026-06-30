@@ -39,11 +39,7 @@ public class CatEvasion
         cat.Agent.isStopped = false;
         cat.Agent.updateRotation = true;
 
-        // --- ADAPTACIÓN A MÁQUINA DE ESTADOS ---
-        // Forzamos el estado a Moving para que el NavMesh no se clave a cero
         cat.estadoActual = Cat.CatState.Moving;
-
-        // Por seguridad, si el gato estaba sentado, obligamos al Animator a quitar la pose
         cat.Anim.SetBool("IsSitting", false);
 
         Vector3 direccionHuida = (cat.transform.position - enemigo.position).normalized;

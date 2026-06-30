@@ -18,7 +18,6 @@ public class TutorialDummy : MonoBehaviour
 
     private void Start()
     {
-        // Auto-detección: Si te olvidás de arrastrar la malla, busca al primer hijo
         if (mallaVisual == null && transform.childCount > 0)
         {
             mallaVisual = transform.GetChild(0);
@@ -30,26 +29,22 @@ public class TutorialDummy : MonoBehaviour
         }
     }
 
-    // --- INTERFAZ UNIVERSAL DE DAÑO ---
-    // Tu espada (ToolItem), al activarse por los eventos del Player, va a buscar un método 
-    // llamado 'TakeDamage' en lo que golpee. Este método captura ese llamado.
+    
     public void TakeDamage(int damageAmount)
     {
         RecibirGolpe();
     }
 
-    // --- MÉTODO DE EJECUCIÓN ---
+   
     public void RecibirGolpe()
     {
         if (mallaVisual == null) return;
 
-        // Si tenés partículas asignadas, las reproduce en el lugar del impacto
         if (particulasImpacto != null)
         {
             particulasImpacto.Play();
         }
 
-        // Si el jugador le pega muy rápido (combo), reiniciamos el temblor para que no se desfase
         if (estaTemblando)
         {
             StopAllCoroutines();
@@ -66,7 +61,7 @@ public class TutorialDummy : MonoBehaviour
 
         while (tiempoTranscurrido < duracionTemblor)
         {
-            // Generamos una vibración rápida en los ejes X e Y
+           
             float offsetX = Random.Range(-1f, 1f) * intensidadTemblor;
             float offsetY = Random.Range(-1f, 1f) * intensidadTemblor;
 
@@ -77,10 +72,9 @@ public class TutorialDummy : MonoBehaviour
             );
 
             tiempoTranscurrido += Time.deltaTime;
-            yield return null; // Espera al siguiente frame
+            yield return null; 
         }
 
-        // Al finalizar, devolvemos la malla a su posición original exacta
         mallaVisual.localPosition = posicionOriginalMalla;
         estaTemblando = false;
     }

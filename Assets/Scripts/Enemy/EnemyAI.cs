@@ -22,6 +22,11 @@ public class EnemyAI : MonoBehaviour
     [Header("Control de Cinematicas")]
     public bool isInCinematic = false;
 
+    [Header("Configuracion de Drops Colectables")]
+    public GameObject dropPrefab;
+    public int dropAmount = 1;
+    public Transform spawnPoint;
+
     public NavMeshAgent Agent { get; private set; }
     public HealthSystem Health { get; private set; }
     public Transform PlayerTarget { get; private set; }
@@ -30,6 +35,7 @@ public class EnemyAI : MonoBehaviour
     private EnemyMovement movement;
     private MeleeCombatModule combatModule;
     private float stunTimer = 0f;
+    private bool yaDropeo = false;
 
     private void Awake()
     {
@@ -72,7 +78,11 @@ public class EnemyAI : MonoBehaviour
     {
         if (PlayerTarget == null || Health.IsDead)
         {
-            if (Health.IsDead && Agent != null && Agent.isOnNavMesh) Agent.isStopped = true;
+            if (Health.IsDead)
+            {
+                if (Agent != null && Agent.isOnNavMesh) Agent.isStopped = true;
+                ManejarMuerteYDrop();
+            }
             return;
         }
 
@@ -88,6 +98,22 @@ public class EnemyAI : MonoBehaviour
 
         float velocidadParaAnim = (Agent.isStopped || !Agent.isOnNavMesh) ? 0f : Agent.desiredVelocity.magnitude;
         if (animator != null) animator.SetFloat("Speed", velocidadParaAnim);
+    }
+
+    private void ManejarMuerteYDrop()
+    {
+        if (yaDropeo) return;
+        yaDropeo = true;
+
+        if (dropPrefab != null)
+        {
+            Vector3 spawnOrigin = spawnPoint != null ? spawnPoint.position : transform.position;
+            for (int i = 0; i < dropAmount; i++)
+            {
+                Vector3 randomOffset = new Vector3(Random.Range(-0.3f, 0.3f), 0.2f, Random.Range(-0.3f, 0.3f));
+                Instantiate(dropPrefab, spawnOrigin + randomOffset, Quaternion.identity);
+            }
+        }
     }
 
     public void PlayEnemyFootstep()

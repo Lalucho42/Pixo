@@ -44,7 +44,6 @@ public class PlayerJump
         {
             if (tiempoEnElAire > 0.20f)
             {
-                // UML PERFECTO: Emitimos el disparo de impacto plano directo al manager global
                 if (AudioManager.Instance != null)
                 {
                     AudioManager.Instance.PlaySFX2D("Player_Aterrizar");

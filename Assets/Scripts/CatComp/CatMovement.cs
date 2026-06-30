@@ -11,16 +11,13 @@ public class CatMovement
     {
         if (cat.Agent == null || !cat.Agent.isActiveAndEnabled || !cat.Agent.isOnNavMesh) return;
 
-        // Evaluamos distancias y actualizamos el Enum de estado
         ActualizarEstadoIA();
 
-        // Bloqueo absoluto: Si la IA no está en modo Moving, el motor se clava a cero
         if (cat.estadoActual != Cat.CatState.Moving)
         {
             cat.Agent.isStopped = true;
             cat.Agent.velocity = Vector3.zero;
 
-            // Si está esperando/sentado mira al jugador. Si se está levantando mira al frente (waypoint).
             Vector3 objetivoMirada = (cat.estadoActual == Cat.CatState.Waiting || cat.estadoActual == Cat.CatState.Sitting)
                 ? cat.player.position
                 : ObtenerPosicionObjetivo();
@@ -29,7 +26,6 @@ public class CatMovement
             return;
         }
 
-        // Solo si pasó el filtro anterior, el NavMeshAgent puede avanzar
         ReanudarMarcha(ObtenerPosicionObjetivo());
     }
 
@@ -52,7 +48,6 @@ public class CatMovement
             }
             else
             {
-                // Si el jugador se aleja, nos paramos
                 if (cat.estadoActual == Cat.CatState.Sitting || cat.estadoActual == Cat.CatState.Waiting)
                 {
                     cat.estadoActual = Cat.CatState.StandingUp;
@@ -61,7 +56,7 @@ public class CatMovement
                 }
             }
         }
-        else // MODO WAYPOINTS
+        else 
         {
             if (cat.waypoints.Length == 0 || puntoActual >= cat.waypoints.Length)
             {
@@ -83,7 +78,6 @@ public class CatMovement
                     cat.Anim.SetBool("IsSitting", true);
                 }
 
-                // Si el jugador llega al radio de activación, avanzamos de punto e iniciamos el levantado
                 if (distJugador <= cat.distanciaParaAvanzar)
                 {
                     if (cat.estadoActual == Cat.CatState.Sitting || cat.estadoActual == Cat.CatState.Waiting)

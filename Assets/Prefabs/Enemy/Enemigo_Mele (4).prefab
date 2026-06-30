@@ -564,7 +564,7 @@ Transform:
   m_GameObject: {fileID: 2954027278124588207}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.0371, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -617,7 +617,6 @@ GameObject:
   - component: {fileID: 7928495839529807388}
   - component: {fileID: 7946602917607754754}
   - component: {fileID: 7090133685891905311}
-  - component: {fileID: -7470544686300503054}
   m_Layer: 6
   m_Name: Enemigo_Mele (4)
   m_TagString: Enemy
@@ -751,6 +750,9 @@ MonoBehaviour:
   handDamageScript: {fileID: 2239537311564763973}
   animator: {fileID: 2490967133249294521}
   isInCinematic: 0
+  dropPrefab: {fileID: 525337280146622053, guid: db4c01754f68e4d43b5fbaf77d5f7363, type: 3}
+  dropAmount: 3
+  spawnPoint: {fileID: 5486457704591925558}
 --- !u!82 &7090133685891905311
 AudioSource:
   m_ObjectHideFlags: 0
@@ -848,24 +850,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &-7470544686300503054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465907689875451230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 492b603dd10ab164986295367954ea99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceName: 
-  type: 3
-  health: 50
-  dropPrefab: {fileID: 525337280146622053, guid: db4c01754f68e4d43b5fbaf77d5f7363, type: 3}
-  dropAmount: 3
-  spawnPoint: {fileID: 7672616303063381736}
 --- !u!1 &3532953767872269068
 GameObject:
   m_ObjectHideFlags: 0

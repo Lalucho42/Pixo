@@ -8,7 +8,7 @@ public class LevelStartMission : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         if (MissionUI.Instance != null)
         {
-            MissionUI.Instance.ActualizarMision("Sigue al gato");
+            MissionUI.Instance.ActualizarMision("Follow the cat");
         }
     }
 }

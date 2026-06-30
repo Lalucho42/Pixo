@@ -18,7 +18,7 @@ public class MissionUI : MonoBehaviour
     {
         if (textoMision != null)
         {
-            textoMision.text = "Misión: " + nuevaMision;
+            textoMision.text = "Mission: " + nuevaMision;
         }
     }
 }

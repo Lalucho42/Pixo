@@ -8,7 +8,6 @@ public class WeaponPickup : MonoBehaviour, IInteractable
     {
         if (player.WeaponManager != null)
         {
-            // Disparo instantáneo global antes de destruir el objeto físico
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlaySFX2D("Arma_Agarrar");

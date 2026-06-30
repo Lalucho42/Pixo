@@ -49,7 +49,6 @@ public class GameManager : MonoBehaviour
         if (_instance != null && _instance != this) { Destroy(gameObject); return; }
         _instance = this;
 
-        // Optimizacion de rendimiento: Limitamos FPS para no saturar GPU
         Application.targetFrameRate = targetFPS;
         CurrentState = GameState.Playing;
     }
@@ -74,7 +73,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        // Usamos el nuevo Input System de forma eficiente
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (CurrentState == GameState.Playing) Pause();

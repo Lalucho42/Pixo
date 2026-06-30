@@ -52,8 +52,6 @@ public class Player : MonoBehaviour
         Animator = GetComponentInChildren<Animator>();
         WeaponManager = GetComponent<PlayerWeaponManager>();
         AudioSource = GetComponent<AudioSource>();
-
-        // Configuración física del emisor 3D del Player
         AudioSource.spatialBlend = 1f;
         AudioSource.dopplerLevel = 0f;
         AudioSource.minDistance = 3f;

@@ -85,8 +85,6 @@ public class TutorialTrap : MonoBehaviour
             ciervoBebe.enabled = false;
         }
 
-        // Cortamos el ambiente e introducimos tension justo en el instante en que
-        // arranca la cinematica de la emboscada.
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayMusic(musicaSuspenso);
@@ -142,7 +140,7 @@ public class TutorialTrap : MonoBehaviour
 
         if (MissionUI.Instance != null)
         {
-            MissionUI.Instance.ActualizarMision("elimina a los robots y rescata a los animales");
+            MissionUI.Instance.ActualizarMision("Eliminate the robots and rescue the animals.");
         }
 
         SpawnearEnemigos();
@@ -204,11 +202,6 @@ public class TutorialTrap : MonoBehaviour
         {
             if (!rotacionFinalAplicada)
             {
-                // A partir de aqui dejamos de lado la auto-rotacion del NavMeshAgent
-                // (que orienta el transform segun la direccion de movimiento) para que
-                // el Slerp manual hacia la orientacion del punto final tenga control
-                // total. Si no se hace esto, los dos sistemas pelean por la rotacion
-                // en el mismo frame y el giro tiembla.
                 if (gato.Agent != null) gato.Agent.updateRotation = false;
                 if (ciervoBebe != null) ciervoBebe.updateRotation = false;
                 rotacionFinalAplicada = true;
@@ -273,8 +266,6 @@ public class TutorialTrap : MonoBehaviour
 
         if (gato != null)
         {
-            // El gato ignora a partir de aqui su propia IA de seguimiento/espera al
-            // jugador y corre directo al punto de salida bajo nuestro control.
             gato.IniciarControlExterno(puntoFinalTutorial.position);
         }
 
@@ -287,7 +278,7 @@ public class TutorialTrap : MonoBehaviour
 
         if (MissionUI.Instance != null)
         {
-            MissionUI.Instance.ActualizarMision("repara la salida");
+            MissionUI.Instance.ActualizarMision("repair the exit");
         }
 
         faseActual = FaseTrampa.GatoSaliendo;
