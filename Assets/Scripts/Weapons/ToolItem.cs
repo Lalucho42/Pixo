@@ -98,7 +98,6 @@ public class ToolItem : MonoBehaviour
 
             if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX3D(tagDinamico, audioSource);
             if (VFXManager.Instance != null) VFXManager.Instance.SpawnVFX(tagDinamico, puntoImpacto, rotacionImpacto);
-            else Debug.LogError("VFXManager es NULL. Inicia desde Menu Principal.");
         }
         else if (dummy != null)
         {
@@ -108,7 +107,6 @@ public class ToolItem : MonoBehaviour
 
             if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX3D("Impacto_Enemigo", audioSource);
             if (VFXManager.Instance != null) VFXManager.Instance.SpawnVFX("Impacto_Enemigo", puntoImpacto, rotacionImpacto);
-            else Debug.LogError("VFXManager es NULL. Inicia desde Menu Principal.");
         }
         else if (health != null)
         {
@@ -116,9 +114,16 @@ public class ToolItem : MonoBehaviour
             alreadyHit.Add(other.gameObject);
             golpeoAlgo = true;
 
-            if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX3D("Impacto_Enemigo", audioSource);
-            if (VFXManager.Instance != null) VFXManager.Instance.SpawnVFX("Impacto_Enemigo", puntoImpacto, rotacionImpacto);
-            else Debug.LogError("VFXManager es NULL. Inicia desde Menu Principal.");
+            EnemyAI enemy = other.GetComponentInParent<EnemyAI>();
+            if (enemy != null)
+            {
+                enemy.EjecutarEfectosRecibirDaño(other.transform.position + Vector3.up);
+            }
+            else
+            {
+                if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX3D("Impacto_Enemigo", audioSource);
+                if (VFXManager.Instance != null) VFXManager.Instance.SpawnVFX("Impacto_Enemigo", puntoImpacto, rotacionImpacto);
+            }
         }
 
         if (golpeoAlgo) GastarDurabilidad();

@@ -14,6 +14,7 @@ public class EnemyAI : MonoBehaviour
     [Header("Configuracion Combate")]
     public float attackCooldown = 1.5f;
     public int damage = 10;
+    public float tiempoAnimacionMuerte = 60f;
 
     [Header("Referencias Auto-detectables")]
     public EnemyHandDamage handDamageScript;
@@ -80,7 +81,6 @@ public class EnemyAI : MonoBehaviour
         {
             if (Health.IsDead)
             {
-                if (Agent != null && Agent.isOnNavMesh) Agent.isStopped = true;
                 ManejarMuerteYDrop();
             }
             return;
@@ -105,14 +105,64 @@ public class EnemyAI : MonoBehaviour
         if (yaDropeo) return;
         yaDropeo = true;
 
+        DesactivarDañoMano();
+
+        if (Agent != null)
+        {
+            if (Agent.isOnNavMesh) Agent.isStopped = true;
+            Agent.enabled = false;
+        }
+
+        Collider[] todosLosColliders = GetComponentsInChildren<Collider>();
+        foreach (Collider c in todosLosColliders)
+        {
+            c.enabled = false;
+        }
+
+        if (animator != null)
+        {
+            animator.ResetTrigger("Punch");
+            animator.ResetTrigger("Hit");
+            animator.SetBool("Die", true);
+        }
+
         if (dropPrefab != null)
         {
             Vector3 spawnOrigin = spawnPoint != null ? spawnPoint.position : transform.position;
             for (int i = 0; i < dropAmount; i++)
             {
-                Vector3 randomOffset = new Vector3(Random.Range(-0.3f, 0.3f), 0.2f, Random.Range(-0.3f, 0.3f));
-                Instantiate(dropPrefab, spawnOrigin + randomOffset, Quaternion.identity);
+                Instantiate(dropPrefab, spawnOrigin + randomOrigin(), Quaternion.identity);
             }
+        }
+
+        Destroy(gameObject, tiempoAnimacionMuerte);
+    }
+
+    private Vector3 randomOrigin()
+    {
+        return new Vector3(Random.Range(-0.3f, 0.3f), 0.2f, Random.Range(-0.3f, 0.3f));
+    }
+
+    public void EjecutarEfectosRecibirDaño(Vector3 posicionImpacto)
+    {
+        if (Health.IsDead) return;
+
+        DesactivarDañoMano();
+
+        if (Agent != null && Agent.isOnNavMesh)
+        {
+            Agent.isStopped = true;
+        }
+
+        if (animator != null)
+        {
+            animator.ResetTrigger("Punch");
+            animator.SetTrigger("Hit");
+        }
+
+        if (AudioManager.Instance != null && AudioSource != null)
+        {
+            AudioManager.Instance.PlaySFX3D("Impacto_Enemigo", AudioSource);
         }
     }
 

@@ -5,6 +5,7 @@ public class PlayerAnimations
     private Player player;
     private int speedHash, rollIdleHash, rollMoveHash, jumpHash, groundedHash, vVelHash;
     private int attPaloHash, attPicoHash, attHachaHash;
+    private int hitHash, dieHash;
 
     private float rollCooldown = 0.6f;
     private float lastRollTime = -1f;
@@ -23,10 +24,11 @@ public class PlayerAnimations
         attPicoHash = Animator.StringToHash("AttackPico");
         attHachaHash = Animator.StringToHash("AttackHacha");
 
+        hitHash = Animator.StringToHash("Hit");
+        dieHash = Animator.StringToHash("Die");
+
         player.InputHandler.OnRollEvent += HandleRollSelection;
-
         player.Jump.OnJumpInitiated += () => player.Animator.SetTrigger(jumpHash);
-
         player.Combat.OnAttackRequested += HandleAttackAnims;
     }
 
@@ -72,5 +74,41 @@ public class PlayerAnimations
         if (tool == "Palo") player.Animator.SetTrigger(attPaloHash);
         else if (tool == "Pico") player.Animator.SetTrigger(attPicoHash);
         else if (tool == "Hacha") player.Animator.SetTrigger(attHachaHash);
+    }
+
+    public void HandleTakeDamage()
+    {
+        if (player.Animator == null) return;
+
+        player.Animator.ResetTrigger(attPaloHash);
+        player.Animator.ResetTrigger(attPicoHash);
+        player.Animator.ResetTrigger(attHachaHash);
+
+        if (player.WeaponManager != null && player.WeaponManager.CurrentTool != null)
+        {
+            player.WeaponManager.CurrentTool.DisableDamage();
+        }
+
+        player.Animator.ResetTrigger(hitHash);
+        player.Animator.SetTrigger(hitHash);
+    }
+
+    public void HandleDeath()
+    {
+        if (player.Animator == null) return;
+
+        player.IsMovementLocked = true;
+
+        player.Animator.ResetTrigger(attPaloHash);
+        player.Animator.ResetTrigger(attPicoHash);
+        player.Animator.ResetTrigger(attHachaHash);
+        player.Animator.ResetTrigger(hitHash);
+
+        if (player.WeaponManager != null && player.WeaponManager.CurrentTool != null)
+        {
+            player.WeaponManager.CurrentTool.DisableDamage();
+        }
+
+        player.Animator.SetBool(dieHash, true);
     }
 }

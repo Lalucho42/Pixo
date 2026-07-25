@@ -15,7 +15,6 @@ public class HealthSystem : MonoBehaviour
 
     private void Awake()
     {
-        
         if (CompareTag("Player"))
         {
             currentHealth = 50;
@@ -48,7 +47,6 @@ public class HealthSystem : MonoBehaviour
 
         currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
 
-       
         if (CompareTag("Player") && currentHealth > vidaAntesDeCurar)
         {
             if (AudioManager.Instance != null)
@@ -61,7 +59,7 @@ public class HealthSystem : MonoBehaviour
     public void ResetDeath()
     {
         IsDead = false;
-        currentHealth = maxHealth; 
+        currentHealth = maxHealth;
     }
 
     private void Die()
@@ -74,10 +72,6 @@ public class HealthSystem : MonoBehaviour
         if (CompareTag("Player"))
         {
             if (GameManager.instance != null) GameManager.instance.ShowDeathMenu();
-        }
-        else
-        {
-            Destroy(gameObject, 0.1f);
         }
     }
 }

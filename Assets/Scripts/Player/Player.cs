@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     public PlayerCamera PlayerCamera { get; private set; }
     public PlayerColliderHandler ColliderHandler { get; private set; }
     public PlayerInventory Inventory { get; private set; }
+    public HealthSystem Health { get; private set; }
 
     public static bool IsDead = false;
     public static Player Instance;
@@ -51,7 +52,9 @@ public class Player : MonoBehaviour
         Controller = GetComponent<CharacterController>();
         Animator = GetComponentInChildren<Animator>();
         WeaponManager = GetComponent<PlayerWeaponManager>();
+        Health = GetComponent<HealthSystem>();
         AudioSource = GetComponent<AudioSource>();
+
         AudioSource.spatialBlend = 1f;
         AudioSource.dopplerLevel = 0f;
         AudioSource.minDistance = 3f;
@@ -74,6 +77,12 @@ public class Player : MonoBehaviour
 
         InputHandler.OnScrollEvent += HandleWeaponScroll;
         IsDead = false;
+
+        if (Health != null)
+        {
+            Health.onTakeDamage.AddListener(() => Animations.HandleTakeDamage());
+            Health.onDeath.AddListener(() => Animations.HandleDeath());
+        }
     }
 
     private void Start()
