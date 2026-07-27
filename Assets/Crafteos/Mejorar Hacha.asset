@@ -12,9 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5397f02ad65ea294e887c8f165ca490c, type: 3}
   m_Name: Mejorar Hacha
   m_EditorClassIdentifier: 
-  nombreReceta: 
-  icono: {fileID: 0}
-  tipoReceta: 0
-  toolName: 
+  nombreReceta: Mejorar Hacha
+  icono: {fileID: 21300000, guid: 5baeecd3181b20445bbe8b9f18662c63, type: 3}
+  tipoReceta: 2
+  toolName: Hacha
   cantidadCuracion: 30
-  costos: []
+  costos:
+  - tipoRecurso: 0
+    cantidad: 3
+    icono: {fileID: 21300000, guid: 29134a89ba179124c884b6deda0fba0f, type: 3}
+  - tipoRecurso: 1
+    cantidad: 2
+    icono: {fileID: 21300000, guid: 4aadefcb48f5d5b47aa8df46ce114c77, type: 3}

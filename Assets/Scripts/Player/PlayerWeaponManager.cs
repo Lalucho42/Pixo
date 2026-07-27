@@ -25,23 +25,33 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void ActivateWeaponByName(string weaponName)
     {
-        if (targetHandBone == null) targetHandBone = FindBoneRecursive(transform, boneName);
-        if (targetHandBone == null) return;
+        ToolItem[] allTools = GetComponentsInChildren<ToolItem>(true);
+        ToolItem foundTool = null;
 
-        Transform weaponTransform = FindRecursive(targetHandBone, weaponName);
-        if (weaponTransform != null)
+        foreach (ToolItem tool in allTools)
         {
-            ToolItem newTool = weaponTransform.GetComponent<ToolItem>();
-            if (newTool != null)
+            if (tool.toolName.Equals(weaponName, StringComparison.OrdinalIgnoreCase) ||
+                tool.gameObject.name.Equals(weaponName, StringComparison.OrdinalIgnoreCase))
             {
-                if (!unlockedWeapons.Contains(newTool))
-                {
-                    unlockedWeapons.Add(newTool);
-                    if (OnWeaponAdded != null) OnWeaponAdded.Invoke(newTool);
-                }
-
-                EquipToolFromList(unlockedWeapons.IndexOf(newTool));
+                foundTool = tool;
+                break;
             }
+        }
+
+        if (foundTool != null)
+        {
+            if (!unlockedWeapons.Contains(foundTool))
+            {
+                unlockedWeapons.Add(foundTool);
+                if (OnWeaponAdded != null) OnWeaponAdded.Invoke(foundTool);
+            }
+
+            int index = unlockedWeapons.IndexOf(foundTool);
+            EquipToolFromList(index);
+        }
+        else
+        {
+            Debug.LogError($"[PlayerWeaponManager] No se encontro ninguna herramienta con el nombre o GameObject: '{weaponName}' dentro del Player.");
         }
     }
 
@@ -81,17 +91,6 @@ public class PlayerWeaponManager : MonoBehaviour
         CurrentTool.OnEquip();
 
         if (OnWeaponSwitched != null) OnWeaponSwitched.Invoke(currentWeaponIndex);
-    }
-
-    private Transform FindRecursive(Transform parent, string name)
-    {
-        if (parent.name == name) return parent;
-        foreach (Transform child in parent)
-        {
-            Transform found = FindRecursive(child, name);
-            if (found != null) return found;
-        }
-        return null;
     }
 
     private Transform FindBoneRecursive(Transform parent, string name)

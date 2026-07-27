@@ -12,9 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5397f02ad65ea294e887c8f165ca490c, type: 3}
   m_Name: Mejorar Espada
   m_EditorClassIdentifier: 
-  nombreReceta: 
-  icono: {fileID: 0}
-  tipoReceta: 0
-  toolName: 
+  nombreReceta: Mejorar Espada
+  icono: {fileID: 21300000, guid: a37787667d3ed0a45a305d5f152d63d1, type: 3}
+  tipoReceta: 2
+  toolName: Palo
   cantidadCuracion: 30
-  costos: []
+  costos:
+  - tipoRecurso: 1
+    cantidad: 3
+    icono: {fileID: 0}
+  - tipoRecurso: 0
+    cantidad: 2
+    icono: {fileID: 0}

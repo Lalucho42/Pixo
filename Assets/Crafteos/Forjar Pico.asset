@@ -12,9 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5397f02ad65ea294e887c8f165ca490c, type: 3}
   m_Name: Forjar Pico
   m_EditorClassIdentifier: 
-  nombreReceta: 
-  icono: {fileID: 0}
-  tipoReceta: 0
-  toolName: 
+  nombreReceta: Crear Pico
+  icono: {fileID: 21300000, guid: c07cd6ed58a57944884ec4d92a5b54c1, type: 3}
+  tipoReceta: 1
+  toolName: Pico
   cantidadCuracion: 30
-  costos: []
+  costos:
+  - tipoRecurso: 0
+    cantidad: 1
+    icono: {fileID: 21300000, guid: 29134a89ba179124c884b6deda0fba0f, type: 3}
+  - tipoRecurso: 1
+    cantidad: 3
+    icono: {fileID: 21300000, guid: 4aadefcb48f5d5b47aa8df46ce114c77, type: 3}

@@ -9,19 +9,10 @@ public class CraftingUI : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
 
-        if (panelCrafting != null)
-        {
-            panelCrafting.SetActive(false);
-        }
+        if (panelCrafting != null) panelCrafting.SetActive(false);
     }
 
     public void AbrirMenu(Player player)
@@ -32,6 +23,19 @@ public class CraftingUI : MonoBehaviour
         jugadorActual.IsMovementLocked = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        RefrescarMenu();
+    }
+
+    public void RefrescarMenu()
+    {
+        if (jugadorActual == null) return;
+
+        CraftingSlotUI[] slots = panelCrafting.GetComponentsInChildren<CraftingSlotUI>(true);
+        foreach (CraftingSlotUI slot in slots)
+        {
+            slot.ConfigurarYActualizar(jugadorActual);
+        }
     }
 
     public void CerrarMenu()
@@ -59,6 +63,11 @@ public class CraftingUI : MonoBehaviour
         {
             ToolItem herramienta = BuscarHerramienta(receta.toolName);
             if (herramienta == null || herramienta.estaMejorada) return false;
+        }
+        else if (receta.tipoReceta == RecipeType.DesbloquearHerramienta)
+        {
+            ToolItem herramienta = BuscarHerramienta(receta.toolName);
+            if (herramienta != null) return false;
         }
 
         foreach (ResourceCost costo in receta.costos)
@@ -95,6 +104,7 @@ public class CraftingUI : MonoBehaviour
             AudioManager.Instance.PlaySFX2D("Puzzle_Correcto");
         }
 
+        RefrescarMenu();
         return true;
     }
 
