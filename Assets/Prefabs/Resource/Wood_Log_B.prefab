@@ -150,8 +150,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2e6c8a4b06100e4184a1d8846617178, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
-  amount: 1
+  tipoDeRecurso: 0
+  cantidad: 1
+  radioDeAtraccion: 2
+  velocidadDeVuelo: 6
+  tiempoDeEspera: 2
 --- !u!136 &5047596251371406988
 CapsuleCollider:
   m_ObjectHideFlags: 0

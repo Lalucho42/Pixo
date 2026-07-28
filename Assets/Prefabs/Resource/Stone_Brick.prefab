@@ -152,6 +152,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tipoDeRecurso: 1
   cantidad: 1
+  radioDeAtraccion: 2
+  velocidadDeVuelo: 6
+  tiempoDeEspera: 2
 --- !u!136 &2033431567597126647
 CapsuleCollider:
   m_ObjectHideFlags: 0
