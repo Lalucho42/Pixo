@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CraftingUI : MonoBehaviour
@@ -6,6 +7,8 @@ public class CraftingUI : MonoBehaviour
 
     public GameObject panelCrafting;
     private Player jugadorActual;
+
+    public bool IsOpen => panelCrafting != null && panelCrafting.activeSelf;
 
     private void Awake()
     {
@@ -45,10 +48,18 @@ public class CraftingUI : MonoBehaviour
             jugadorActual.IsMovementLocked = false;
         }
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         panelCrafting.SetActive(false);
         jugadorActual = null;
+
+        StopAllCoroutines();
+        StartCoroutine(AnclarCursorAlFinalDeFrame());
+    }
+
+    private IEnumerator AnclarCursorAlFinalDeFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public bool IntentarCraftear(CraftingRecipe receta)

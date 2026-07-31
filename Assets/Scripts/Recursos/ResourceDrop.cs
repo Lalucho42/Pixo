@@ -10,10 +10,13 @@ public class ResourceDrop : MonoBehaviour, IInteractable
     public float velocidadDeVuelo = 6f;
 
     [Tooltip("Segundos antes de que el imán y la recolección se activen")]
-    public float tiempoDeEspera = 3f; 
+    public float tiempoDeEspera = 3f;
+
+    [Header("Efectos Visuales (Particle System)")]
+    public ParticleSystem sistemaParticulas;
 
     private bool estaMagnetizado = false;
-    private float tiempoDeVida = 0f; 
+    private float tiempoDeVida = 0f;
     private Transform playerTransform;
     private Rigidbody rb;
 
@@ -25,17 +28,39 @@ public class ResourceDrop : MonoBehaviour, IInteractable
         {
             playerTransform = Player.Instance.transform;
         }
+
+        ConfigurarParticulas();
+    }
+
+    private void ConfigurarParticulas()
+    {
+        if (sistemaParticulas == null)
+        {
+            sistemaParticulas = GetComponentInChildren<ParticleSystem>();
+        }
+
+        if (sistemaParticulas != null)
+        {
+            // Solo le pasamos la malla 3D del recurso actual para que lo envuelva
+            MeshFilter meshFilter = GetComponentInChildren<MeshFilter>();
+            if (meshFilter != null && meshFilter.sharedMesh != null)
+            {
+                var shapeModule = sistemaParticulas.shape;
+                shapeModule.enabled = true;
+                shapeModule.shapeType = ParticleSystemShapeType.Mesh;
+                shapeModule.mesh = meshFilter.sharedMesh;
+            }
+
+            sistemaParticulas.Play();
+        }
     }
 
     private void Update()
     {
-        
         tiempoDeVida += Time.deltaTime;
 
-        
         if (tiempoDeVida < tiempoDeEspera) return;
 
-        
         if (tipoDeRecurso == ResourceType.ParteComputadora || playerTransform == null) return;
 
         float distancia = Vector3.Distance(transform.position, playerTransform.position);
@@ -55,7 +80,6 @@ public class ResourceDrop : MonoBehaviour, IInteractable
 
     private void OnTriggerEnter(Collider other)
     {
-        
         if (tiempoDeVida < tiempoDeEspera) return;
 
         if (tipoDeRecurso != ResourceType.ParteComputadora)
@@ -71,7 +95,6 @@ public class ResourceDrop : MonoBehaviour, IInteractable
 
     public void Interact(Player jugador)
     {
-        
         if (tiempoDeVida < tiempoDeEspera) return;
 
         if (tipoDeRecurso == ResourceType.ParteComputadora)
@@ -83,6 +106,12 @@ public class ResourceDrop : MonoBehaviour, IInteractable
     private void AgarrarObjeto(Player jugador)
     {
         jugador.Inventory.AddResource(tipoDeRecurso, cantidad);
+
+        if (sistemaParticulas != null)
+        {
+            sistemaParticulas.Stop();
+        }
+
         Destroy(gameObject);
     }
 }

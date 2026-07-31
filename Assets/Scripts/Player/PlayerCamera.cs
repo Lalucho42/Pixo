@@ -17,6 +17,8 @@ public class PlayerCamera
 
     public void Tick(float dt)
     {
+        if (player.IsMovementLocked) return;
+
         Vector2 look = player.InputHandler.LookInput;
         yaw += look.x * sens;
         pitch -= look.y * sens;

@@ -75,6 +75,12 @@ public class GameManager : MonoBehaviour
     {
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
+            if (CraftingUI.Instance != null && CraftingUI.Instance.IsOpen)
+            {
+                CraftingUI.Instance.CerrarMenu();
+                return;
+            }
+
             if (CurrentState == GameState.Playing) Pause();
             else if (CurrentState == GameState.Paused) Resume();
         }
@@ -83,6 +89,9 @@ public class GameManager : MonoBehaviour
     public void Pause()
     {
         if (CurrentState != GameState.Playing) return;
+
+        if (CraftingUI.Instance != null && CraftingUI.Instance.IsOpen) return;
+
         CurrentState = GameState.Paused;
         Time.timeScale = 0f;
         AudioListener.pause = true;
