@@ -9,9 +9,18 @@ public class ResourceSlotUI : MonoBehaviour
 
     public void Configurar(Sprite spriteIcono, int cantidad, bool tieneSuficiente = true)
     {
-        if (icono != null && spriteIcono != null)
+        if (icono != null)
         {
-            icono.sprite = spriteIcono;
+            if (spriteIcono != null)
+            {
+                icono.sprite = spriteIcono;
+                icono.preserveAspect = true; 
+                icono.gameObject.SetActive(true);
+            }
+            else
+            {
+                icono.gameObject.SetActive(false);
+            }
         }
 
         if (textoCantidad != null)
