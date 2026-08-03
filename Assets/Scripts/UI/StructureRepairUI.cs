@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // Requerido para forzar el recalculo del Layout en Screen Space
+using UnityEngine.UI; 
 
 public class StructureRepairUI : MonoBehaviour
 {
@@ -33,12 +33,10 @@ public class StructureRepairUI : MonoBehaviour
 
     private void LateUpdate()
     {
-        // Si el cartel está activo y tiene un objetivo 3D, convertimos su posición a Screen Space
         if (objetivoEnMundo != null && mainCam != null && panelPrincipal != null && panelPrincipal.activeSelf)
         {
             Vector3 screenPos = mainCam.WorldToScreenPoint(objetivoEnMundo.position + offsetMundo);
 
-            // Solo lo mostramos si el objeto está al frente de la cámara
             if (screenPos.z > 0)
             {
                 transform.position = screenPos;
@@ -50,13 +48,11 @@ public class StructureRepairUI : MonoBehaviour
     {
         if (contenedorSlots == null) return;
 
-        // 1. Limpiar slots anteriores
         foreach (Transform child in contenedorSlots)
         {
             Destroy(child.gameObject);
         }
 
-        // 2. Instanciar los nuevos slots
         foreach (ResourceCost costo in costos)
         {
             GameObject nuevoSlot = Instantiate(slotPrefab, contenedorSlots);
@@ -67,13 +63,11 @@ public class StructureRepairUI : MonoBehaviour
             }
         }
 
-        // 3. Forzar el recálculo automático de medidas para Screen Space
         StartCoroutine(RecalcularLayoutScreenSpace());
     }
 
     private IEnumerator RecalcularLayoutScreenSpace()
     {
-        // Esperamos al final del frame para que Unity registre los nuevos RectTransforms
         yield return new WaitForEndOfFrame();
 
         Canvas.ForceUpdateCanvases();

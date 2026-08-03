@@ -40,7 +40,6 @@ public class ResourceRequirementUI : MonoBehaviour
 
     private void LateUpdate()
     {
-        // Seguir la posición 3D del objeto en pantalla
         if (target3D != null && mainPanel != null && mainPanel.gameObject.activeSelf && mainCam != null)
         {
             Vector3 screenPos = mainCam.WorldToScreenPoint(target3D.position + offsetMundo);
@@ -61,13 +60,11 @@ public class ResourceRequirementUI : MonoBehaviour
             actionText.text = textoAccion;
         }
 
-        // 1. Limpiar slots anteriores
         foreach (Transform child in slotsContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // 2. Instanciar slots
         foreach (ResourceCost costo in costos)
         {
             GameObject nuevoSlot = Instantiate(slotPrefab, slotsContainer);
@@ -75,7 +72,6 @@ public class ResourceRequirementUI : MonoBehaviour
 
             if (slotScript != null)
             {
-                // Evita que la imagen/ícono estire e infle el panel gigante
                 if (slotScript.icono != null)
                 {
                     slotScript.icono.preserveAspect = true;
@@ -85,10 +81,8 @@ public class ResourceRequirementUI : MonoBehaviour
             }
         }
 
-        // 3. Recalcular espacio
         StartCoroutine(RecalcularLayout());
 
-        // 4. Mostrar
         Mostrar();
     }
 

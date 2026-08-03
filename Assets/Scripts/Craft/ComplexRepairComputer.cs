@@ -195,7 +195,6 @@ public class ComplexRepairComputer : MonoBehaviour, IInteractable
         }
         else
         {
-            // Verifica el bool de 'esElPuente'
             mensaje = esElPuente ? "Press [E] to Repair Bridge" : "Press [E] to Repair Mine";
         }
 

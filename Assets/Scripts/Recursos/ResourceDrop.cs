@@ -41,7 +41,6 @@ public class ResourceDrop : MonoBehaviour, IInteractable
 
         if (sistemaParticulas != null)
         {
-            // Solo le pasamos la malla 3D del recurso actual para que lo envuelva
             MeshFilter meshFilter = GetComponentInChildren<MeshFilter>();
             if (meshFilter != null && meshFilter.sharedMesh != null)
             {

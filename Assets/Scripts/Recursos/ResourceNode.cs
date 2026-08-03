@@ -34,7 +34,6 @@ public class ResourceNode : MonoBehaviour
 
         health -= amount;
 
-        // Inicia el temblor al recibir impacto
         if (shakeCoroutine != null) StopCoroutine(shakeCoroutine);
         shakeCoroutine = StartCoroutine(ShakeCoroutine());
 
