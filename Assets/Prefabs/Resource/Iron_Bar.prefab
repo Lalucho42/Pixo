@@ -82,7 +82,7 @@ MonoBehaviour:
   radioDeAtraccion: 1
   velocidadDeVuelo: 4
   tiempoDeEspera: 2
-  sistemaParticulas: {fileID: 0}
+  sistemaParticulas: {fileID: 4247604766824628381}
 --- !u!136 &-3110707558153167104
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -208,8 +208,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 865130750718549215}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
